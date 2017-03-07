@@ -1,0 +1,3 @@
+{
+  "extends": "@grammarly-npm/grammarly-tslint-config"
+}

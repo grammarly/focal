@@ -1,0 +1,6 @@
+{
+  "extends": "@grammarly-npm/grammarly-tslint-config",
+  "rules": {
+    "require-jsdoc": false
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "declaration": false,
+    "target": "es5",
+    "jsx": "react",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "outDir": "build",
+    "rootDir": ".",
+    "noEmitOnError": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "strictNullChecks": true,
+    "lib": ["es6", "es2015", "dom", "scripthost"]
+  },
+  "files": [
+    "src/index.tsx"
+  ]
+}

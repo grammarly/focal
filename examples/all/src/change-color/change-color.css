@@ -1,0 +1,27 @@
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+.blue {
+  color: blue;
+}
+
+.normal {
+  font-weight: normal;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.family {
+  font-family: 'Helvetica'
+}

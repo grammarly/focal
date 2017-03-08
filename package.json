@@ -88,7 +88,6 @@
     "tap-spec": "^4.1.1",
     "tape": "^4.5.1",
     "tslint": "^4.1.1",
-    "typedoc": "^0.5.1",
     "typescript": "2.2.1",
     "watch": "^0.18.0"
   },

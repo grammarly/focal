@@ -17,8 +17,7 @@
     "lib": ["es6", "es2015", "dom", "scripthost"],
     "typeRoots": ["custom_typings"],
     "types": [
-      "css",
-      "whatwg-fetch"
+      "css"
     ]
   },
   "include": [

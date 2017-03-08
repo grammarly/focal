@@ -18,7 +18,8 @@
     "jsx": "react",
     "strictNullChecks": true,
     "noImplicitThis": true,
-    "lib": ["es6", "es2015", "dom", "scripthost"]
+    "lib": ["es6", "es2015", "dom", "scripthost"],
+    "types": []
   },
   "include": [
     "src/**/*.ts*",

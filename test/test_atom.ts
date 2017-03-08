@@ -3,7 +3,7 @@ import * as test from 'tape'
 import { Atom, Lens } from '../src'
 import { structEq } from '../src/utils'
 
-function testAtom(t: test.Test, newAtom: (x: number) => Atom<number | undefined>) {
+function testAtom(t: test.Test, newAtom: (x: number) => Atom<number>) {
   t.test('basic', t => {
     t.plan(7)
 
@@ -165,7 +165,14 @@ test('atom', t => {
     t.test('generic', t => {
       testAtom(t, x => {
         const source = Atom.create([x, 2, 3])
-        const first = source.lens(Lens.index<number>(0))
+        const first = source.lens(
+          Lens.index<number>(0)
+            // assert element is non-undefined
+            .compose(Lens.create(
+              (x: number | undefined) => x!,
+              (v, _) => v
+            ))
+        )
         return first
       })
     })

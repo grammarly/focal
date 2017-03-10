@@ -38,7 +38,7 @@ RUN npm run ci
   {{ if $master_branch }}
     # 1. get major and minor version from package.json
     # 2. append "build_number" to version and publish
-    RUN npm version $(npm run get-ci-version {{ .build_number }}) &&\
-      npm publish
+    RUN npm version $(node -e "console.log(require('./package.json').versionBase)").{{ .build_number }} &&\
+      npm publish --access public
   {{ end }}
 {{ end }}

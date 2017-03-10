@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@grammarly-npm/grammarly-tslint-config@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@grammarly-npm/grammarly-tslint-config/-/grammarly-tslint-config-0.3.0.tgz#7d959d6c02142f6b6940a30062f2049ce077c12f"
+"@grammarly/tslint-config@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@grammarly/tslint-config/-/tslint-config-0.3.1.tgz#a9038a2b8a56689d9a366b9947e439439286e680"
   dependencies:
     path "0.12.7"
     tslint "4.1.1"

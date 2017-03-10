@@ -20,8 +20,8 @@
   "author": "Grammarly, Inc.",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grammarly-npm/grammarly-tslint-config": "^0.3.0",
     "@grammarly/focal": "file:../../",
+    "@grammarly/tslint-config": "^0.3.1",
     "@types/react": "15.0.0",
     "@types/react-dom": "^0.14.20",
     "express": "^4.14.0",

@@ -82,7 +82,7 @@
     "rxjs": "5.0.2"
   },
   "devDependencies": {
-    "@grammarly-npm/grammarly-tslint-config": "0.3.0",
+    "@grammarly/tslint-config": "^0.3.1",
     "@types/node": "^6.0.34",
     "@types/tape": "^4.2.27",
     "tap-spec": "^4.1.1",

@@ -19,6 +19,7 @@
     "test:todomvc": "cd examples/todomvc && rm -rf node_modules/@grammarly/focal && npm i --ignore-scripts && npm run build",
     "test:watch": "watch 'npm test' src test",
     "ci": "npm run test",
+    "get-ci-version": "node -e \"console.log(require('./package.json').versionBase + '.' + process.argv[1])\"",
     "lint": "tslint --project tsconfig.json -c tslint.json"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",

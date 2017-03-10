@@ -7,7 +7,7 @@ FROM dockerhub.grammarly.io/nodejs-yarn:6.9.1-0.19.1
 # ssh key for private github access
 {{ $ssh_key_path := (or .ssh_key_path "~/.ssh/id_rsa" ) }}
 
-# detecting if the current build runs for master branch
+# detect if the current build runs for master branch
 {{ $master_branch := (eq (or .is_default_branch "false") "true") }}
 
 # private github and NPM registry access configuration
@@ -18,7 +18,7 @@ RUN mkdir -p ~/.ssh && echo "Host github.com\n        StrictHostKeyChecking no" 
 # BUILD
 
 # create working directory
-{{ $srcdir    := "/src"    }}
+{{ $srcdir := "/src" }}
 RUN mkdir {{ $srcdir }}
 WORKDIR {{ $srcdir }}
 
@@ -36,15 +36,9 @@ RUN npm run ci
 # PUBLISH
 {{ if not $dev }}
   {{ if $master_branch }}
-    # get major and minor version from package.json
-    RUN VERSION=$(cat package.json \
-      | grep versionBase \
-      | head -1 \
-      | awk -F: '{ print $2 }' \
-      | sed 's/[",]//g')
-
-    # Append "build_number" to version and publish
-    RUN npm version $VERSION.{{.build_number}} &&\
+    # 1. get major and minor version from package.json
+    # 2. append "build_number" to version and publish
+    RUN npm version $(npm run get-ci-version {{ .build_number }}) &&\
       npm publish
   {{ end }}
 {{ end }}

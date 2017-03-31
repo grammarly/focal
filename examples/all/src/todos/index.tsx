@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Atom, F, Lens, bind, reactiveList } from '@grammarly/focal'
+import { Atom, Lens } from '@grammarly/focal'
+import { F, bind, reactiveList } from '@grammarly/focal-react'
 import {
   AppState, TodoState,
   defaultAppState, defaultTodoState,

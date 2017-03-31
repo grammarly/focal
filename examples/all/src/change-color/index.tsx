@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Atom, F, classes } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal'
+import { F, classes } from '@grammarly/focal-react'
 import * as styles from './change-color.css'
 
 const GREEN = 'green'

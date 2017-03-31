@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Atom, F } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal'
+import { F } from '@grammarly/focal-react'
 
 interface CounterState {
   readonly count: number

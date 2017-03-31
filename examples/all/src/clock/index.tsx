@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Observable } from 'rxjs'
-import { F } from '@grammarly/focal'
+import { F } from '@grammarly/focal-react'
 
 const App = () =>
   <F.div>

@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Atom, F, bind, bindElementProps } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal'
+import { F, bind, bindElementProps } from '@grammarly/focal-react'
 
 interface AppState {
   readonly scrollTop: number

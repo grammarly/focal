@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { equals as structEq } from './equals'
 export { equals as structEq } from './equals'
 
@@ -40,32 +39,6 @@ export function findIndex<T>(xs: T[], p: (x: T) => boolean): number {
     if (p(xs[i])) return i
   }
   return -1
-}
-
-export function warning(message: string) {
-  if (typeof console !== 'undefined' && typeof console.error === 'function') {
-    console.error('[Focal]: ' + message) // tslint:disable-line no-console
-  }
-
-  // Throw a dummy error so it's possible to enter debugger with
-  // 'break on all exceptions'.
-  try { throw new Error(message) } catch (_) { /* no-op */ }
-}
-
-export function getReactComponentName(
-  component: string
-    | React.ComponentClass<any>
-    | React.StatelessComponent<any>
-    | React.Component<any, any>
-) {
-  return typeof component === 'string' ? component
-    : (component as React.ComponentClass<any>).displayName !== undefined
-      ? (component as React.ComponentClass<any>).displayName
-    : (component as React.StatelessComponent<any>).name !== undefined
-      ? (component as React.StatelessComponent<any>).name
-    : component.constructor && component.constructor.name !== undefined
-      ? component.constructor.name
-    : undefined
 }
 
 export type Option<T> = T | undefined

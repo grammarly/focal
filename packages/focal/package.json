@@ -1,6 +1,6 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.0.0-dev",
+  "version": "0.4.381",
   "versionBase": "0.4",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/src/index.js",
@@ -76,10 +76,6 @@
     "url": "https://github.com/grammarly/focal.git"
   },
   "dependencies": {
-    "@types/react": "15.0.0",
-    "@types/react-dom": "0.14.20",
-    "react": "15.4.2",
-    "react-dom": "15.4.2",
     "rxjs": "5.0.2"
   },
   "devDependencies": {
@@ -93,8 +89,6 @@
     "watch": "^0.18.0"
   },
   "peerDependencies": {
-    "@types/react": "15.0.0",
-    "react": "15.4.2",
     "rxjs": "5.0.2"
   }
 }

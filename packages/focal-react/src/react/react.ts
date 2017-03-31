@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { structEq } from './../utils'
-import { Atom } from './../atom'
-import { ObservableReactHTMLProps } from './observablePropTypes'
+import { Atom } from '@grammarly/focal'
+import { equals as structEq } from '../equals'
 import { warning, getReactComponentName, DEV_ENV } from './../utils'
+import { ObservableReactHTMLProps } from './observablePropTypes'
 import { Observable, ObservableInput } from 'rxjs/Observable'
 import { Subscription as RxSubscription } from 'rxjs/Subscription'
 import 'rxjs/add/operator/scan'
@@ -13,7 +13,7 @@ import 'rxjs/add/observable/combineLatest'
 // Atom namespace in atom/index.ts
 //
 // if we don't do it, we get the "cannot be named" compiler error.
-import { Atom as _Atom } from './../atom/base' // tslint:disable-line no-unused-vars
+import { Atom as _Atom } from '@grammarly/focal' // tslint:disable-line no-unused-vars
 
 export interface Subscription {
   unsubscribe(): void

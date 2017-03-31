@@ -7,3 +7,12 @@ build
 dist
 lib
 docs
+
+packages/*/node_modules
+packages/*/lib
+packages/*/dist
+packages/*/build
+packages/*/dist
+packages/*/npm-debug.log*
+packages/*/logs
+packages/*/*.log

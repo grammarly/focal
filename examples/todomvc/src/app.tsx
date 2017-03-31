@@ -1,7 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Observable } from 'rxjs'
-import { F, Atom, Lens, bind, reactiveList, classes } from '@grammarly/focal'
+import { Atom, Lens } from '@grammarly/focal'
+import { F, bind, reactiveList, classes } from '@grammarly/focal-react'
 import { TodoItem, AppModel } from './model'
 
 const locationHash =

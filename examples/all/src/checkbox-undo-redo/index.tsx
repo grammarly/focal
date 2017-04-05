@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Atom, F, Lens, reactiveList } from '@grammarly/focal'
+import { Atom, Lens } from '@grammarly/focal'
+import { F, reactiveList } from '@grammarly/focal-react'
 import { App as Checkbox, AppState as CheckboxState } from '../checkbox'
 import { History, HistoryState } from '../utils/history'
 

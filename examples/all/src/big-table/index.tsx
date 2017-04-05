@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs'
-import {
-  F, Atom, ReadOnlyAtom, bindElementProps, reactiveList
-} from '@grammarly/focal'
+import { Atom, ReadOnlyAtom } from '@grammarly/focal'
+import { F, reactiveList, bindElementProps } from '@grammarly/focal-react'
 import * as React from 'react'
 
 const Window = {

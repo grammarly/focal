@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Atom, F, reactiveList } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal'
+import { F, reactiveList } from '@grammarly/focal-react'
 
 type Status = 'STARTED' | 'STOPPED' | 'RESET'
 

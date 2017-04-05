@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { F, Atom } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal'
+import { F } from '@grammarly/focal-react'
 import * as Model from './model'
 
 const Counter = ({

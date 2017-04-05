@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Atom, F } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal'
+import { F } from '@grammarly/focal-react'
 import { App as TodoApp } from '../todos'
 import { History, HistoryState } from '../utils/history'
 import * as TodosModel from '../todos/model'

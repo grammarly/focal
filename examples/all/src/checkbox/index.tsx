@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Atom, F, bind } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal'
+import { F, bind } from '@grammarly/focal-react'
 
 export interface AppState {
   checked: boolean

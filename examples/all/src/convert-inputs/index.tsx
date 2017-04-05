@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Atom, F } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal'
+import { F } from '@grammarly/focal-react'
 
 const toFahrenheit = (celsius: number) => celsius * 9 / 5 + 32
 const toCelsius = (fahrenheit: number) => (fahrenheit - 32) * 5 / 9

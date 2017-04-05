@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Atom, F, bind, reactiveList } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal'
+import { F, bind, reactiveList } from '@grammarly/focal-react'
 
 enum ResultKind {
   Success,

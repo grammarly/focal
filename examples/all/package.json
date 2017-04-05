@@ -8,7 +8,9 @@
     "npm": ">=3.0.0"
   },
   "scripts": {
-    "preinstall": "cd ../.. && (yarn || npm i) && npm run build",
+    "preinstall:focal": "cd ../../packages/focal && (yarn || npm i) && npm run build",
+    "preinstall:focal-react": "cd ../../packages/focal-react && (yarn || npm i) && npm run build",
+    "preinstall": "npm run preinstall:focal && npm run preinstall:focal-react",
     "build:webpack": "NODE_ENV=production webpack --config webpack/webpack.prod.js",
     "build": "npm run clean && npm run build:static && npm run build:webpack",
     "build:static": "cp -r ./static ./build",
@@ -20,7 +22,8 @@
   "author": "Grammarly, Inc.",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grammarly/focal": "file:../../",
+    "@grammarly/focal": "file:../../packages/focal",
+    "@grammarly/focal-react": "file:../../packages/focal-react",
     "@grammarly/tslint-config": "^0.3.1",
     "@types/react": "15.0.0",
     "@types/react-dom": "^0.14.14",

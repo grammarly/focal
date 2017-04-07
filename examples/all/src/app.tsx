@@ -21,6 +21,7 @@ const examples: { name: string, example: ExampleComponent<any> }[] = [
   'convert-inputs',
   'list-search',
   'scroll',
+  'bmi',
   'add-input',
   'todos',
   'todos-with-undo',

@@ -40,5 +40,8 @@
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.12.2"
+  },
+  "dependencies": {
+    "styled-components": "^1.4.4"
   }
 }

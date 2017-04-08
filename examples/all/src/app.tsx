@@ -26,6 +26,7 @@ const examples: { name: string, example: ExampleComponent<any> }[] = [
   'todos',
   'todos-with-undo',
   'http-search-github',
+  'styled-components',
   'timer',
   'tree',
   'big-table',

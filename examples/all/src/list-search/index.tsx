@@ -44,7 +44,7 @@ class App extends  React.Component<{ state: Atom<AppState> }, {}> {
     const search = state.lens(x => x.search)
     return (
       <F.div>
-        <F.input  { ...bind({ value: search }) } />
+        <F.input {...bind({ value: search })} />
         <F.div>Timer: {state.view(x => x.timer)}</F.div>
         {
           Atom.combine(search, state.lens(x => x.languageList), (searchValue, list) => (

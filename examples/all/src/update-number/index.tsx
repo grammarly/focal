@@ -40,7 +40,7 @@ const App = (props: { state: Atom<AppState> }) => {
     <F.div>
       {
         props.state
-          .lens(x => x.value)
+          .view(x => x.value)
           .switchMap(endRange => Observable
             .timer(0, 20)
             .mapTo(positiveOrNegative(endRange, currentNumber))

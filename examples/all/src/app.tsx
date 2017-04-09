@@ -29,6 +29,7 @@ const examples: { name: string, example: ExampleComponent<any> }[] = [
   'http-search-github',
   'styled-components',
   'color-box',
+  'increment-number',
   'update-number',
   'timer',
   'tree',

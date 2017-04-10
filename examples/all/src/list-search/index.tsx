@@ -43,21 +43,23 @@ class App extends  React.Component<{ state: Atom<AppState> }, {}> {
     const { state } = this.props
     const search = state.lens(x => x.search)
     return (
-      <F.div>
+      <div>
         <F.input {...bind({ value: search })} />
         <F.div>Timer: {state.view(x => x.timer)}</F.div>
-        {
-          Atom.combine(search, state.lens(x => x.languageList), (searchValue, list) => (
-            <div>
-              {
-                list
-                  .filter(x => x.toLowerCase().includes(searchValue.toLowerCase()))
-                  .map((x, i) => <li key={x + i}>{x}</li>)
-              } 
-            </div>
-          ))
-        }
-      </F.div>
+        <F.div>
+          {
+            Atom.combine(search, state.lens(x => x.languageList), (searchValue, list) => (
+              <div>
+                {
+                  list
+                    .filter(x => x.toLowerCase().includes(searchValue.toLowerCase()))
+                    .map((x, i) => <li key={x + i}>{x}</li>)
+                } 
+              </div>
+            ))
+          }
+        </F.div>
+      </div>
     )
   }
 }

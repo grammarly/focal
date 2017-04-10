@@ -32,7 +32,6 @@ const examples: { name: string, example: ExampleComponent<any> }[] = [
   'increment-number',
   'update-number',
   'timer',
-  'observable-timer',
   'tree',
   'big-table',
   'animated-counter'

@@ -1,13 +1,14 @@
 import * as React from 'react'
+import { Observable } from 'rxjs'
 import { Atom, ReadOnlyAtom, F, reactiveList } from '@grammarly/focal'
 
-export enum Status {
+enum Status {
   STARTED,
   STOPPED,
   RESET
 }
 
-export interface Time {
+interface Time {
   seconds: number,
   milliseconds: number,
   minutes: number
@@ -16,10 +17,10 @@ export interface Time {
 interface AppState {
   time: Time,
   laps: Time[],
-  action: Status
+  status: Status
 }
 
-export const defaultTimeState: Time = {
+const defaultTimeState: Time = {
   seconds: 0,
   milliseconds: 0,
   minutes: 0
@@ -28,7 +29,7 @@ export const defaultTimeState: Time = {
 namespace AppState {
   export const defaultState: AppState = {
     time: defaultTimeState,
-    action: Status.RESET,
+    status: Status.RESET,
     laps: []
   }
 }
@@ -37,8 +38,22 @@ function formatTime(value: number) {
   return (value < 10 ? '0' : '') + value.toString()
 }
 
-export function getTime(time: Time) {
+function getTime(time: Time) {
   return `${formatTime(time.minutes)}:${formatTime(time.seconds)}:${formatTime(time.milliseconds)}`
+}
+
+function updateTime(time: Time, val: number) {
+  let { milliseconds, seconds, minutes } = time
+  milliseconds += val
+  if (milliseconds === 100) {
+    milliseconds = 0
+    seconds += 1
+  }
+  if (seconds === 60) {
+    seconds = 0
+    minutes += 1
+  }
+  return { milliseconds, seconds, minutes }
 }
 
 export const Laps = ({ laps }: { laps: ReadOnlyAtom<Time[]> }) =>
@@ -56,45 +71,38 @@ export const Laps = ({ laps }: { laps: ReadOnlyAtom<Time[]> }) =>
   </F.ul>
 
 class App extends React.Component<{ state: Atom<AppState> }, {}> {
-  private interval: any
-
   componentWillUnmount() {
     this.handleStop()
   }
 
-  handleStart = () => {
-    const time = this.props.state.lens(x => x.time)
-    this.props.state.lens(x => x.action).set(Status.STARTED)
-    this.interval = setInterval(() => time.modify(x => {
-      let { milliseconds, seconds, minutes } = x
-      milliseconds += 1
-      if (milliseconds === 100) {
-        milliseconds = 0
-        seconds += 1
-      }
-      if (seconds === 60) {
-        seconds = 0
-        minutes += 1
-      }
-      return { milliseconds, seconds, minutes }
-    }), 10)
+  componentDidMount() {
+    const status = this.props.state.view(x => x.status)
+    Observable
+      .combineLatest(
+        status.switchMap(x =>
+          x === Status.STARTED ? Observable.interval(1).mapTo(1) : Observable.of(0)
+        ),
+        status
+      )
+      .map(([val, status]) => ({ val, status }))
+      .scan((time, { val, status }) =>
+        status === Status.RESET ? defaultTimeState : updateTime(time, val),
+        defaultTimeState
+      )
+      .subscribe(x => this.props.state.lens(x => x.time).set(x))
   }
 
-  handleStop = () => {
-    clearInterval(this.interval)
-    this.props.state.lens(x => x.action).set(Status.STOPPED)
-  }
+  handleStart = () => this.props.state.lens(x => x.status).set(Status.STARTED)
+
+  handleStop = () => this.props.state.lens(x => x.status).set(Status.STOPPED)
 
   handleReset = () => this.props.state.set(AppState.defaultState)
 
-  handleLap = () => this.props.state.modify(x => ({
-    ...x,
-    laps: [...x.laps, x.time]
-  }))
+  handleLap = () => this.props.state.modify(x => ({ ...x, laps: [...x.laps, x.time] }))
 
   render() {
     const time = this.props.state.lens(x => x.time)
-    const action = this.props.state.view(x => x.action)
+    const action = this.props.state.view(x => x.status)
     const isStarted = action.view(x => x === Status.STARTED)
 
     return (
@@ -105,12 +113,9 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
         <F.p>
           {
             isStarted.view(x =>
-              !x && <input key='start' type='submit' value='Start' onClick={this.handleStart} />
-            )
-          }
-          {
-            isStarted.view(x =>
-              x && <input key='stop' type='submit' value='Stop' onClick={this.handleStop} />
+x
+              ? <input key='stop' type='submit' value='Stop' onClick={this.handleStop} />
+              : <input key='start' type='submit' value='Start' onClick={this.handleStart} />
             )
           }
           {

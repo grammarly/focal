@@ -1,9 +1,13 @@
 import * as React from 'react'
-import { Atom, F, reactiveList } from '@grammarly/focal'
+import { Atom, ReadOnlyAtom, F, reactiveList } from '@grammarly/focal'
 
-type Status = 'STARTED' | 'STOPPED' | 'RESET'
+export enum Status {
+  STARTED,
+  STOPPED,
+  RESET
+}
 
-interface Time {
+export interface Time {
   seconds: number,
   milliseconds: number,
   minutes: number
@@ -15,20 +19,16 @@ interface AppState {
   action: Status
 }
 
-const STARTED: Status = 'STARTED'
-const STOPPED: Status = 'STOPPED'
-const RESET: Status = 'RESET'
+export const defaultTimeState: Time = {
+  seconds: 0,
+  milliseconds: 0,
+  minutes: 0
+}
 
 namespace AppState {
-  export const defaultTimeState: Time = {
-    seconds: 0,
-    milliseconds: 0,
-    minutes: 0
-  }
-
   export const defaultState: AppState = {
     time: defaultTimeState,
-    action: RESET,
+    action: Status.RESET,
     laps: []
   }
 }
@@ -37,20 +37,34 @@ function formatTime(value: number) {
   return (value < 10 ? '0' : '') + value.toString()
 }
 
-function getTime(time: Time) {
+export function getTime(time: Time) {
   return `${formatTime(time.minutes)}:${formatTime(time.seconds)}:${formatTime(time.milliseconds)}`
 }
+
+export const Laps = ({ laps }: { laps: ReadOnlyAtom<Time[]> }) =>
+  <F.ul>
+    {
+      reactiveList(
+        laps.view(x => x.map((_, index) => index)),
+        index => (
+          <F.li key={index}>
+            {laps.view(x => x[index] ? 'Lap ' + (index + 1) + ': ' + getTime(x[index]) : '')}
+          </F.li>
+        )
+      )
+    }
+  </F.ul>
 
 class App extends React.Component<{ state: Atom<AppState> }, {}> {
   private interval: any
 
-  componentWillUnmpunt() {
+  componentWillUnmount() {
     this.handleStop()
   }
 
   handleStart = () => {
     const time = this.props.state.lens(x => x.time)
-    this.props.state.lens(x => x.action).set(STARTED)
+    this.props.state.lens(x => x.action).set(Status.STARTED)
     this.interval = setInterval(() => time.modify(x => {
       let { milliseconds, seconds, minutes } = x
       milliseconds += 1
@@ -68,7 +82,7 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
 
   handleStop = () => {
     clearInterval(this.interval)
-    this.props.state.lens(x => x.action).set(STOPPED)
+    this.props.state.lens(x => x.action).set(Status.STOPPED)
   }
 
   handleReset = () => this.props.state.set(AppState.defaultState)
@@ -80,9 +94,8 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
 
   render() {
     const time = this.props.state.lens(x => x.time)
-    const laps = this.props.state.lens(x => x.laps)
     const action = this.props.state.view(x => x.action)
-    const isStarted = action.view(x => x === STARTED)
+    const isStarted = action.view(x => x === Status.STARTED)
 
     return (
       <div>
@@ -102,7 +115,7 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
           }
           {
             action.view(x =>
-              x === STOPPED &&
+              x === Status.STOPPED &&
               <input key='reset' type='submit' value='Reset' onClick={this.handleReset} />
             )
           }
@@ -112,18 +125,7 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
             )
           }
         </F.p>
-        <F.ul>
-          {
-            reactiveList(
-              laps.view(x => x.map((_, index) => index)),
-              index => (
-                <F.li key={index}>
-                  {laps.view(x => x ? 'Lap ' + (index + 1) + ': ' + getTime(x[index]) : '')}
-                </F.li>
-              )
-            )
-          }
-        </F.ul>
+        <Laps laps={this.props.state.view(x => x.laps)} />
       </div>
     )
   }

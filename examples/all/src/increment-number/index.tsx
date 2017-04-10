@@ -3,12 +3,12 @@ import { Observable } from 'rxjs'
 import { Atom, F } from '@grammarly/focal'
 
 interface AppState {
-  shouldIncrement: boolean
+  isRun: boolean
 }
 
 namespace AppState {
   export const defaultState: AppState = {
-    shouldIncrement: true
+    isRun: true
   }
 }
 
@@ -19,20 +19,30 @@ const App = (props: { state: Atom<AppState> }) =>
         props.state.view(x =>
           <input
             type='submit'
-            value={x.shouldIncrement ? 'Stop' : 'Increment'}
-            onClick={() => props.state.set({ shouldIncrement: !x.shouldIncrement })}
+            value={x.isRun ? 'Stop' : 'Start'}
+            onClick={() => props.state.set({ isRun: !x.isRun })}
           />
         )
       }
     </F.div>
+    <h4>Observable.combineLatest</h4>
     <F.div>
       {
         Observable
           .combineLatest(
             Observable.interval(1000).startWith(0).mapTo(1),
-            props.state.view(x => x.shouldIncrement)
+            props.state.view(x => x.isRun)
           )
           .scan((acc, [val, shouldIncrement]) => shouldIncrement ? acc + val : acc, 0)
+      }
+      <br />
+      <h4>Observable.switchMap</h4>
+      {
+        Observable
+          .interval(1000)
+          .startWith(0)
+          .switchMap(() => props.state.view(x => x.isRun ? 1 : 0))
+          .scan((acc, val) => acc + val, 0)
       }
     </F.div>
   </div>

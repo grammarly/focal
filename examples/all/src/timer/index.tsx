@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Observable } from 'rxjs'
+import { Observable, Subscription } from 'rxjs'
 import { Atom, ReadOnlyAtom, F, reactiveList } from '@grammarly/focal'
 
 enum Status {
@@ -56,7 +56,7 @@ function updateTime(time: Time, val: number) {
   return { milliseconds, seconds, minutes }
 }
 
-export const Laps = ({ laps }: { laps: ReadOnlyAtom<Time[]> }) =>
+const Laps = ({ laps }: { laps: ReadOnlyAtom<Time[]> }) =>
   <F.ul>
     {
       reactiveList(
@@ -71,9 +71,11 @@ export const Laps = ({ laps }: { laps: ReadOnlyAtom<Time[]> }) =>
   </F.ul>
 
 class App extends React.Component<{ state: Atom<AppState> }, {}> {
+  subscription: Subscription
+
   componentDidMount() {
     const status = this.props.state.view(x => x.status)
-    Observable
+    this.subscription = Observable
       .combineLatest(
         status.switchMap(x =>
           x === Status.STARTED ? Observable.interval(1).mapTo(1) : Observable.of(0)
@@ -86,6 +88,10 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
         defaultTimeState
       )
       .subscribe(x => this.props.state.lens(x => x.time).set(x))
+  }
+
+  componentWillUnmount() {
+    this.subscription.unsubscribe()
   }
 
   render() {

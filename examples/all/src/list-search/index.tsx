@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Observable } from 'rxjs'
+import { Observable, Subscription } from 'rxjs'
 import { Atom, F, bind } from '@grammarly/focal'
 
  /* tslint:disable */
@@ -29,6 +29,8 @@ namespace AppState {
 }
 
 class App extends  React.Component<{ state: Atom<AppState> }, {}> {
+  subscription: Subscription
+
   componentDidMount() {
     const { state } = this.props
     Observable
@@ -37,6 +39,10 @@ class App extends  React.Component<{ state: Atom<AppState> }, {}> {
         state.lens(x => x.timer).modify(x => x === 0 ? 5 : x - 1)
         if (interval % 6 === 0) state.lens(x => x.languageList).set(updateLanguageList())
       })
+  }
+
+  componentWillUnmount() {
+    this.subscription.unsubscribe()
   }
 
   render() {

@@ -71,10 +71,6 @@ export const Laps = ({ laps }: { laps: ReadOnlyAtom<Time[]> }) =>
   </F.ul>
 
 class App extends React.Component<{ state: Atom<AppState> }, {}> {
-  componentWillUnmount() {
-    this.handleStop()
-  }
-
   componentDidMount() {
     const status = this.props.state.view(x => x.status)
     Observable
@@ -92,18 +88,11 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
       .subscribe(x => this.props.state.lens(x => x.time).set(x))
   }
 
-  handleStart = () => this.props.state.lens(x => x.status).set(Status.STARTED)
-
-  handleStop = () => this.props.state.lens(x => x.status).set(Status.STOPPED)
-
-  handleReset = () => this.props.state.set(AppState.defaultState)
-
-  handleLap = () => this.props.state.modify(x => ({ ...x, laps: [...x.laps, x.time] }))
-
   render() {
-    const time = this.props.state.lens(x => x.time)
-    const action = this.props.state.view(x => x.status)
-    const isStarted = action.view(x => x === Status.STARTED)
+    const { state } = this.props
+    const time = state.lens(x => x.time)
+    const status = state.lens(x => x.status)
+    const isStarted = status.view(x => x === Status.STARTED)
 
     return (
       <div>
@@ -113,24 +102,45 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
         <F.p>
           {
             isStarted.view(x =>
-x
-              ? <input key='stop' type='submit' value='Stop' onClick={this.handleStop} />
-              : <input key='start' type='submit' value='Start' onClick={this.handleStart} />
+              x
+              ? <input
+                  key='stop'
+                  type='submit'
+                  value='Stop'
+                  onClick={() => status.set(Status.STOPPED)}
+              />
+              : <input
+                key='start'
+                type='submit'
+                value='Start'
+                onClick={() => status.set(Status.STARTED)}
+              />
             )
           }
           {
-            action.view(x =>
+            status.view(x =>
               x === Status.STOPPED &&
-              <input key='reset' type='submit' value='Reset' onClick={this.handleReset} />
+              <input
+                key='reset'
+                type='submit'
+                value='Reset'
+                onClick={() => state.set(AppState.defaultState)}
+              />
             )
           }
           {
             isStarted.view(x =>
-              x && <input key='lap' type='submit' value='Lap' onClick={this.handleLap} />
+              x &&
+              <input
+                key='lap'
+                type='submit'
+                value='Lap'
+                onClick={() => state.modify(x => ({ ...x, laps: [...x.laps, x.time] }))}
+              />
             )
           }
         </F.p>
-        <Laps laps={this.props.state.view(x => x.laps)} />
+        <Laps laps={state.view(x => x.laps)} />
       </div>
     )
   }

@@ -82,8 +82,7 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
         ),
         status
       )
-      .map(([val, status]) => ({ val, status }))
-      .scan((time, { val, status }) =>
+      .scan((time, [val, status]) =>
         status === Status.RESET ? defaultTimeState : updateTime(time, val),
         defaultTimeState
       )

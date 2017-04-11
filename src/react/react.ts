@@ -308,7 +308,7 @@ function render<P>(
   return React.createElement(
     class_ as any,
     newProps,
-    newChildren || (newChildren === 0 ? 0 : null)
+    newChildren === undefined ? null : newChildren
   )
 }
 

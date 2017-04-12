@@ -305,7 +305,11 @@ function render<P>(
     }
   }
 
-  return React.createElement(class_ as any, newProps, newChildren || null)
+  return React.createElement(
+    class_ as any,
+    newProps,
+    newChildren === undefined ? null : newChildren
+  )
 }
 
 /**

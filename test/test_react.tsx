@@ -53,6 +53,12 @@ test('react', t => {
     'Render F element with 2 observables'
   )
 
+  testRender(t,
+    <F.span>{Observable.of(0)}</F.span>,
+    '<span>0</span>',
+    'render single Observable.of(0)'
+  )
+
   t.test('show warning for empty observable', t => {
     (() => {
       let consoleErrorWasCalled: boolean

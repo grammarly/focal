@@ -33,7 +33,7 @@ class App extends  React.Component<{ state: Atom<AppState> }, {}> {
 
   componentDidMount() {
     const { state } = this.props
-    Observable
+    this.subscription = Observable
       .interval(1000)
       .subscribe(interval => {
         state.lens(x => x.timer).modify(x => x === 0 ? 5 : x - 1)

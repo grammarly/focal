@@ -2,14 +2,14 @@ import * as React from 'react'
 import { Atom, F, bind } from '@grammarly/focal'
 
 interface AppState {
-  weight: number,
-  height: number
+  weightKg: number,
+  heightCm: number
 }
 
 namespace AppState {
   export const defaultState: AppState = {
-    weight: 70,
-    height: 170
+    weightKg: 70,
+    heightCm: 170
   }
 }
 
@@ -19,8 +19,9 @@ function getBmi(weight: number, height: number) {
 }
 
 const App = (props: { state: Atom<AppState> }) => {
-  const weight = props.state.lens(x => x.weight)
-  const height = props.state.lens(x => x.height)
+  const weight = props.state.lens(x => x.weightKg)
+  const height = props.state.lens(x => x.heightCm)
+
   return (
     <div>
       <div>
@@ -30,7 +31,7 @@ const App = (props: { state: Atom<AppState> }) => {
         Height (cm) <F.input {...bind({ value: height })} type='range' min='140' max='210' />
       </div>
       <F.h3>
-        BMI is { Atom.combine(weight, height, getBmi) }
+        BMI is {Atom.combine(weight, height, getBmi)}
       </F.h3>
     </div>
   )

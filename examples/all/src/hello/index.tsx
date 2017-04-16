@@ -20,7 +20,7 @@ const App = (props: { state: Atom<AppState> }) => {
     <div>
       First Name: <F.input {...bind({ value: firstName })} type='text' />
       <br />
-      Laste Name: <F.input {...bind({ value: lastName })} type='text' />  
+      Last Name: <F.input {...bind({ value: lastName })} type='text' />
       <br />
       <F.h3>
       {

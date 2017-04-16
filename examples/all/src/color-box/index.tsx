@@ -26,7 +26,7 @@ const App = (props: { state: Atom<AppState> }) => {
   return (
     <Box color={color} width={width}>
       Color: <F.input {...bind({ value: color })} type='text' />
-      <br /> 
+      <br />
       <F.input {...bind({ value: width })} type='range' min='200' max='1500' />
       <br />
       <F.span>{width}</F.span>

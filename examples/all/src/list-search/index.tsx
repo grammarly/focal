@@ -60,7 +60,7 @@ class App extends  React.Component<{ state: Atom<AppState> }, {}> {
                   list
                     .filter(x => x.toLowerCase().includes(searchValue.toLowerCase()))
                     .map((x, i) => <li key={x + i}>{x}</li>)
-                } 
+                }
               </div>
             ))
           }

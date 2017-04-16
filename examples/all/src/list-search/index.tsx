@@ -25,20 +25,24 @@ namespace AppState {
 }
 
 class App extends  React.Component<{ state: Atom<AppState> }, {}> {
-  subscription: Subscription
+  private _subscription: Subscription
 
   componentDidMount() {
     const { state } = this.props
-    this.subscription = Observable
+    const timer = state.lens(x => x.timer)
+
+    this._subscription = Observable
       .interval(1000)
-      .subscribe(interval => {
+      .subscribe(_ => {
         state.lens(x => x.timer).modify(x => x === 0 ? 5 : x - 1)
-        if (interval % 6 === 0) state.lens(x => x.languageList).set(updateLanguageList())
+
+        if (timer.get() === 5)
+          state.lens(x => x.searchList).set(getRandomSearchList())
       })
   }
 
   componentWillUnmount() {
-    this.subscription.unsubscribe()
+    this._subscription.unsubscribe()
   }
 
   render() {

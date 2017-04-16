@@ -25,7 +25,7 @@ const App = (props: { state: Atom<AppState> }) =>
         )
       }
     </F.div>
-    <h4>Observable.combineLatest</h4>
+    <h4>with Observable.combineLatest</h4>
     <F.div>
       {
         Observable
@@ -36,7 +36,7 @@ const App = (props: { state: Atom<AppState> }) =>
           .scan((acc, [val, shouldIncrement]) => shouldIncrement ? acc + val : acc, 0)
       }
       <br />
-      <h4>Observable.switchMap</h4>
+      <h4>with Observable.switchMap</h4>
       {
         Observable
           .interval(1000)

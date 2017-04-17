@@ -44,6 +44,7 @@ function getTime(time: Time) {
 
 function updateTime(time: Time, val: number) {
   let { milliseconds, seconds, minutes } = time
+
   milliseconds += val
   if (milliseconds === 100) {
     milliseconds = 0
@@ -53,6 +54,7 @@ function updateTime(time: Time, val: number) {
     seconds = 0
     minutes += 1
   }
+
   return { milliseconds, seconds, minutes }
 }
 
@@ -71,11 +73,12 @@ const Laps = ({ laps }: { laps: ReadOnlyAtom<Time[]> }) =>
   </F.ul>
 
 class App extends React.Component<{ state: Atom<AppState> }, {}> {
-  subscription: Subscription
+  private _subscription: Subscription
 
   componentDidMount() {
     const status = this.props.state.view(x => x.status)
-    this.subscription = Observable
+
+    this._subscription = Observable
       .combineLatest(
         status.switchMap(x =>
           x === Status.STARTED ? Observable.interval(1).mapTo(1) : Observable.of(0)
@@ -90,7 +93,7 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
   }
 
   componentWillUnmount() {
-    this.subscription.unsubscribe()
+    this._subscription.unsubscribe()
   }
 
   render() {

@@ -35,14 +35,24 @@ const App = (props: { state: Atom<AppState> }) =>
           )
           .scan((acc, [val, shouldIncrement]) => shouldIncrement ? acc + val : acc, 0)
       }
-      <br />
-      <h4>Observable.switchMap</h4>
+    </F.div>
+    <h4>Observable.switchMap</h4>
+    <F.div>
       {
         Observable
           .interval(1000)
-          .startWith(0)
+          .startWith(0)          
           .switchMap(() => props.state.view(x => x.isRun ? 1 : 0))
           .scan((acc, val) => acc + val, 0)
+      }
+    </F.div>
+    <h4>Atom.switchMap Observable</h4>
+    <F.div>
+      {
+        props.state.switchMap(x => 
+          x.isRun ? Observable.interval(1000).startWith(0).mapTo(1) : Observable.of(0)
+        )
+        .scan((acc, val) => acc + val, 0)
       }
     </F.div>
   </div>

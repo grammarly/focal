@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
 import { Atom, Lens } from '@grammarly/focal'
 
 interface ExampleComponent<S> {
@@ -7,7 +6,7 @@ interface ExampleComponent<S> {
   defaultState: S
 }
 
-declare var require: (path: string) => any
+declare const require: (path: string) => any
 
 const examples: { name: string, example: ExampleComponent<any> }[] = [
   'counter',
@@ -19,11 +18,18 @@ const examples: { name: string, example: ExampleComponent<any> }[] = [
   'convert',
   'input',
   'convert-inputs',
+  'hello',
+  'list-search',
   'scroll',
+  'bmi',
   'add-input',
   'todos',
   'todos-with-undo',
   'http-search-github',
+  'styled-components',
+  'color-box',
+  'increment-number',
+  'update-number',
   'timer',
   'tree',
   'big-table',
@@ -58,20 +64,4 @@ export const AppComponent = ({
       ))}
     </main>
   )
-}
-
-export class App {
-  constructor(
-    private targetElement: HTMLElement,
-    public state: Atom<typeof defaultState> = Atom.create(defaultState)
-  ) {
-    this.state.subscribe(s => console.log('App state changed: ', s))
-  }
-
-  start() {
-    ReactDOM.render(
-      <AppComponent state={this.state}/>,
-      this.targetElement
-    )
-  }
 }

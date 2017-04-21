@@ -1,7 +1,12 @@
 import * as React from 'react'
-import { Atom, F, reactiveList } from '@grammarly/focal'
+import { Observable, Subscription } from 'rxjs'
+import { Atom, ReadOnlyAtom, F, reactiveList } from '@grammarly/focal'
 
-type Status = 'STARTED' | 'STOPPED' | 'RESET'
+enum Status {
+  STARTED,
+  STOPPED,
+  RESET
+}
 
 interface Time {
   seconds: number,
@@ -12,23 +17,19 @@ interface Time {
 interface AppState {
   time: Time,
   laps: Time[],
-  action: Status
+  status: Status
 }
 
-const STARTED: Status = 'STARTED'
-const STOPPED: Status = 'STOPPED'
-const RESET: Status = 'RESET'
+const defaultTimeState: Time = {
+  seconds: 0,
+  milliseconds: 0,
+  minutes: 0
+}
 
 namespace AppState {
-  export const defaultTimeState: Time = {
-    seconds: 0,
-    milliseconds: 0,
-    minutes: 0
-  }
-
   export const defaultState: AppState = {
     time: defaultTimeState,
-    action: RESET,
+    status: Status.RESET,
     laps: []
   }
 }
@@ -41,48 +42,65 @@ function getTime(time: Time) {
   return `${formatTime(time.minutes)}:${formatTime(time.seconds)}:${formatTime(time.milliseconds)}`
 }
 
+function updateTime(time: Time, val: number) {
+  let { milliseconds, seconds, minutes } = time
+
+  milliseconds += val
+  if (milliseconds === 100) {
+    milliseconds = 0
+    seconds += 1
+  }
+  if (seconds === 60) {
+    seconds = 0
+    minutes += 1
+  }
+
+  return { milliseconds, seconds, minutes }
+}
+
+const Laps = ({ laps }: { laps: ReadOnlyAtom<Time[]> }) =>
+  <F.ul>
+    {
+      reactiveList(
+        laps.view(x => x.map((_, index) => index)),
+        index => (
+          <F.li key={index}>
+            {laps.view(x => x[index] ? 'Lap ' + (index + 1) + ': ' + getTime(x[index]) : '')}
+          </F.li>
+        )
+      )
+    }
+  </F.ul>
+
 class App extends React.Component<{ state: Atom<AppState> }, {}> {
-  private interval: any
+  private _subscription: Subscription
 
-  componentWillUnmpunt() {
-    this.handleStop()
+  componentDidMount() {
+    const status = this.props.state.view(x => x.status)
+
+    this._subscription = Observable
+      .combineLatest(
+        status.switchMap(x =>
+          x === Status.STARTED ? Observable.interval(1).mapTo(1) : Observable.of(0)
+        ),
+        status
+      )
+      .scan((time, [val, status]) =>
+        status === Status.RESET ? defaultTimeState : updateTime(time, val),
+        defaultTimeState
+      )
+      .subscribe(x => this.props.state.lens(x => x.time).set(x))
   }
 
-  handleStart = () => {
-    const time = this.props.state.lens(x => x.time)
-    this.props.state.lens(x => x.action).set(STARTED)
-    this.interval = setInterval(() => time.modify(x => {
-      let { milliseconds, seconds, minutes } = x
-      milliseconds += 1
-      if (milliseconds === 100) {
-        milliseconds = 0
-        seconds += 1
-      }
-      if (seconds === 60) {
-        seconds = 0
-        minutes += 1
-      }
-      return { milliseconds, seconds, minutes }
-    }), 10)
+  componentWillUnmount() {
+    this._subscription.unsubscribe()
   }
-
-  handleStop = () => {
-    clearInterval(this.interval)
-    this.props.state.lens(x => x.action).set(STOPPED)
-  }
-
-  handleReset = () => this.props.state.set(AppState.defaultState)
-
-  handleLap = () => this.props.state.modify(x => ({
-    ...x,
-    laps: [...x.laps, x.time]
-  }))
 
   render() {
-    const time = this.props.state.lens(x => x.time)
-    const laps = this.props.state.lens(x => x.laps)
-    const action = this.props.state.view(x => x.action)
-    const isStarted = action.view(x => x === STARTED)
+    const { state } = this.props
+    const time = state.lens(x => x.time)
+    const status = state.lens(x => x.status)
+    const isStarted = status.view(x => x === Status.STARTED)
 
     return (
       <div>
@@ -92,38 +110,45 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
         <F.p>
           {
             isStarted.view(x =>
-              !x && <input key='start' type='submit' value='Start' onClick={this.handleStart} />
+              x
+              ? <input
+                  key='stop'
+                  type='submit'
+                  value='Stop'
+                  onClick={() => status.set(Status.STOPPED)}
+              />
+              : <input
+                key='start'
+                type='submit'
+                value='Start'
+                onClick={() => status.set(Status.STARTED)}
+              />
+            )
+          }
+          {
+            status.view(x =>
+              x === Status.STOPPED &&
+              <input
+                key='reset'
+                type='submit'
+                value='Reset'
+                onClick={() => state.set(AppState.defaultState)}
+              />
             )
           }
           {
             isStarted.view(x =>
-              x && <input key='stop' type='submit' value='Stop' onClick={this.handleStop} />
-            )
-          }
-          {
-            action.view(x =>
-              x === STOPPED &&
-              <input key='reset' type='submit' value='Reset' onClick={this.handleReset} />
-            )
-          }
-          {
-            isStarted.view(x =>
-              x && <input key='lap' type='submit' value='Lap' onClick={this.handleLap} />
+              x &&
+              <input
+                key='lap'
+                type='submit'
+                value='Lap'
+                onClick={() => state.modify(x => ({ ...x, laps: [...x.laps, x.time] }))}
+              />
             )
           }
         </F.p>
-        <F.ul>
-          {
-            reactiveList(
-              laps.view(x => x.map((_, index) => index)),
-              index => (
-                <F.li key={index}>
-                  {laps.view(x => x ? 'Lap ' + (index + 1) + ': ' + getTime(x[index]) : '')}
-                </F.li>
-              )
-            )
-          }
-        </F.ul>
+        <Laps laps={state.view(x => x.laps)} />
       </div>
     )
   }

@@ -1,3 +1,6 @@
 {
-  "extends": "@grammarly/tslint-config"
+  "extends": "@grammarly/tslint-config",
+  "rules": {
+    "strict-boolean-expressions": [false]
+  }
 }

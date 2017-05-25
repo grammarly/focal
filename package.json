@@ -20,7 +20,7 @@
     "test:watch": "watch 'npm test' src test",
     "ci": "npm run test",
     "get-ci-version": "node -e \"console.log(require('./package.json').versionBase + '.' + process.argv[1])\"",
-    "lint": "tslint --project tsconfig.json -c tslint.json"
+    "lint": "tslint --type-check --project tsconfig.json -c tslint.json"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "contributors": [
@@ -83,13 +83,13 @@
     "rxjs": "5.0.2"
   },
   "devDependencies": {
-    "@grammarly/tslint-config": "^0.3.1",
+    "@grammarly/tslint-config": "0.5.1",
     "@types/node": "^6.0.34",
     "@types/tape": "^4.2.27",
     "tap-spec": "^4.1.1",
     "tape": "^4.5.1",
-    "tslint": "^4.1.1",
-    "typescript": "2.2.1",
+    "tslint": "5.2.0",
+    "typescript": "2.3.1",
     "watch": "^0.18.0"
   },
   "peerDependencies": {

@@ -23,7 +23,7 @@ export type Lifted<T> = {
   [K in keyof T]: T[K] | Observable<T[K]>
 }
 
-export type LiftWrapperProps<TProps> = {
+export interface LiftWrapperProps<TProps> {
   component: React.Component<TProps, any>
     | React.StatelessComponent<TProps>
     | React.ComponentClass<TProps>
@@ -31,7 +31,7 @@ export type LiftWrapperProps<TProps> = {
   props: Lifted<TProps>
 }
 
-export type LiftWrapperState = {
+export interface LiftWrapperState {
   renderCache?: React.DOMElement<any, any> | null
   subscription?: Subscription | null
 }
@@ -120,7 +120,7 @@ class LiftWrapper<TProps>
 // will also accept a value of Observable<T> for any prop of
 // type T.
 export type LiftedComponentProps<TProps> = Lifted<TProps> & {
-  mount?: (el: HTMLElement) => void
+  mount?(el: HTMLElement): void
 }
 
 /**
@@ -162,7 +162,7 @@ export function lift<TProps>(
 }
 
 export type LiftedIntrinsicComponentProps<E> = ObservableReactHTMLProps<E> & {
-  mount?: (el: E) => void
+  mount?(el: E): void
 }
 
 export function liftIntrinsic<E extends Element>(intrinsicClassName: string) {

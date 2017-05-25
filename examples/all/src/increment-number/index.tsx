@@ -49,7 +49,7 @@ const App = (props: { state: Atom<AppState> }) =>
     <h4>Atom.switchMap Observable</h4>
     <F.div>
       {
-        props.state.switchMap(x => 
+        props.state.switchMap(x =>
           x.isRunning ? Observable.interval(1000).startWith(0).mapTo(1) : Observable.of(0)
         )
         .scan((acc, val) => acc + val, 0)

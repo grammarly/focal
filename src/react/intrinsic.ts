@@ -3,7 +3,7 @@
  *
  * @module
  */
-// tslint:disable-next-line no-unused-vars
+// tslint:disable-next-line no-unused-variable
 import { ObservableReactHTMLProps } from './observablePropTypes'
 import { liftIntrinsic } from './react'
 

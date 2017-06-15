@@ -1,7 +1,7 @@
 // tslint:disable no-unnecessary-local-variable
 import * as test from 'tape'
 import { Atom, Lens } from '../src'
-import { structEq } from '../src/utils'
+import { structEq, createLogger } from '../src/utils'
 
 function testAtom(t: test.Test, newAtom: (x: number) => Atom<number>) {
   t.test('basic', t => {
@@ -501,5 +501,47 @@ test('atom', t => {
       sub.unsubscribe()
       t.end()
     })
+  })
+
+  t.test('logger', async t => {
+    const atom = Atom.create('bar')
+    const log = console.log
+
+    const consoleLogArguments: string[][] = []
+    const consoleGroupArguments: string[][] = []
+
+    let consoleLogFireTime = 0
+    let consoleGroupFireTime = 0
+    let consoleGroupEndFireTime = 0
+
+    console.group = (...args: string[]) => {
+      consoleGroupFireTime++
+      consoleGroupArguments.push(args)
+    }
+    console.log = (...args: string[]) => {
+      consoleLogFireTime++
+      consoleLogArguments.push(args)
+    }
+    console.groupEnd = () => consoleGroupEndFireTime++
+
+    const logAtom = createLogger(atom)
+    logAtom.set('foo')
+
+    t.equal(consoleLogFireTime, 2)
+    t.equal(consoleGroupEndFireTime, 1)
+    t.deepEqual(consoleGroupArguments, [`UPDATE @ ${new Date().toTimeString()}`])
+    t.deepEqual(
+      consoleLogArguments,
+      [
+        ['%cprev state', `color: #9E9E9E; font-weight: bold`, 'bar'],
+        ['%cnext state', `color: #4CAF50; font-weight: bold`, 'foo']
+      ]
+    )
+
+    delete console.group
+    delete console.groupEnd
+    console.log = log
+
+    t.end()
   })
 })

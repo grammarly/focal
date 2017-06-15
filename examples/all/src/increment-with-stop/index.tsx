@@ -25,7 +25,7 @@ const App = (props: { state: Atom<AppState> }) =>
         )
       }
     </F.div>
-    <h4>with Observable.combineLatest</h4>
+    {/*<h4>with Observable.combineLatest</h4>
     <F.div>
       {
         Observable
@@ -46,7 +46,7 @@ const App = (props: { state: Atom<AppState> }) =>
           .scan((acc, val) => acc + val, 0)
       }
     </F.div>
-    <h4>Atom.switchMap Observable</h4>
+    <h4>Atom.switchMap Observable</h4>*/}
     <F.div>
       {
         props.state.switchMap(x =>

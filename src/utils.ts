@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Atom } from './atom/base'
 import { equals as structEq } from './equals'
 export { equals as structEq } from './equals'
 
@@ -77,5 +78,23 @@ export namespace Option {
 
   export function isSome<T>(x: Option<T>): x is T {
     return x !== undefined
+  }
+}
+
+export function createLogger<T>(atom: Atom<T>, name?: string): Atom<T> {
+  let prevState = atom.get()
+
+  atom.subscribe(state => {
+    console.group(`UPDATE ${name ? `TYPE: ${name} ` : ''}@ ${new Date().toTimeString()}`)
+    log('prev state', '#9E9E9E', prevState)
+    log('next state', '#4CAF50', state)
+    console.groupEnd()
+    prevState = state
+  })
+
+  return atom
+
+  function log(msg: string, color: string, x: T) {
+    console.log('%c' + msg, `color: ${color}; font-weight: bold`, x)
   }
 }

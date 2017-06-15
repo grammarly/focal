@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Atom, F, bind } from '@grammarly/focal'
+import { Atom, F, bind, createLogger } from '@grammarly/focal'
 
 export interface AppState {
   checked: boolean
@@ -14,7 +14,10 @@ export namespace AppState {
 export const App = (props: { state: Atom<AppState> }) =>
   <div>
     <label>
-      <F.input {...bind({ checked: props.state.lens(x => x.checked) })} type='checkbox' />
+      <F.input
+        {...bind({ checked: createLogger(props.state.lens(x => x.checked), 'Checkbox') })}
+        type='checkbox'
+      />
       Toggle me
     </label>
     <F.p>{props.state.view(x => x.checked ? 'ON' : 'OFF')}</F.p>

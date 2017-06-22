@@ -75,13 +75,7 @@
     "type": "git",
     "url": "https://github.com/grammarly/focal.git"
   },
-  "dependencies": {
-    "@types/react": "15.0.0",
-    "@types/react-dom": "0.14.20",
-    "react": "15.4.2",
-    "react-dom": "15.4.2",
-    "rxjs": "5.0.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@grammarly/tslint-config": "^0.3.1",
     "@types/node": "^6.0.34",
@@ -90,11 +84,18 @@
     "tape": "^4.5.1",
     "tslint": "^4.1.1",
     "typescript": "2.2.1",
-    "watch": "^0.18.0"
+    "watch": "^0.18.0",
+    "@types/react": "15.0.0",
+    "@types/react-dom": "0.14.20",
+    "react": "15.4.2",
+    "react-dom": "15.4.2",
+    "rxjs": "5.0.2"
   },
   "peerDependencies": {
     "@types/react": "15.0.0",
+    "@types/react-dom": "0.14.20",
     "react": "15.4.2",
+    "react-dom": "15.4.2",
     "rxjs": "5.0.2"
   }
 }

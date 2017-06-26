@@ -1,6 +1,6 @@
 export { Lens, Prism, Optic } from './lens/index'
 export { Atom, ReadOnlyAtom } from './atom/index'
-export { Option, createLogger } from './utils'
+export { Option } from './utils'
 
 import * as F from './react/intrinsic'
 export { F }

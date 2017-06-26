@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Atom, bind, lift, createLogger } from '@grammarly/focal'
+import { Atom, bind, lift } from '@grammarly/focal'
 
 interface AppState {
   entry: string
@@ -30,7 +30,7 @@ const Text = lift(styled.p`
 const App = (props: { state: Atom<AppState> }) =>
   <div>
     <Input
-      {...bind({ value: createLogger(props.state.lens(x => x.entry), 'Intput') })}
+      {...bind({ value: Atom.log(props.state.lens(x => x.entry), 'Input') })}
       type='text'
     />
     <Text>{props.state.view(x => x.entry)}</Text>

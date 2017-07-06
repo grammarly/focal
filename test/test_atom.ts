@@ -502,4 +502,21 @@ test('atom', t => {
       t.end()
     })
   })
+
+  t.test('logger', async t => {
+    let consoleLogFireTime = 0
+
+    const atom = Atom.create('bar')
+    const consoleLogArguments: string[][] = []
+    const logAtom = Atom.log(atom, (prevState: string, newState: string) => {
+      consoleLogFireTime++
+      consoleLogArguments.push([prevState, newState])
+    })
+    logAtom.set('foo')
+
+    t.equal(consoleLogFireTime, 2)
+    t.deepEqual(consoleLogArguments, [['bar', 'bar'], ['bar', 'foo']])
+
+    t.end()
+  })
 })

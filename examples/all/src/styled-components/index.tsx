@@ -29,7 +29,10 @@ const Text = lift(styled.p`
 
 const App = (props: { state: Atom<AppState> }) =>
   <div>
-    <Input {...bind({ value: props.state.lens(x => x.entry) })} type='text' />
+    <Input
+      {...bind({ value: Atom.log(props.state.lens(x => x.entry), 'Input') })}
+      type='text'
+    />
     <Text>{props.state.view(x => x.entry)}</Text>
   </div>
 

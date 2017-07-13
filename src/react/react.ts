@@ -109,8 +109,9 @@ class LiftWrapper<TProps>
   }
 
   shouldComponentUpdate(
-    _: TProps,
-    newState: LiftWrapperState
+    _newProps: Readonly<LiftWrapperProps<TProps>>,
+    newState: Readonly<LiftWrapperState>,
+    _newContext: any
   ) {
     return newState.renderCache !== this.state.renderCache
   }
@@ -755,11 +756,11 @@ export function reactiveList<TValue>(
  * - a list item factory – a function that will create a list item based on item id.
  */
 export function reactiveList<TValue>(
-  ids: Observable<(string | number)[]>,
-  createListItem: (x: string | number) => TValue
+  ids: Observable<string[]> | Observable<number[]>,
+  createListItem: ((x: string) => TValue) | ((x: number) => TValue)
 ): Observable<TValue[]> {
   return ids.scan(
-    ([oldIds, _]: [any, TValue[]], ids: string[]) => {
+    ([oldIds, _]: [any, TValue[]], ids: string[] | number[]) => {
       // @NOTE actual type of oldIds and newIds is either { [k: string]: TValue }
       // or { [k: number]: TValue }, but the type system doesn't allow us to
       // express this.
@@ -773,7 +774,10 @@ export function reactiveList<TValue>(
         if (k in newIds) {
           newValues[i] = newIds[k]
         } else {
-          newIds[k] = newValues[i] = k in oldIds ? oldIds[k] : createListItem(id)
+          newIds[k] = newValues[i] =
+            k in oldIds
+              ? oldIds[k]
+              : (createListItem as (_: string | number) => TValue)(id)
         }
       }
       return [newIds, newValues] as [any, TValue[]]

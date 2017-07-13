@@ -2,6 +2,12 @@
  * This module defines augmented React element/props types that accept
  * observable values.
  *
+ * @NOTE:
+ * Q: Why doesn't this just use mapped types???
+ * A: Mostly because right now it is not possible have an interface that extends
+ * a mapped type. Because of that we will have to have generic structural types,
+ * which expand to a huge 3MB .d.ts file and slow down VSCode to the point of uselessness.
+ *
  * @module
  */
 import * as React from 'react'
@@ -101,12 +107,12 @@ export interface ObservableReactDOMAttributes<E> {
   onWheel?: React.WheelEventHandler<E> | Observable<React.WheelEventHandler<E>>
 
   // Animation Events
-  onAnimationStart?: React.AnimationEventHandler | Observable<React.AnimationEventHandler>
-  onAnimationEnd?: React.AnimationEventHandler | Observable<React.AnimationEventHandler>
-  onAnimationIteration?: React.AnimationEventHandler | Observable<React.AnimationEventHandler>
+  onAnimationStart?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
+  onAnimationEnd?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
+  onAnimationIteration?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
 
   // Transition Events
-  onTransitionEnd?: React.TransitionEventHandler | Observable<React.TransitionEventHandler>
+  onTransitionEnd?: React.TransitionEventHandler<E> | Observable<React.TransitionEventHandler<E>>
 }
 
 export interface ObservableReactCSSProperties {

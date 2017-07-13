@@ -5,7 +5,8 @@
  */
 // tslint:disable-next-line no-unused-variable
 import { ObservableReactHTMLProps } from './observablePropTypes'
-import { liftIntrinsic } from './react'
+// tslint:disable-next-line no-unused-variable
+import { liftIntrinsic, LiftWrapperProps } from './react'
 
 export const a = liftIntrinsic<HTMLAnchorElement>('a')
 export const abbr = liftIntrinsic<HTMLElement>('abbr')

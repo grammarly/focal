@@ -162,7 +162,7 @@ export function lift<TProps>(
   )
 }
 
-export type LiftedIntrinsicComponentProps<E> = ObservableReactHTMLProps<E> & {
+export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {
   mount?(el: E): void
 }
 

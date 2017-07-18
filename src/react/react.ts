@@ -27,7 +27,7 @@ export interface LiftWrapperProps<TProps> {
   component: React.Component<TProps, any>
     | React.StatelessComponent<TProps>
     | React.ComponentClass<TProps>
-    | string
+    | keyof React.ReactHTML
   props: Lifted<TProps>
 }
 
@@ -165,7 +165,7 @@ export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLPro
   mount?(el: E): void
 }
 
-export function liftIntrinsic<E extends Element>(intrinsicClassName: string) {
+export function liftIntrinsic<E extends Element>(intrinsicClassName: keyof React.ReactHTML) {
   return (props: LiftedIntrinsicComponentProps<E>) =>
     React.createElement<LiftWrapperProps<ObservableReactHTMLProps<E>>>(
       LiftWrapper,
@@ -226,7 +226,8 @@ function walkObservables<T>(
  * @returns rendered element
  */
 function render<P>(
-  class_: React.Component<P, any> | React.StatelessComponent<P> | React.ComponentClass<P> | string,
+  class_: React.Component<P, any> | React.StatelessComponent<P>
+    | React.ComponentClass<P> | keyof React.ReactHTML,
   props: P,
   observedValues: any[] = []
 ): React.DOMElement<any, any> {

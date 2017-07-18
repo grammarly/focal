@@ -78,8 +78,8 @@
   "dependencies": {
     "@types/react": "15.0.38",
     "@types/react-dom": "0.14.20",
-    "react": "15.4.2",
-    "react-dom": "15.4.2",
+    "react": "15.6.1",
+    "react-dom": "15.6.1",
     "rxjs": "5.4.2"
   },
   "devDependencies": {
@@ -94,7 +94,7 @@
   },
   "peerDependencies": {
     "@types/react": "15.0.38",
-    "react": "15.4.2",
+    "react": "15.6.1",
     "rxjs": "5.4.2"
   }
 }

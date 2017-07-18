@@ -2,13 +2,30 @@
  * This module defines augmented React element/props types that accept
  * observable values.
  *
+ * @NOTE:
+ * Q: Why doesn't this just use mapped types?
+ * A: Mostly because right now it is not possible have an interface that extends
+ * a mapped type. Because of that we will have to have generic structural types,
+ * which get inlined into intrinsic component function definitions, expanding the
+ * intrinsic.d.ts to a 3MB and slowing down VSCode to the point of uselessness.
+ *
+ * Right now we are using a mapped type of ObservableCSSReactProperties, and it works out fine
+ * because in the end it's a property of the ObservableReactHTMLProps interface, and is not
+ * inlined in intrinsic component function definitions.
+ *
+ * Hopefully we can find a way to use mapped types for all of these types in future.
+ *
  * @module
  */
 import * as React from 'react'
-import { Observable } from 'rxjs/Rx'
+import { Observable } from 'rxjs'
+
+export type ObservableOr<T> = Observable<T> | T
+export type AcceptObservableValues<T> = { [K in keyof T]: ObservableOr<T[K]> }
+
+export type ObservableReactCSSProperties = AcceptObservableValues<React.CSSProperties>
 
 // tslint:disable max-line-length
-
 export interface ObservableReactDOMAttributes<E> {
   dangerouslySetInnerHTML?: { __html: string; } | Observable<{ __html: string; }>
 
@@ -101,294 +118,12 @@ export interface ObservableReactDOMAttributes<E> {
   onWheel?: React.WheelEventHandler<E> | Observable<React.WheelEventHandler<E>>
 
   // Animation Events
-  onAnimationStart?: React.AnimationEventHandler | Observable<React.AnimationEventHandler>
-  onAnimationEnd?: React.AnimationEventHandler | Observable<React.AnimationEventHandler>
-  onAnimationIteration?: React.AnimationEventHandler | Observable<React.AnimationEventHandler>
+  onAnimationStart?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
+  onAnimationEnd?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
+  onAnimationIteration?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
 
   // Transition Events
-  onTransitionEnd?: React.TransitionEventHandler | Observable<React.TransitionEventHandler>
-}
-
-export interface ObservableReactCSSProperties {
-  alignContent?: any
-  alignItems?: any
-  alignSelf?: any
-  alignmentAdjust?: any
-  alignmentBaseline?: any
-  animationDelay?: any
-  animationDirection?: any
-  animationIterationCount?: any
-  animationName?: any
-  animationPlayState?: any
-  appearance?: any
-  backfaceVisibility?: any
-  background?: any
-  backgroundAttachment?: 'scroll' | 'fixed' | 'local' | Observable<'scroll' | 'fixed' | 'local'>
-  backgroundBlendMode?: any
-  backgroundColor?: any
-  backgroundComposite?: any
-  backgroundImage?: any
-  backgroundOrigin?: any
-  backgroundPosition?: any
-  backgroundRepeat?: any
-  baselineShift?: any
-  behavior?: any
-  border?: any
-  borderBottom?: any
-  borderBottomColor?: any
-  borderBottomLeftRadius?: any
-  borderBottomRightRadius?: any
-  borderBottomStyle?: any
-  borderBottomWidth?: any
-  borderCollapse?: any
-  borderColor?: any
-  borderCornerShape?: any
-  borderImageSource?: any
-  borderImageWidth?: any
-  borderLeft?: any
-  borderLeftColor?: any
-  borderLeftStyle?: any
-  borderLeftWidth?: any
-  borderRight?: any
-  borderRightColor?: any
-  borderRightStyle?: any
-  borderRightWidth?: any
-  borderSpacing?: any
-  borderStyle?: any
-  borderTop?: any
-  borderTopColor?: any
-  borderTopLeftRadius?: any
-  borderTopRightRadius?: any
-  borderTopStyle?: any
-  borderTopWidth?: any
-  borderWidth?: any
-  bottom?: any
-  boxAlign?: any
-  boxDecorationBreak?: any
-  boxDirection?: any
-  boxLineProgression?: any
-  boxLines?: any
-  boxOrdinalGroup?: any
-  boxFlex?: number | Observable<number>
-  boxFlexGroup?: number | Observable<number>
-  breakAfter?: any
-  breakBefore?: any
-  breakInside?: any
-  clear?: any
-  clip?: any
-  clipRule?: any
-  color?: any
-  columnCount?: number | Observable<number>
-  columnFill?: any
-  columnGap?: any
-  columnRule?: any
-  columnRuleColor?: any
-  columnRuleWidth?: any
-  columnSpan?: any
-  columnWidth?: any
-  columns?: any
-  counterIncrement?: any
-  counterReset?: any
-  cue?: any
-  cueAfter?: any
-  cursor?: any
-  direction?: any
-  display?: any
-  fill?: any
-  fillOpacity?: number | Observable<number>
-  fillRule?: any
-  filter?: any
-  flex?: number | string | Observable<number | string>
-  flexAlign?: any
-  flexBasis?: any
-  flexDirection?: any
-  flexFlow?: any
-  flexGrow?: number | Observable<number>
-  flexItemAlign?: any
-  flexLinePack?: any
-  flexOrder?: any
-  flexShrink?: number | Observable<number>
-  float?: any
-  flowFrom?: any
-  font?: any
-  fontFamily?: any
-  fontKerning?: any
-  fontSize?: number | string | Observable<number | string>
-  fontSizeAdjust?: any
-  fontStretch?: any
-  fontStyle?: any
-  fontSynthesis?: any
-  fontVariant?: any
-  fontVariantAlternates?: any
-  fontWeight?: 'normal' | 'bold' | 'lighter' | 'bolder' | number | Observable<'normal' | 'bold' | 'lighter' | 'bolder' | number>
-  gridArea?: any
-  gridColumn?: any
-  gridColumnEnd?: any
-  gridColumnStart?: any
-  gridRow?: any
-  gridRowEnd?: any
-  gridRowPosition?: any
-  gridRowSpan?: any
-  gridTemplateAreas?: any
-  gridTemplateColumns?: any
-  gridTemplateRows?: any
-  height?: any
-  hyphenateLimitChars?: any
-  hyphenateLimitLines?: any
-  hyphenateLimitZone?: any
-  hyphens?: any
-  imeMode?: any
-  layoutGrid?: any
-  layoutGridChar?: any
-  layoutGridLine?: any
-  layoutGridMode?: any
-  layoutGridType?: any
-  left?: any
-  letterSpacing?: any
-  lineBreak?: any
-  lineClamp?: number | Observable<number>
-  lineHeight?: number | string | Observable<number | string>
-  listStyle?: any
-  listStyleImage?: any
-  listStylePosition?: any
-  listStyleType?: any
-  margin?: any
-  marginBottom?: any
-  marginLeft?: any
-  marginRight?: any
-  marginTop?: any
-  marqueeDirection?: any
-  marqueeStyle?: any
-  mask?: any
-  maskBorder?: any
-  maskBorderRepeat?: any
-  maskBorderSlice?: any
-  maskBorderSource?: any
-  maskBorderWidth?: any
-  maskClip?: any
-  maskOrigin?: any
-  maxFontSize?: any
-  maxHeight?: any
-  maxWidth?: any
-  minHeight?: any
-  minWidth?: any
-  opacity?: number | Observable<number>
-  order?: number | Observable<number>
-  orphans?: number | Observable<number>
-  outline?: any
-  outlineColor?: any
-  outlineOffset?: any
-  overflow?: any
-  overflowStyle?: any
-  overflowX?: any
-  overflowY?: any
-  padding?: any
-  paddingBottom?: any
-  paddingLeft?: any
-  paddingRight?: any
-  paddingTop?: any
-  pageBreakAfter?: any
-  pageBreakBefore?: any
-  pageBreakInside?: any
-  pause?: any
-  pauseAfter?: any
-  pauseBefore?: any
-  perspective?: any
-  perspectiveOrigin?: any
-  pointerEvents?: any
-  position?: any
-  punctuationTrim?: any
-  quotes?: any
-  regionFragment?: any
-  restAfter?: any
-  restBefore?: any
-  right?: any
-  rubyAlign?: any
-  rubyPosition?: any
-  shapeImageThreshold?: any
-  shapeInside?: any
-  shapeMargin?: any
-  shapeOutside?: any
-  speak?: any
-  speakAs?: any
-  strokeOpacity?: number | Observable<number>
-  strokeWidth?: number | Observable<number>
-  tabSize?: any
-  tableLayout?: any
-  textAlign?: any
-  textAlignLast?: any
-  textDecoration?: any
-  textDecorationColor?: any
-  textDecorationLine?: any
-  textDecorationLineThrough?: any
-  textDecorationNone?: any
-  textDecorationOverline?: any
-  textDecorationSkip?: any
-  textDecorationStyle?: any
-  textDecorationUnderline?: any
-  textEmphasis?: any
-  textEmphasisColor?: any
-  textEmphasisStyle?: any
-  textHeight?: any
-  textIndent?: any
-  textJustifyTrim?: any
-  textKashidaSpace?: any
-  textLineThrough?: any
-  textLineThroughColor?: any
-  textLineThroughMode?: any
-  textLineThroughStyle?: any
-  textLineThroughWidth?: any
-  textOverflow?: any
-  textOverline?: any
-  textOverlineColor?: any
-  textOverlineMode?: any
-  textOverlineStyle?: any
-  textOverlineWidth?: any
-  textRendering?: any
-  textScript?: any
-  textShadow?: any
-  textTransform?: any
-  textUnderlinePosition?: any
-  textUnderlineStyle?: any
-  top?: any
-  touchAction?: any
-  transform?: any
-  transformOrigin?: any
-  transformOriginZ?: any
-  transformStyle?: any
-  transition?: any
-  transitionDelay?: any
-  transitionDuration?: any
-  transitionProperty?: any
-  transitionTimingFunction?: any
-  unicodeBidi?: any
-  unicodeRange?: any
-  userFocus?: any
-  userInput?: any
-  verticalAlign?: any
-  visibility?: any
-  voiceBalance?: any
-  voiceDuration?: any
-  voiceFamily?: any
-  voicePitch?: any
-  voiceRange?: any
-  voiceRate?: any
-  voiceStress?: any
-  voiceVolume?: any
-  whiteSpace?: any
-  whiteSpaceTreatment?: any
-  widows?: number
-  width?: any
-  wordBreak?: any
-  wordSpacing?: any
-  wordWrap?: any
-  wrapFlow?: any
-  wrapMargin?: any
-  wrapOption?: any
-  writingMode?: any
-  zIndex?: 'auto' | number | Observable<'auto' | number>
-  zoom?: 'auto' | number | Observable<'auto' | number>
-  [propertyName: string]: any
+  onTransitionEnd?: React.TransitionEventHandler<E> | Observable<React.TransitionEventHandler<E>>
 }
 
 export interface ObservableReactHTMLAttributes<E> extends ObservableReactDOMAttributes<E> {

@@ -25,7 +25,7 @@ const ElWithHover = ({ text = '' }) => {
     onMouseEnter={() => hovered.set(true)}
     onMouseLeave={() => hovered.set(false)}
   >
-    El #{text} (render #{ts}) is&nbsp
+    El #{text} (render #{ts}) is&nbsp;
     {hovered.view(x => {
       console.log('VIEW', ts, x)
       return x ? 'hovered' : 'NOT hovered'

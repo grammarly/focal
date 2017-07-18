@@ -44,7 +44,7 @@ const Todo = ({ todo, editing, remove }: TodoProps) =>
         todo
           .lens(Lens.create(
             (x: TodoItem | undefined) => x && x.completed,
-            (v, x) => x && { ...x, completed: v }
+            (v: boolean, x) => x && { ...x, completed: v }
           ))
       })}
     />
@@ -73,7 +73,7 @@ const Todo = ({ todo, editing, remove }: TodoProps) =>
             todo
               .lens(Lens.create(
                 (x: TodoItem | undefined) => x && x.title,
-                (v, x) => x && { ...x, title: v }
+                (v: string, x) => x && { ...x, title: v }
               ))
               .set(newTitle)
           } else {

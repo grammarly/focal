@@ -151,10 +151,10 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
 export abstract class AbstractReadOnlyAtom<T>
     extends BehaviorSubject<T>
     implements ReadOnlyAtom<T> {
-  abstract get(): T;
+  abstract get(): T
 
   // tslint:disable no-unused-vars
-  view(): ReadOnlyAtom<T>;
+  view(): ReadOnlyAtom<T>
   view<U>(getter: (x: T) => U): ReadOnlyAtom<U>
   view<U>(lens: Lens<T, U>): ReadOnlyAtom<U>
   view<U>(prism: Prism<T, U>): ReadOnlyAtom<Option<U>>
@@ -166,9 +166,11 @@ export abstract class AbstractReadOnlyAtom<T>
     return arg
       ? typeof arg === 'function'
         // handle view(getter) case
+        // tslint:disable-next-line no-use-before-declare
         ? new AtomViewImpl<T, U>(this, arg as (x: T) => U)
         // handle view(lens) and view(prism) cases
         // @NOTE single case handles both lens and prism arg
+        // tslint:disable-next-line no-use-before-declare
         : new AtomViewImpl<T, U>(this, x => (arg as Lens<T, U>).get(x))
       // handle view() case
       : this as ReadOnlyAtom<T>
@@ -192,9 +194,11 @@ export abstract class AbstractAtom<T>
   lens<U>(arg: Lens<T, U> | PropExpr<T, U>): Atom<U> {
     return typeof arg === 'function'
       // handle lens(prop expr) case
+      // tslint:disable-next-line no-use-before-declare
       ? new LensedAtom<T, U>(
         this, Lens.prop(arg as (x: T) => U), structEq)
       // handle lens(lens) case
+      // tslint:disable-next-line no-use-before-declare
       : new LensedAtom<T, U>(this, arg as Lens<T, U>, structEq)
   }
 }

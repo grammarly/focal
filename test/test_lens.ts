@@ -90,9 +90,9 @@ test('json', t => {
   })
 
   t.test('typed', t => {
-    type Leg = { length: string }
-    type Raccoon = { legs: Leg[] }
-    type Forest = { raccoons: Raccoon[] }
+    interface Leg { length: string }
+    interface Raccoon { legs: Leg[] }
+    interface Forest { raccoons: Raccoon[] }
 
     const forest: Forest = {
       raccoons: [

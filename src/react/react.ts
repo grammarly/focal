@@ -23,15 +23,15 @@ export type Lifted<T> = {
   [K in keyof T]: T[K] | Observable<T[K]>
 }
 
-export type LiftWrapperProps<TProps> = {
+export interface LiftWrapperProps<TProps> {
   component: React.Component<TProps, any>
     | React.StatelessComponent<TProps>
     | React.ComponentClass<TProps>
-    | string
+    | keyof React.ReactHTML
   props: Lifted<TProps>
 }
 
-export type LiftWrapperState = {
+export interface LiftWrapperState {
   renderCache?: React.DOMElement<any, any> | null
   subscription?: Subscription | null
 }
@@ -109,8 +109,9 @@ class LiftWrapper<TProps>
   }
 
   shouldComponentUpdate(
-    _: TProps,
-    newState: LiftWrapperState
+    _newProps: Readonly<LiftWrapperProps<TProps>>,
+    newState: Readonly<LiftWrapperState>,
+    _newContext: any
   ) {
     return newState.renderCache !== this.state.renderCache
   }
@@ -120,7 +121,7 @@ class LiftWrapper<TProps>
 // will also accept a value of Observable<T> for any prop of
 // type T.
 export type LiftedComponentProps<TProps> = Lifted<TProps> & {
-  mount?: (el: HTMLElement) => void
+  mount?(el: HTMLElement): void
 }
 
 /**
@@ -153,24 +154,23 @@ export type LiftedComponentProps<TProps> = Lifted<TProps> & {
 export function lift<TProps>(
   component: React.ComponentClass<TProps> | React.StatelessComponent<TProps>
 ) {
-  return (
-    (props: LiftedComponentProps<TProps>) =>
-      React.createElement<LiftWrapperProps<TProps>>(
-        LiftWrapper,
-        { component: component, props: props })
-  )
+  return (props: LiftedComponentProps<TProps>) =>
+    React.createElement<LiftWrapperProps<TProps>>(
+      LiftWrapper,
+      { component: component, props: props }
+    )
 }
 
-export type LiftedIntrinsicComponentProps<E> = ObservableReactHTMLProps<E> & {
-  mount?: (el: E) => void
+export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {
+  mount?(el: E): void
 }
 
-export function liftIntrinsic<E extends Element>(intrinsicClassName: string) {
+export function liftIntrinsic<E extends Element>(intrinsicClassName: keyof React.ReactHTML) {
   return (props: LiftedIntrinsicComponentProps<E>) =>
     React.createElement<LiftWrapperProps<ObservableReactHTMLProps<E>>>(
       LiftWrapper,
-      { component: intrinsicClassName, props: props }) as
-        any as React.DOMElement<LiftedIntrinsicComponentProps<E>, E>
+      { component: intrinsicClassName, props: props }
+    )
 }
 
 const PROP_CHILDREN = 'children'
@@ -226,7 +226,8 @@ function walkObservables<T>(
  * @returns rendered element
  */
 function render<P>(
-  class_: React.Component<P, any> | React.StatelessComponent<P> | React.ComponentClass<P> | string,
+  class_: React.Component<P, any> | React.StatelessComponent<P>
+    | React.ComponentClass<P> | keyof React.ReactHTML,
   props: P,
   observedValues: any[] = []
 ): React.DOMElement<any, any> {
@@ -755,11 +756,11 @@ export function reactiveList<TValue>(
  * - a list item factory – a function that will create a list item based on item id.
  */
 export function reactiveList<TValue>(
-  ids: Observable<(string | number)[]>,
-  createListItem: (x: string | number) => TValue
+  ids: Observable<string[]> | Observable<number[]>,
+  createListItem: ((x: string) => TValue) | ((x: number) => TValue)
 ): Observable<TValue[]> {
   return ids.scan(
-    ([oldIds, _]: [any, TValue[]], ids: string[]) => {
+    ([oldIds, _]: [any, TValue[]], ids: string[] | number[]) => {
       // @NOTE actual type of oldIds and newIds is either { [k: string]: TValue }
       // or { [k: number]: TValue }, but the type system doesn't allow us to
       // express this.
@@ -773,7 +774,10 @@ export function reactiveList<TValue>(
         if (k in newIds) {
           newValues[i] = newIds[k]
         } else {
-          newIds[k] = newValues[i] = k in oldIds ? oldIds[k] : createListItem(id)
+          newIds[k] = newValues[i] =
+            k in oldIds
+              ? oldIds[k]
+              : (createListItem as (_: string | number) => TValue)(id)
         }
       }
       return [newIds, newValues] as [any, TValue[]]

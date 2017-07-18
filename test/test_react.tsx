@@ -232,6 +232,7 @@ test('react', t => {
   )
 
   t.assert((() => {
+    // tslint:disable-next-line no-unused-expression
     (
       <F.div {...bindElementProps({ ref: 'onScroll', scrollTop: Atom.create(0) })}></F.div>
     )

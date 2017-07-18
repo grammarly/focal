@@ -15,10 +15,8 @@
     "moduleResolution": "node",
     "strictNullChecks": true,
     "lib": ["es6", "es2015", "dom", "scripthost"],
-    "typeRoots": ["custom_typings"],
-    "types": [
-      "css"
-    ]
+    "typeRoots": ["./custom_typings"],
+    "types": ["css"]
   },
   "include": [
     "src/**/*.ts*"

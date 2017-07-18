@@ -169,8 +169,8 @@ export function liftIntrinsic<E extends Element>(intrinsicClassName: keyof React
   return (props: LiftedIntrinsicComponentProps<E>) =>
     React.createElement<LiftWrapperProps<ObservableReactHTMLProps<E>>>(
       LiftWrapper,
-      { component: intrinsicClassName, props: props }) as
-        any as React.DOMElement<LiftedIntrinsicComponentProps<E>, E>
+      { component: intrinsicClassName, props: props }
+    )
 }
 
 const PROP_CHILDREN = 'children'

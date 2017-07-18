@@ -154,12 +154,11 @@ export type LiftedComponentProps<TProps> = Lifted<TProps> & {
 export function lift<TProps>(
   component: React.ComponentClass<TProps> | React.StatelessComponent<TProps>
 ) {
-  return (
-    (props: LiftedComponentProps<TProps>) =>
-      React.createElement<LiftWrapperProps<TProps>>(
-        LiftWrapper,
-        { component: component, props: props })
-  )
+  return (props: LiftedComponentProps<TProps>) =>
+    React.createElement<LiftWrapperProps<TProps>>(
+      LiftWrapper,
+      { component: component, props: props }
+    )
 }
 
 export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {

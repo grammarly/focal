@@ -9,37 +9,50 @@ import {
   setKey,
   conservatively,
   findIndex,
-  Option
+  Option,
+  warning
 } from './../utils'
 
 import { Lens, Prism } from './base'
 
 export type PropExpr<O, P> = (x: O) => P
 
-// @TODO can we optimize this regexp?
-const PROP_EXPR_RE = new RegExp([
-  '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
-    '("use strict";)?',
-    'return\\s',
-      '[^\\.]+\\.(\\S+?);?',
-  '\\}', '$'
-].join('\\s*'))
+const defaultOptions = {
+    // @TODO can we optimize this regexp?
+    propExprRe: new RegExp([
+      '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
+        '("use strict";)?',
+        'return\\s',
+          '[^\\.]+\\.(\\S+?);?',
+      '\\}', '$'
+    ].join('\\s*')),
+    exprRegexpGroup: 2
+}
 
-const WALLABY_PROP_EXPR_RE = new RegExp([
-  '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
-    '("use strict";)?',
-    '(\\$_\\$wf\\(\\d+\\);)?',  // wallaby.js code coverage compatability (#36)
-    'return\\s',
-      '(\\$_\\$w\\(\\d+, \\d+\\),\\s)?',  // wallaby.js code coverage compatability (#36)
-      '[^\\.]+\\.(\\S+?);?',
-  '\\}', '$'
-].join('\\s*'))
+/**
+ * Custom parse options for code instrumentalization through environment variable
+ */
+export const { propExprRe, exprRegexpGroup } = (() => {
+  if (process.env.FOCAL_PROP_EXPR_RE && process.env.FOCAL_PROP_EXPR_RE_GROUP) {
+    try {
+      return {
+        propExprRe: new RegExp(process.env.FOCAL_PROP_EXPR_RE),
+        exprRegexpGroup: parseInt(process.env.FOCAL_PROP_EXPR_RE_GROUP, 10)
+      }
+    } catch (e) {
+      warning(
+        'Environment variable could not be converted to appropriate type, '
+        + 'falling back to default settings.'
+        + e
+      )
+      return defaultOptions
+    }
+  } else return defaultOptions
+})()
 
 export function parsePropertyPath(getterSource: string): string[] {
-  const exprRegexp = process.env.NODE_ENV === 'wallaby' ? WALLABY_PROP_EXPR_RE : PROP_EXPR_RE
-  const exprRegexpGroup = process.env.NODE_ENV === 'wallaby' ? 4 : 2
+  const parse = getterSource.match(propExprRe)
 
-  const parse = getterSource.match(exprRegexp)
   if (parse && parse[exprRegexpGroup]) {
     return parse[exprRegexpGroup].split('.')
   } else {

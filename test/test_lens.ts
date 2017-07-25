@@ -197,20 +197,4 @@ test('property expressions', t => {
 
     t.end()
   })
-
-  t.test('wallaby.js', t => {
-    const originalNodeEnv = process.env.NODE_ENV
-    process.env.NODE_ENV = 'wallaby'
-
-    t.deepEqual(Json.parsePropertyPath(
-      'function (x) { $_$wf(21); return $_$w(124, 53), x.a; }'), ['a'])
-
-    t.throws(() => Json.parsePropertyPath(
-      'function (x) { $_$wf(21); return x.a, $_$w(124, 53); }'))
-
-    process.env.NODE_ENV = originalNodeEnv
-    t.end()
-  })
-
-  t.end()
 })

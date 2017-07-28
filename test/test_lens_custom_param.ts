@@ -2,7 +2,7 @@ import * as test from 'tape'
 import * as _Json from '../src/lens/json'
 
 test('json', t => {
-  t.test('wallaby.js', t => {
+  t.test('custom prop expr', t => {
     delete require.cache[require.resolve('../src/lens/json')]
 
     process.env.FOCAL_PROP_EXPR_RE = [

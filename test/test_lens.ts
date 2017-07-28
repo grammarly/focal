@@ -197,4 +197,31 @@ test('property expressions', t => {
 
     t.end()
   })
+
+  t.test('custom prop expr', t => {
+    delete require.cache[require.resolve('../src/lens/json')]
+
+    process.env.FOCAL_PROP_EXPR_RE = [
+      '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
+        '("use strict";)?',
+        '(\\$_\\$wf\\(\\d+\\);)?',  // wallaby.js code coverage compatability (#36)
+        'return\\s',
+          '(\\$_\\$w\\(\\d+, \\d+\\),\\s)?',  // wallaby.js code coverage compatability (#36)
+          '[^\\.]+\\.(\\S+?);?',
+      '\\}', '$'
+    ].join('\\s*')
+    process.env.FOCAL_PROP_EXPR_RE_GROUP = 4
+
+    const _Json = require('../src/lens/json') as typeof Json
+
+    t.deepEqual(_Json.parsePropertyPath(
+      'function (x) { $_$wf(21); return $_$w(124, 53), x.a; }'), ['a'])
+
+    t.throws(() => _Json.parsePropertyPath(
+      'function (x) { $_$wf(21); return x.a, $_$w(124, 53); }'))
+
+    delete require.cache[require.resolve('../src/lens/json')]
+
+    t.end()
+  })
 })

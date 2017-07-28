@@ -200,6 +200,8 @@ test('property expressions', t => {
 
   t.test('custom prop expr', t => {
     delete require.cache[require.resolve('../src/lens/json')]
+    const originalEnvExprRe = process.env.FOCAL_PROP_EXPR_RE
+    const originalEnvExprReGroup = process.env.FOCAL_PROP_EXPR_RE_GROUP
 
     process.env.FOCAL_PROP_EXPR_RE = [
       '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
@@ -221,15 +223,19 @@ test('property expressions', t => {
       'function (x) { $_$wf(21); return x.a, $_$w(124, 53); }'))
 
     delete require.cache[require.resolve('../src/lens/json')]
+    process.env.FOCAL_PROP_EXPR_RE = originalEnvExprRe
+    process.env.FOCAL_PROP_EXPR_RE_GROUP = originalEnvExprReGroup
 
     t.end()
   })
 
   t.test('show warning for misconfigured custom prop expr', t => {
     delete require.cache[require.resolve('../src/lens/json')]
+    const originalEnvExprRe = process.env.FOCAL_PROP_EXPR_RE
+    const originalEnvExprReGroup = process.env.FOCAL_PROP_EXPR_RE_GROUP
+    const error = console.error
 
     let consoleErrorWasCalled
-    const error = console.error
     // tslint:disable-next-line no-function-expression
     console.error = function (message: any) {
       error(message)
@@ -244,8 +250,10 @@ test('property expressions', t => {
 
     t.ok(consoleErrorWasCalled, 'console.error() was called')
 
-    console.error = error
     delete require.cache[require.resolve('../src/lens/json')]
+    process.env.FOCAL_PROP_EXPR_RE = originalEnvExprRe
+    process.env.FOCAL_PROP_EXPR_RE_GROUP = originalEnvExprReGroup
+    console.error = error
 
     t.end()
   })

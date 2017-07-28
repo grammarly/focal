@@ -17,7 +17,7 @@ import { Lens, Prism } from './base'
 
 export type PropExpr<O, P> = (x: O) => P
 
-const defaultOptions = {
+const defaultPropExprSettings = {
   // @TODO can we optimize this regexp?
   propExprRe: new RegExp([
     '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
@@ -41,13 +41,12 @@ export const { propExprRe, exprRegexpGroup } = (() => {
       }
     } catch (e) {
       warning(
-        'Environment variable could not be converted to appropriate type, '
-        + 'falling back to default settings.'
-        + e
+        'Could not read custom property expression environment variables, falling '
+        + 'back to default settings: ' + e
       )
-      return defaultOptions
+      return defaultPropExprSettings
     }
-  } else return defaultOptions
+  } else return defaultPropExprSettings
 })()
 
 export function parsePropertyPath(getterSource: string): string[] {

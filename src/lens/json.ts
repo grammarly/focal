@@ -35,9 +35,14 @@ const defaultPropExprSettings = {
 export const { propExprRe, exprRegexpGroup } = (() => {
   if (process.env.FOCAL_PROP_EXPR_RE && process.env.FOCAL_PROP_EXPR_RE_GROUP) {
     try {
+      const reGroup = parseInt(process.env.FOCAL_PROP_EXPR_RE_GROUP, 10)
+      if (isNaN(reGroup))
+        throw new TypeError('Expected a number in FOCAL_PROP_EXPR_RE_GROUP, got '
+          + process.env.FOCAL_PROP_EXPR_RE_GROUP)
+
       return {
         propExprRe: new RegExp(process.env.FOCAL_PROP_EXPR_RE),
-        exprRegexpGroup: parseInt(process.env.FOCAL_PROP_EXPR_RE_GROUP, 10)
+        exprRegexpGroup: reGroup
       }
     } catch (e) {
       warning(

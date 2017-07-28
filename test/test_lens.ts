@@ -224,4 +224,6 @@ test('property expressions', t => {
 
     t.end()
   })
+
+  t.end()
 })

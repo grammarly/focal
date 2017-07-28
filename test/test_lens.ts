@@ -225,5 +225,30 @@ test('property expressions', t => {
     t.end()
   })
 
+  t.test('show warning for misconfigured custom prop expr', t => {
+    delete require.cache[require.resolve('../src/lens/json')]
+
+    let consoleErrorWasCalled
+    const error = console.error
+    // tslint:disable-next-line no-function-expression
+    console.error = function (message: any) {
+      error(message)
+      consoleErrorWasCalled = true
+    }
+
+    consoleErrorWasCalled = false
+
+    process.env.FOCAL_PROP_EXPR_RE = 'regexp'
+    process.env.FOCAL_PROP_EXPR_RE_GROUP = 'number'
+    require('../src/lens/json')
+
+    t.ok(consoleErrorWasCalled, 'console.error() was called')
+
+    console.error = error
+    delete require.cache[require.resolve('../src/lens/json')]
+
+    t.end()
+  })
+
   t.end()
 })

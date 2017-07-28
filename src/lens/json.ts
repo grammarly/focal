@@ -18,15 +18,15 @@ import { Lens, Prism } from './base'
 export type PropExpr<O, P> = (x: O) => P
 
 const defaultOptions = {
-    // @TODO can we optimize this regexp?
-    propExprRe: new RegExp([
-      '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
-        '("use strict";)?',
-        'return\\s',
-          '[^\\.]+\\.(\\S+?);?',
-      '\\}', '$'
-    ].join('\\s*')),
-    exprRegexpGroup: 2
+  // @TODO can we optimize this regexp?
+  propExprRe: new RegExp([
+    '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
+      '("use strict";)?',
+      'return\\s',
+        '[^\\.]+\\.(\\S+?);?',
+    '\\}', '$'
+  ].join('\\s*')),
+  exprRegexpGroup: 2
 }
 
 /**

@@ -2,14 +2,14 @@ import * as test from 'tape'
 delete require.cache[require.resolve('../src/lens/json')]
 
 process.env.FOCAL_PROP_EXPR_RE = [
-      '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
-        '("use strict";)?',
-        '(\\$_\\$wf\\(\\d+\\);)?',  // wallaby.js code coverage compatability (#36)
-        'return\\s',
-          '(\\$_\\$w\\(\\d+, \\d+\\),\\s)?',  // wallaby.js code coverage compatability (#36)
-          '[^\\.]+\\.(\\S+?);?',
-      '\\}', '$'
-    ].join('\\s*')
+  '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
+    '("use strict";)?',
+    '(\\$_\\$wf\\(\\d+\\);)?',  // wallaby.js code coverage compatability (#36)
+    'return\\s',
+      '(\\$_\\$w\\(\\d+, \\d+\\),\\s)?',  // wallaby.js code coverage compatability (#36)
+      '[^\\.]+\\.(\\S+?);?',
+  '\\}', '$'
+].join('\\s*')
 process.env.FOCAL_PROP_EXPR_RE_GROUP = 4
 
 import * as Json from '../src/lens/json'

@@ -178,7 +178,7 @@ test('json', t => {
     )
 
     testLens<typeof s, (typeof s)['b']>(
-      t, 'type safe key 1',
+      t, 'type safe key 2',
       Lens.key<typeof s>()('b'), s, '6', '7', 'hello'
     )
 

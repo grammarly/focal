@@ -187,20 +187,22 @@ export abstract class AbstractAtom<T>
     this.modify(() => x)
   }
 
-  // tslint:disable no-unused-vars
   lens<U>(propExpr: PropExpr<T, U>): Atom<U>
   lens<U>(lens: Lens<T, U>): Atom<U>
-  // tslint:enable no-unused-vars
+  lens<K extends keyof T>(k: K): Atom<T[K]>
 
-  lens<U>(arg: Lens<T, U> | PropExpr<T, U>): Atom<U> {
+  lens<U>(arg: Lens<T, U> | PropExpr<T, U> | string): Atom<any> {
     return typeof arg === 'function'
       // handle lens(prop expr) case
       // tslint:disable-next-line no-use-before-declare
       ? new LensedAtom<T, U>(
         this, Lens.prop(arg as (x: T) => U), structEq)
-      // handle lens(lens) case
-      // tslint:disable-next-line no-use-before-declare
-      : new LensedAtom<T, U>(this, arg as Lens<T, U>, structEq)
+      : typeof arg === 'string'
+        // tslint:disable-next-line no-use-before-declare
+        ? new LensedAtom(this, Lens.key(arg), structEq)
+        // handle lens(lens) case
+        // tslint:disable-next-line no-use-before-declare
+        : new LensedAtom<T, U>(this, arg as Lens<T, U>, structEq)
   }
 }
 

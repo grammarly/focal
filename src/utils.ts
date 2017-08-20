@@ -4,19 +4,12 @@ export { equals as structEq } from './equals'
 
 export const DEV_ENV = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
 
-export function setKey<T>(k: string, v: T, o?: { [k: string]: any; }) {
-  if (o === undefined) {
-    return { [k]: v }
-  } else if (k in o && structEq(v, o[k])) {
+export function setKey<T, K extends keyof T>(k: K, v: T[K], o: T): T {
+  if (k in o && structEq(v, o[k])) {
     return o
   } else {
-    const r: { [k: string]: any; } = { [k]: v }
-    for (const p in o) {
-      if (p !== k) {
-        r[p] = o[p]
-      }
-    }
-    return r
+    // @NOTE is this the fastest way to do it?
+    return Object.assign({}, o, { [k as string]: v })
   }
 }
 

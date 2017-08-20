@@ -83,10 +83,6 @@ export function keyImpl(k: string): Prism<{ [k: string]: any }, any> {
   )
 }
 
-export function unsafeKeyImpl<TValue>(k: string): Prism<{ [k: string]: any }, TValue> {
-  return Lens.key(k)
-}
-
 export function propImpl<TObject, TProperty>(
   getter: PropExpr<TObject, TProperty>
 ): Lens<TObject, TProperty> {
@@ -160,16 +156,6 @@ declare module './base' {
     export let key: typeof keyImpl
 
     /**
-     * Create an *unsafe* prism to an object's key.
-     *
-     * This optic is unsafe in it's generic parameter, as it disregards the
-     * actual type of the value at runtime – it just does unsafe type assertion.
-     *
-     * @TODO how's this different from key?
-     */
-    export let unsafeKey: typeof unsafeKeyImpl
-
-    /**
      * Create a lens to an object's property. The argument is a property expression, which
      * is a limited form of a getter, with following restrictions:
      * - should be a pure function
@@ -222,7 +208,6 @@ declare module './base' {
 }
 
 Lens.key = keyImpl
-Lens.unsafeKey = unsafeKeyImpl
 Lens.prop = propImpl
 Lens.index = indexImpl
 Lens.withDefault = withDefaultImpl

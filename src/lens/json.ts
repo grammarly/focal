@@ -71,16 +71,23 @@ export function extractPropertyPath<TObject, TProperty>(
   return parsePropertyPath(target.toString())
 }
 
-// tslint:disable no-unused-vars
 export function keyImpl(k: string): Prism<{ [k: string]: any }, any>
 export function keyImpl<TValue>(k: string): Prism<{ [k: string]: TValue }, TValue>
-// tslint:enable no-unused-vars
+export function keyImpl<TObject>(): <K extends keyof TObject>(k: K) => Lens<TObject, TObject[K]>
 
-export function keyImpl(k: string): Prism<{ [k: string]: any }, any> {
-  return Lens.create(
-    (s: { [k: string]: any }) => s[k] as Option<any>,
-    (v: any, s: { [k: string]: any }) => setKey(k, v, s)
-  )
+export function keyImpl<TObject>(k?: string) {
+  return k === undefined
+    // type-safe key
+    ? <K extends keyof TObject>(k: K): Lens<TObject, TObject[K]> =>
+      Lens.create<TObject, TObject[K]>(
+        (s: TObject) => s[k],
+        (v: TObject[K], s: TObject) => setKey(k, v, s)
+      )
+    // untyped key
+    : Lens.create(
+      (s: { [k: string]: any }) => s[k] as Option<any>,
+      (v: any, s: { [k: string]: any }) => setKey(k, v, s)
+    )
 }
 
 export function propImpl<TObject, TProperty>(
@@ -89,7 +96,7 @@ export function propImpl<TObject, TProperty>(
   // @TODO can we optimize this?
   return Lens.compose<TObject, TProperty>(
     ...extractPropertyPath(getter as PropExpr<TObject, TProperty>)
-      .map(keyImpl))
+      .map(keyImpl()))
 }
 
 export function indexImpl<TItem>(i: number): Prism<TItem[], TItem> {

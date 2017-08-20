@@ -73,7 +73,8 @@ export function extractPropertyPath<TObject, TProperty>(
 
 export function keyImpl(k: string): Prism<{ [k: string]: any }, any>
 export function keyImpl<TValue>(k: string): Prism<{ [k: string]: TValue }, TValue>
-export function keyImpl<TObject>(): <K extends keyof TObject>(k: K) => Lens<TObject, TObject[K]>
+export function keyImpl<TObject = any>():
+  <K extends keyof TObject>(k: K) => Lens<TObject, TObject[K]>
 
 export function keyImpl<TObject>(k?: string) {
   return k === undefined

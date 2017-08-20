@@ -108,6 +108,19 @@ test('atom', t => {
     t.end()
   })
 
+  t.test('readonly, safe key, simple', t => {
+    const source = Atom.create({ a: 5 })
+    const view = source.view('a')
+
+    t.isEqual(view.get(), 5)
+
+    source.modify(x => ({ a: x.a + 1 }))
+
+    t.isEqual(view.get(), 6)
+
+    t.end()
+  })
+
   t.test('view observable semantics', t => {
     const source = Atom.create(1)
     const view = source.view(x => x + 1)

@@ -88,6 +88,8 @@ export interface ReadOnlyAtom<T> extends Observable<T> {
    */
   view<U>(lens: Lens<T, U>): ReadOnlyAtom<U>
   view<U>(prism: Prism<T, U>): ReadOnlyAtom<Option<U>>
+
+  view<K extends keyof T>(k: K): ReadOnlyAtom<T[K]>
 }
 
 /**
@@ -142,35 +144,37 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
    * @returns lensed atom
    */
   lens<U>(lens: Lens<T, U>): Atom<U>
+
+  lens<K extends keyof T>(k: K): Atom<T[K]>
 }
-// tslint:enable no-unused-vars
 
 export abstract class AbstractReadOnlyAtom<T>
     extends BehaviorSubject<T>
     implements ReadOnlyAtom<T> {
   abstract get(): T
 
-  // tslint:disable no-unused-vars
   view(): ReadOnlyAtom<T>
   view<U>(getter: (x: T) => U): ReadOnlyAtom<U>
   view<U>(lens: Lens<T, U>): ReadOnlyAtom<U>
   view<U>(prism: Prism<T, U>): ReadOnlyAtom<Option<U>>
-  // tslint:enable no-unused-vars
+  view<K extends keyof T>(k: K): ReadOnlyAtom<T[K]>
 
   view<U>(
-    arg?: ((x: T) => U) | Lens<T, U> | Prism<T, U>
-  ): ReadOnlyAtom<U> | ReadOnlyAtom<Option<U>> | ReadOnlyAtom<T> {
-    return arg
+    arg?: ((x: T) => U) | Lens<T, U> | Prism<T, U> | string
+  ): ReadOnlyAtom<any> {
+    // tslint:disable no-use-before-declare
+    return arg !== undefined
       ? typeof arg === 'function'
         // handle view(getter) case
-        // tslint:disable-next-line no-use-before-declare
         ? new AtomViewImpl<T, U>(this, arg as (x: T) => U)
-        // handle view(lens) and view(prism) cases
-        // @NOTE single case handles both lens and prism arg
-        // tslint:disable-next-line no-use-before-declare
-        : new AtomViewImpl<T, U>(this, x => (arg as Lens<T, U>).get(x))
+        : typeof arg === 'string'
+          ? new AtomViewImpl<T, U>(this, Lens.key(arg).get)
+          // handle view(lens) and view(prism) cases
+          // @NOTE single case handles both lens and prism arg
+          : new AtomViewImpl<T, U>(this, x => (arg as Lens<T, U>).get(x))
       // handle view() case
       : this as ReadOnlyAtom<T>
+    // tslint:enable no-use-before-declare
   }
 }
 

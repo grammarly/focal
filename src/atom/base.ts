@@ -8,7 +8,6 @@ import {
   Observable, Subscriber, Subscription, BehaviorSubject
 } from 'rxjs/Rx'
 
-// tslint:disable no-unused-vars
 /**
  * Read-only atom.
  *
@@ -90,9 +89,7 @@ export interface ReadOnlyAtom<T> extends Observable<T> {
   view<U>(lens: Lens<T, U>): ReadOnlyAtom<U>
   view<U>(prism: Prism<T, U>): ReadOnlyAtom<Option<U>>
 }
-// tslint:enable no-unused-vars
 
-// tslint:disable no-unused-vars
 /**
  * A read/write atom.
  *

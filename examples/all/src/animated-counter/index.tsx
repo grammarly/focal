@@ -5,8 +5,8 @@ import * as Model from './model'
 const Counter = ({
   counterState = Atom.create(Model.defaultCounterState)
 }) => {
-  const count = counterState.view(x => x.count)
-  const absoluteCount = counterState.view(x => x.absoluteCount)
+  const count = counterState.view('count')
+  const absoluteCount = counterState.view('absoluteCount')
 
   return (
     <div>
@@ -26,8 +26,8 @@ const Counter = ({
 const AnimatedDiv = ({
   counterState = Atom.create(Model.defaultCounterState)
 }) => {
-  const displayState = counterState.lens(x => x.display)
-  const count = counterState.view(x => x.count)
+  const displayState = counterState.lens('display')
+  const count = counterState.view('count')
 
   const animDiv = displayState.map(displayState => {
     if (displayState) {
@@ -62,7 +62,7 @@ const AnimatedDiv = ({
 const App = ({
   state = Atom.create(Model.defaultAppState)
 }) => {
-  const counterState = state.lens(x => x.counter)
+  const counterState = state.lens('counter')
 
   return (
     <div>

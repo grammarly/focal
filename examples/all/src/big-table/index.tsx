@@ -85,7 +85,7 @@ const App = ({
         borderBottom: '1px solid black'
       }}
     >
-      <THead columns={state.view(x => x.columns)}/>
+      <THead columns={state.view('columns')}/>
     </table>
     <F.div
       {...bindElementProps({ ref: 'onScroll', scrollTop })}

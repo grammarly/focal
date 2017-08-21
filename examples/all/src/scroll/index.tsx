@@ -65,8 +65,8 @@ const ScrollInput = (props: { value: Atom<number>, label: string }) =>
   </div>
 
 const App = (props: { state: Atom<AppState> }) => {
-  const scrollTop = props.state.lens(x => x.scrollTop)
-  const scrollLeft = props.state.lens(x => x.scrollLeft)
+  const scrollTop = props.state.lens('scrollTop')
+  const scrollLeft = props.state.lens('scrollLeft')
 
   return (
     <div>

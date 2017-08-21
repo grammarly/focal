@@ -29,8 +29,8 @@ namespace AppState {
 const isEqualTo = (expected: string) => (actual: string) => actual === expected
 
 const App = (props: { state: Atom<AppState> }) => {
-  const color = props.state.lens(x => x.style.color)
-  const font = props.state.lens(x => x.style.font)
+  const color = props.state.lens('style', 'color')
+  const font = props.state.lens('style', 'font')
   return (
     <div>
       <div>

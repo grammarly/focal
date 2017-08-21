@@ -35,10 +35,10 @@ export function shouldHideCounter(count: number) {
 export function hideAfterFadeOut(counter: Atom<CounterState>) {
   // check if we still should hide
   if (shouldHideCounter(counter.get().count))
-    counter.lens(x => x.display).set(false)
+    counter.lens('display').set(false)
 }
 
 export function resetCounter(counter: Atom<CounterState>) {
-  counter.lens(x => x.count).set(0)
-  counter.lens(x => x.display).set(true)
+  counter.lens('count').set(0)
+  counter.lens('display').set(true)
 }

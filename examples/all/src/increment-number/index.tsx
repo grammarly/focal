@@ -31,7 +31,7 @@ const App = (props: { state: Atom<AppState> }) =>
         Observable
           .combineLatest(
             Observable.interval(1000).startWith(0).mapTo(1),
-            props.state.view(x => x.isRunning)
+            props.state.view('isRunning')
           )
           .scan((acc, [val, shouldIncrement]) => shouldIncrement ? acc + val : acc, 0)
       }

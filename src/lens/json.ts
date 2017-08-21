@@ -71,8 +71,7 @@ export function extractPropertyPath<TObject, TProperty>(
   return parsePropertyPath(target.toString())
 }
 
-export function keyImpl(k: string): Prism<{ [k: string]: any }, any>
-export function keyImpl<TValue>(k: string): Prism<{ [k: string]: TValue }, TValue>
+export function keyImpl<TValue = any>(k: string): Prism<{ [k: string]: TValue }, TValue>
 export function keyImpl<TObject = any>():
   <K extends keyof TObject>(k: K) => Lens<TObject, TObject[K]>
 

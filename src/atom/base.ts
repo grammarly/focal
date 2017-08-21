@@ -90,6 +90,32 @@ export interface ReadOnlyAtom<T> extends Observable<T> {
   view<U>(prism: Prism<T, U>): ReadOnlyAtom<Option<U>>
 
   view<K extends keyof T>(k: K): ReadOnlyAtom<T[K]>
+
+  view<
+    K1 extends keyof T,
+    K2 extends keyof T[K1]
+  >(k1: K1, k2: K2): ReadOnlyAtom<T[K1][K2]>
+
+  view<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2]
+  >(k1: K1, k2: K2, k3: K3): ReadOnlyAtom<T[K1][K2][K3]>
+
+  view<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2],
+    K4 extends keyof T[K1][K2][K3]
+  >(k1: K1, k2: K2, k3: K3, k4: K4): ReadOnlyAtom<T[K1][K2][K3][K4]>
+
+  view<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2],
+    K4 extends keyof T[K1][K2][K3],
+    K5 extends keyof T[K1][K2][K3][K4]
+  >(k1: K1, k2: K2, k3: K3, k4: K4, k5: K5): ReadOnlyAtom<T[K1][K2][K3][K4][K5]>
 }
 
 /**
@@ -159,20 +185,19 @@ export abstract class AbstractReadOnlyAtom<T>
   view<U>(prism: Prism<T, U>): ReadOnlyAtom<Option<U>>
   view<K extends keyof T>(k: K): ReadOnlyAtom<T[K]>
 
-  view<U>(
-    arg?: ((x: T) => U) | Lens<T, U> | Prism<T, U> | string
-  ): ReadOnlyAtom<any> {
+  view<U>(...args: any[]): ReadOnlyAtom<any> {
     // tslint:disable no-use-before-declare
-    return arg !== undefined
-      ? typeof arg === 'function'
-        // handle view(getter) case
-        ? new AtomViewImpl<T, U>(this, arg as (x: T) => U)
-        : typeof arg === 'string'
-          ? new AtomViewImpl<T, U>(this, Lens.key(arg).get)
-          // handle view(lens) and view(prism) cases
+    return args[0] !== undefined
+      // view(getter) case
+      ? typeof args[0] === 'function'
+        ? new AtomViewImpl<T, U>(this, args[0] as (x: T) => U)
+        // view('key') case
+        : typeof args[0] === 'string'
+          ? new AtomViewImpl<T, U>(this, Lens.compose<T, U>(...args.map(Lens.key())).get)
+          // view(lens) and view(prism) cases
           // @NOTE single case handles both lens and prism arg
-          : new AtomViewImpl<T, U>(this, x => (arg as Lens<T, U>).get(x))
-      // handle view() case
+          : new AtomViewImpl<T, U>(this, x => (args[0] as Lens<T, U>).get(x))
+      // view() case
       : this as ReadOnlyAtom<T>
     // tslint:enable no-use-before-declare
   }

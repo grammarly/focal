@@ -172,6 +172,32 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
   lens<U>(lens: Lens<T, U>): Atom<U>
 
   lens<K extends keyof T>(k: K): Atom<T[K]>
+
+  lens<
+    K1 extends keyof T,
+    K2 extends keyof T[K1]
+  >(k1: K1, k2: K2): Atom<T[K1][K2]>
+
+  lens<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2]
+  >(k1: K1, k2: K2, k3: K3): Atom<T[K1][K2][K3]>
+
+  lens<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2],
+    K4 extends keyof T[K1][K2][K3]
+  >(k1: K1, k2: K2, k3: K3, k4: K4): Atom<T[K1][K2][K3][K4]>
+
+  lens<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2],
+    K4 extends keyof T[K1][K2][K3],
+    K5 extends keyof T[K1][K2][K3][K4]
+  >(k1: K1, k2: K2, k3: K3, k4: K4, k5: K5): Atom<T[K1][K2][K3][K4][K5]>
 }
 
 export abstract class AbstractReadOnlyAtom<T>
@@ -216,18 +242,18 @@ export abstract class AbstractAtom<T>
   lens<U>(lens: Lens<T, U>): Atom<U>
   lens<K extends keyof T>(k: K): Atom<T[K]>
 
-  lens<U>(arg: Lens<T, U> | PropExpr<T, U> | string): Atom<any> {
-    return typeof arg === 'function'
-      // handle lens(prop expr) case
-      // tslint:disable-next-line no-use-before-declare
-      ? new LensedAtom<T, U>(
-        this, Lens.prop(arg as (x: T) => U), structEq)
-      : typeof arg === 'string'
-        // tslint:disable-next-line no-use-before-declare
-        ? new LensedAtom(this, Lens.key(arg), structEq)
-        // handle lens(lens) case
-        // tslint:disable-next-line no-use-before-declare
-        : new LensedAtom<T, U>(this, arg as Lens<T, U>, structEq)
+  lens<U>(arg1: Lens<T, U> | PropExpr<T, U> | string, ...args: string[]): Atom<any> {
+    // tslint:disable no-use-before-declare
+
+    // lens(prop expr) case
+    return typeof arg1 === 'function'
+      ? new LensedAtom<T, U>(this, Lens.prop(arg1 as (x: T) => U), structEq)
+      // lens('key') case
+      : typeof arg1 === 'string'
+        ? new LensedAtom(this, Lens.compose(Lens.key(arg1), ...args.map(Lens.key)), structEq)
+        // lens(lens) case
+        : new LensedAtom<T, U>(this, arg1 as Lens<T, U>, structEq)
+    // tslint:enable no-use-before-declare
   }
 }
 

@@ -72,6 +72,14 @@ test('atom', t => {
     })
   })
 
+  t.test('lensed, nested safe key', t => {
+    testAtom(t, x => {
+      const source = Atom.create({ a: { b: { c: x } } })
+      const lensed = source.lens('a', 'b', 'c')
+      return lensed
+    })
+  })
+
   t.test('lensed, safe key, chained lenses', t => {
     testAtom(t, x => {
       const source = Atom.create({ a: { b: { c: x } } })

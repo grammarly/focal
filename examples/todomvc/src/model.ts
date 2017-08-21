@@ -22,10 +22,10 @@ export const defaultState: AppState = {
 
 export class AppModel {
   constructor(public state: Atom<AppState>) {
-    this.todos = this.state.lens(x => x.todos)
+    this.todos = this.state.lens('todos')
   }
 
-  public readonly todos = this.state.lens(x => x.todos)
+  public readonly todos = this.state.lens('todos')
 
   add(title: string) {
     this.state.modify(({ todos, nextId }) => ({

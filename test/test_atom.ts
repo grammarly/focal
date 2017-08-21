@@ -72,6 +72,14 @@ test('atom', t => {
     })
   })
 
+  t.test('lensed, safe key, chained lenses', t => {
+    testAtom(t, x => {
+      const source = Atom.create({ a: { b: { c: x } } })
+      const lensed = source.lens('a').lens('b').lens('c')
+      return lensed
+    })
+  })
+
   t.test('lensed, chained + complex', t => {
     const source = Atom.create({ a: { b: { c: 5 } } })
     const lensed =
@@ -79,6 +87,25 @@ test('atom', t => {
         .lens(x => x.a)
         .lens(x => x.b)
         .lens(x => x.c)
+        .lens(
+          Lens.create(
+            (x: number) => x + 1,
+            (v: number, _: number) => v - 1))
+
+    t.isEqual(lensed.get(), 6)
+
+    lensed.set(6)
+
+    t.isEqual(lensed.get(), 6)
+
+    t.end()
+  })
+
+  t.test('lensed, safe key, chained + complex', t => {
+    const source = Atom.create({ a: { b: { c: 5 } } })
+    const lensed =
+      source
+        .lens('a').lens('b').lens('c')
         .lens(
           Lens.create(
             (x: number) => x + 1,

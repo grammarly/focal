@@ -24,6 +24,7 @@ export const audioSrc = 'http://api.audiotool.com/track/volution/play.mp3'
 
 export class AudioModel {
   private audio: HTMLAudioElement
+  private durationSubscription: Subscription  
   private timeSubscription: Subscription
   private statusSubscription: Subscription
   private volumeSubscription: Subscription
@@ -32,9 +33,11 @@ export class AudioModel {
   constructor(atom: Atom<AppState>, audioSrc: string) {
     this.audio = new Audio(audioSrc)
 
-    this.audio.addEventListener('canplaythrough', () =>
-      atom.lens(x => x.maxDuration).set(this.audio.duration)
-    )
+    this.durationSubscription = Observable
+      .fromEvent(this.audio, 'canplaythrough')
+      .subscribe(() =>
+        atom.lens(x => x.maxDuration).set(this.audio.duration)
+      )
 
     this.timeSubscription = atom
       .view(x => x.status)
@@ -64,19 +67,20 @@ export class AudioModel {
     this.statusSubscription = atom
       .view(x => x.status)
       .subscribe(
-        x => (x === Status.playing ? this.audio.play() : this.audio.pause())
+        x => x === Status.playing ? this.audio.play() : this.audio.pause()
       )
 
     this.volumeSubscription = atom
       .lens(x => x.volume)
-      .subscribe(x => (this.audio.volume = x / 10))
+      .subscribe(x => this.audio.volume = x / 10)
 
     this.currentTimeSubscription = atom
       .lens(x => x.currentTime)
-      .subscribe(x => (this.audio.currentTime = parseInt(x, 10)))
+      .subscribe(x => this.audio.currentTime = parseInt(x, 10))
   }
 
   unsubscribe() {
+    this.durationSubscription.unsubscribe()
     this.timeSubscription.unsubscribe()
     this.currentTimeSubscription.unsubscribe()
     this.statusSubscription.unsubscribe()

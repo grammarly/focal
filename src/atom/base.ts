@@ -81,27 +81,46 @@ export interface ReadOnlyAtom<T> extends Observable<T> {
   view<U>(getter: (x: T) => U): ReadOnlyAtom<U>
 
   /**
-   * View this atom through a lens.
+   * View this atom through a given lens.
    *
    * @param lens lens that defines the view
    * @returns atom viewed through the given transformation
    */
   view<U>(lens: Lens<T, U>): ReadOnlyAtom<U>
+
+  /**
+   * View this atom through a given prism.
+   *
+   * @param prism prism that defines the view
+   * @returns atom viewed through the given transformation
+   */
   view<U>(prism: Prism<T, U>): ReadOnlyAtom<Option<U>>
 
+  /**
+   * View this atom at a property of given name.
+   */
   view<K extends keyof T>(k: K): ReadOnlyAtom<T[K]>
 
+  /**
+   * View this atom at a give property path.
+   */
   view<
     K1 extends keyof T,
     K2 extends keyof T[K1]
   >(k1: K1, k2: K2): ReadOnlyAtom<T[K1][K2]>
 
+  /**
+   * View this atom at a give property path.
+   */
   view<
     K1 extends keyof T,
     K2 extends keyof T[K1],
     K3 extends keyof T[K1][K2]
   >(k1: K1, k2: K2, k3: K3): ReadOnlyAtom<T[K1][K2][K3]>
 
+  /**
+   * View this atom at a give property path.
+   */
   view<
     K1 extends keyof T,
     K2 extends keyof T[K1],
@@ -109,6 +128,9 @@ export interface ReadOnlyAtom<T> extends Observable<T> {
     K4 extends keyof T[K1][K2][K3]
   >(k1: K1, k2: K2, k3: K3, k4: K4): ReadOnlyAtom<T[K1][K2][K3][K4]>
 
+  /**
+   * View this atom at a give property path.
+   */
   view<
     K1 extends keyof T,
     K2 extends keyof T[K1],
@@ -144,11 +166,15 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
   set(newValue: T): void
 
   /**
-   * Lens into this atom. The argument is a property expression, which
-   * is a limited form of a getter, with following restrictions:
+   * Create a lensed atom using a property expression, which specifies
+   * a path inside the atom value's data structure.
+   *
+   * The property expression is a limited form of a getter,
+   * with following restrictions:
    * - should be a pure function
    * - should be a single-expression function (i.e. return immediately)
    * - should only access object properties (nested access is OK)
+   * - should not access array items
    *
    * @example
    * const atom = Atom.create({ a: { b: 5 } })
@@ -158,32 +184,44 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
    * // => { a: { b: 6 } }
    * @template U destination value type
    * @param propExpr property expression
-   * @returns lensed atom
+   * @returns a lensed atom
    */
   lens<U>(propExpr: PropExpr<T, U>): Atom<U>
 
   /**
-   * Lens into this atom.
+   * Create a lensed atom by supplying a lens.
    *
    * @template U destination value type
    * @param lens a lens
-   * @returns lensed atom
+   * @returns a lensed atom
    */
   lens<U>(lens: Lens<T, U>): Atom<U>
 
+  /**
+   * Create a lensed atom that's focused on a property of given name.
+   */
   lens<K extends keyof T>(k: K): Atom<T[K]>
 
+  /**
+   * Create a lensed atom that's focused on a given property path.
+   */
   lens<
     K1 extends keyof T,
     K2 extends keyof T[K1]
   >(k1: K1, k2: K2): Atom<T[K1][K2]>
 
+  /**
+   * Create a lensed atom that's focused on a given property path.
+   */
   lens<
     K1 extends keyof T,
     K2 extends keyof T[K1],
     K3 extends keyof T[K1][K2]
   >(k1: K1, k2: K2, k3: K3): Atom<T[K1][K2][K3]>
 
+  /**
+   * Create a lensed atom that's focused on a given property path.
+   */
   lens<
     K1 extends keyof T,
     K2 extends keyof T[K1],
@@ -191,6 +229,9 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
     K4 extends keyof T[K1][K2][K3]
   >(k1: K1, k2: K2, k3: K3, k4: K4): Atom<T[K1][K2][K3][K4]>
 
+  /**
+   * Create a lensed atom that's focused on a given property path.
+   */
   lens<
     K1 extends keyof T,
     K2 extends keyof T[K1],

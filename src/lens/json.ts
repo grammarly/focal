@@ -54,7 +54,7 @@ export function parsePropertyPath(getterSource: string): string[] {
 }
 
 /**
- * Extract a list of property names from a {@link LensExpr}
+ * Extract a list of property names from a {@link PropExpr}
  *
  * @param target The target property expressions
  * @example
@@ -152,14 +152,6 @@ export function findImpl<T>(predicate: (x: T) => boolean): Prism<T[], T> {
 // together with the lens type.
 declare module './base' {
   export namespace Lens {
-    /**
-     * Create a prism to an object's key.
-     *
-     * @static
-     * @template TValue the type of key's value
-     * @param k target key name
-     * @returns a lens to an object's value at key k
-     */
     export let key: typeof keyImpl
 
     /**

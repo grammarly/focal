@@ -71,9 +71,70 @@ export function extractPropertyPath<TObject, TProperty>(
   return parsePropertyPath(target.toString())
 }
 
+// @NOTE only need this interface to add JSDocs for this call.
+export interface KeyImplFor<TObject> {
+  /**
+   * Create a lens focusing on a key of an object.
+   *
+   * Requires two subsequent calls, first with only a type argument and no function
+   * arguments and second with the key argument.
+   *
+   * This enables better auto-completion, and is required because TypeScript does not
+   * allow to specify only some of the type arguments.
+   *
+   * This is the second call, where you supply the key argument.
+   * @example
+   * interface SomeObject {
+   *   someProp: number
+   * }
+   *
+   * const lens = Lens.key<SomeObject>()('someProp')
+   */
+  <K extends keyof TObject>(k: K): Lens<TObject, TObject[K]>
+}
+
+/**
+ * Create a prism focusing on a key of a dictionary.
+ *
+ * @param k the key to focus on
+ */
 export function keyImpl<TValue = any>(k: string): Prism<{ [k: string]: TValue }, TValue>
-export function keyImpl<TObject = any>():
-  <K extends keyof TObject>(k: K) => Lens<TObject, TObject[K]>
+
+/**
+ * Create a lens focusing on a key of an object.
+ *
+ * Requires two subsequent calls, first with only a type argument and no function
+ * arguments and second with the key argument.
+ *
+ * This enables better auto-completion, and is required because TypeScript does not
+ * allow to specify only some of the type arguments.
+ *
+ * This is the first call, where you only supply the type argument.
+ *
+ * @example
+ * interface SomeObject {
+ *   someProp: number
+ * }
+ *
+ * const lens = Lens.key<SomeObject>()('someProp')
+ * @template TObject type of the data structure the lens is focusing into
+ */
+// @NOTE we're doing this in two subsequent function applications because TS can either
+// infer all type parameters or none, and in this case there's nothing for it to infer the
+// TObject parameter from.
+//
+// By doing this in two function applications we can make TS infer they key type parameter
+// (K), which enables auto-completion for keys without needing to also state the key twice,
+// once as a type argument, and once as a function argument.
+//
+// Without this hack, it would look like this:
+//   keyImpl<SomeObject, 'someKey'>('someKey')
+//
+// Instead, we get this:
+//   keyImpl<SomeObject>()('someKey')
+//
+// Pretty cool!
+export function keyImpl<TObject = any>(): KeyImplFor<TObject>
 
 export function keyImpl<TObject>(k?: string) {
   return k === undefined

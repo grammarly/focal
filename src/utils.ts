@@ -8,8 +8,13 @@ export function setKey<T, K extends keyof T>(k: K, v: T[K], o: T): T {
   if (k in o && structEq(v, o[k])) {
     return o
   } else {
-    // @NOTE is this the fastest way to do it?
-    return Object.assign({}, o, { [k as string]: v })
+    // this is the fastest way to do it, see
+    // https://jsperf.com/focal-setkey-for-loop-vs-object-assign
+    const r: { [k in keyof T]: T[k] } = {} as any
+    for (const p in o) r[p] = o[p]
+    r[k] = v
+
+    return r
   }
 }
 

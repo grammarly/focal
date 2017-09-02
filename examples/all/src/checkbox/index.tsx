@@ -15,7 +15,7 @@ export const App = (props: { state: Atom<AppState> }) =>
   <div>
     <label>
       <F.input
-        {...bind({ checked: Atom.log(props.state.lens(x => x.checked), 'Checkbox') })}
+        {...bind({ checked: Atom.log(props.state.lens('checked'), 'Checkbox') })}
         type='checkbox'
       />
       Toggle me

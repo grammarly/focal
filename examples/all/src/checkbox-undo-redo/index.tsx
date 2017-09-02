@@ -15,7 +15,7 @@ namespace AppState {
 
 const App = (props: { state: Atom<AppState> }) => {
   const history = History.create(props.state)
-  const checkboxes = history.state.lens(x => x.checkboxes)
+  const checkboxes = history.state.lens('checkboxes')
 
   return (
     <div>

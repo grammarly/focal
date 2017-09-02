@@ -76,7 +76,7 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
   private _subscription: Subscription
 
   componentDidMount() {
-    const status = this.props.state.view(x => x.status)
+    const status = this.props.state.view('status')
 
     this._subscription = Observable
       .combineLatest(
@@ -89,7 +89,7 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
         status === Status.RESET ? defaultTimeState : updateTime(time, val),
         defaultTimeState
       )
-      .subscribe(x => this.props.state.lens(x => x.time).set(x))
+      .subscribe(x => this.props.state.lens('time').set(x))
   }
 
   componentWillUnmount() {
@@ -98,8 +98,8 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
 
   render() {
     const { state } = this.props
-    const time = state.lens(x => x.time)
-    const status = state.lens(x => x.status)
+    const time = state.lens('time')
+    const status = state.lens('status')
     const isStarted = status.view(x => x === Status.STARTED)
 
     return (
@@ -148,7 +148,7 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
             )
           }
         </F.p>
-        <Laps laps={state.view(x => x.laps)} />
+        <Laps laps={state.view('laps')} />
       </div>
     )
   }

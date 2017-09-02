@@ -13,8 +13,8 @@ namespace AppState {
 
 const App = (props: { state: Atom<AppState> }) =>
   <div>
-    <F.input {...bind({ value: props.state.lens(x => x.entry) })} type='text' />
-    <F.p>{props.state.view(x => x.entry)}</F.p>
+    <F.input {...bind({ value: props.state.lens('entry') })} type='text' />
+    <F.p>{props.state.view('entry')}</F.p>
   </div>
 
 export default {

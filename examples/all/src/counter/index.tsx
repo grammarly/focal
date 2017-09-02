@@ -27,7 +27,7 @@ const Counter = (props: { count: Atom<number> }) =>
 const App = (props: { state: Atom<AppState> }) =>
   <div>
     Hello, world!
-    <Counter count={props.state.lens(x => x.counter.count)} />
+    <Counter count={props.state.lens('counter', 'count')} />
   </div>
 
 export default {

@@ -62,13 +62,13 @@ function runSearch(result: Atom<typeof AppState.defaultState.result>, query: str
 }
 
 export const App = (props: { state: Atom<AppState> }) => {
-  const result = props.state.lens(x => x.result)
+  const result = props.state.lens('result')
   const repos = result.view(x => x && x.kind === ResultKind.Success ? x.value : [])
 
   return (
     <div>
       <div>
-        <F.input {...bind({ value: props.state.lens(x => x.searchString) })} type='text' />
+        <F.input {...bind({ value: props.state.lens('searchString') })} type='text' />
         <input
           type='submit'
           value='Search'

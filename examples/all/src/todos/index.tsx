@@ -21,7 +21,7 @@ const Todo = (props: { id: string, todo: Atom<TodoState> }) => {
 }
 
 const TodoList = (props: { state: Atom<AppState> }) => {
-  const todos = props.state.lens(x => x.todos)
+  const todos = props.state.lens('todos')
   return (
     <F.ul>
       {
@@ -62,11 +62,11 @@ const Footer = (props: { filter: Atom<string> }) => (
 export const App = (props: { state: Atom<AppState> }) =>
   <div>
     <div>
-      <F.input {...bind({ value: props.state.lens(x => x.value) })} type='text' />
+      <F.input {...bind({ value: props.state.lens('value') })} type='text' />
       <input type='submit' value='Add Todo' onClick={() => props.state.modify(addTodo)} />
     </div>
     <TodoList state={props.state} />
-    <Footer filter={props.state.lens(x => x.filter)} />
+    <Footer filter={props.state.lens('filter')} />
   </div>
 
 export default {

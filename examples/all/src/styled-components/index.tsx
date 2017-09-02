@@ -30,10 +30,10 @@ const Text = lift(styled.p`
 const App = (props: { state: Atom<AppState> }) =>
   <div>
     <Input
-      {...bind({ value: Atom.log(props.state.lens(x => x.entry), 'Input') })}
+      {...bind({ value: Atom.log(props.state.lens('entry'), 'Input') })}
       type='text'
     />
-    <Text>{props.state.view(x => x.entry)}</Text>
+    <Text>{props.state.view('entry')}</Text>
   </div>
 
 export default {

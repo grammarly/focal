@@ -25,7 +25,7 @@ export interface History<T> {
 
 export namespace History {
   export function create<T>(historyState: Atom<HistoryState<T>>): History<T> {
-    const position = historyState.lens(x => x.position)
+    const position = historyState.lens('position')
     const redoCount = historyState.view(s => s.history.length - s.position - 1)
 
     return {

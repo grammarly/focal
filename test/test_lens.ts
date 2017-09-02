@@ -169,6 +169,22 @@ test('json', t => {
     t.end()
   })
 
+  t.test('type safe key', t => {
+    const s = { a: 5, b: '6' }
+
+    testLens<typeof s, (typeof s)['a']>(
+      t, 'type safe key 1',
+      Lens.key<typeof s>()('a'), s, 5, 6, 7
+    )
+
+    testLens<typeof s, (typeof s)['b']>(
+      t, 'type safe key 2',
+      Lens.key<typeof s>()('b'), s, '6', '7', 'hello'
+    )
+
+    t.end()
+  })
+
   t.end()
 })
 

@@ -29,15 +29,15 @@ class App extends  React.Component<{ state: Atom<AppState> }, {}> {
 
   componentDidMount() {
     const { state } = this.props
-    const timer = state.lens(x => x.timer)
+    const timer = state.lens('timer')
 
     this._subscription = Observable
       .interval(1000)
       .subscribe(_ => {
-        state.lens(x => x.timer).modify(x => x === 0 ? 5 : x - 1)
+        state.lens('timer').modify(x => x === 0 ? 5 : x - 1)
 
         if (timer.get() === 5)
-          state.lens(x => x.searchList).set(getRandomSearchList())
+          state.lens('searchList').set(getRandomSearchList())
       })
   }
 
@@ -47,15 +47,15 @@ class App extends  React.Component<{ state: Atom<AppState> }, {}> {
 
   render() {
     const { state } = this.props
-    const search = state.lens(x => x.searchString)
+    const search = state.lens('searchString')
 
     return (
       <div>
         <F.input {...bind({ value: search })} />
-        <F.div>Timer: {state.view(x => x.timer)}</F.div>
+        <F.div>Timer: {state.view('timer')}</F.div>
         <F.div>
           {
-            Atom.combine(search, state.lens(x => x.searchList), (searchValue, list) => (
+            Atom.combine(search, state.lens('searchList'), (searchValue, list) => (
               <div>
                 {
                   list

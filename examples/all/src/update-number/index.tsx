@@ -37,10 +37,10 @@ function getUpdateNumberObservable(buffer: number[]) {
 }
 
 const App = (props: { state: Atom<AppState> }) => {
-  const value = props.state.view(x => x.value)
+  const value = props.state.view('value')
   return (
     <div>
-      <F.input type='number' {...bind({ value: props.state.lens(x => x.inputValue) })} />
+      <F.input type='number' {...bind({ value: props.state.lens('inputValue') })} />
       <input
         type='submit'
         value='Update'
@@ -65,8 +65,8 @@ const App = (props: { state: Atom<AppState> }) => {
               .switchMap(getUpdateNumberObservable)
               .merge(value.first())
           }
-        </F.span> 
-      </div>   
+        </F.span>
+      </div>
     </div>
   )
 }

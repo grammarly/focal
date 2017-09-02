@@ -214,17 +214,63 @@ test('property expressions', t => {
     t.end()
   })
 
-  t.test('wallaby.js', t => {
-    const originalNodeEnv = process.env.NODE_ENV
-    process.env.NODE_ENV = 'wallaby'
+  t.test('custom prop expr', t => {
+    delete require.cache[require.resolve('../src/lens/json')]
+    const originalEnvExprRe = process.env.FOCAL_PROP_EXPR_RE
+    const originalEnvExprReGroup = process.env.FOCAL_PROP_EXPR_RE_GROUP
 
-    t.deepEqual(Json.parsePropertyPath(
+    process.env.FOCAL_PROP_EXPR_RE = [
+      '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
+        '("use strict";)?',
+        '(\\$_\\$wf\\(\\d+\\);)?',  // wallaby.js code coverage compatability (#36)
+        'return\\s',
+          '(\\$_\\$w\\(\\d+, \\d+\\),\\s)?',  // wallaby.js code coverage compatability (#36)
+          '[^\\.]+\\.(\\S+?);?',
+      '\\}', '$'
+    ].join('\\s*')
+    process.env.FOCAL_PROP_EXPR_RE_GROUP = 4
+
+    const _Json = require('../src/lens/json') as typeof Json
+
+    t.deepEqual(_Json.parsePropertyPath(
       'function (x) { $_$wf(21); return $_$w(124, 53), x.a; }'), ['a'])
 
-    t.throws(() => Json.parsePropertyPath(
+    t.throws(() => _Json.parsePropertyPath(
       'function (x) { $_$wf(21); return x.a, $_$w(124, 53); }'))
 
-    process.env.NODE_ENV = originalNodeEnv
+    delete require.cache[require.resolve('../src/lens/json')]
+    process.env.FOCAL_PROP_EXPR_RE = originalEnvExprRe
+    process.env.FOCAL_PROP_EXPR_RE_GROUP = originalEnvExprReGroup
+
+    t.end()
+  })
+
+  t.test('show warning for misconfigured custom prop expr', t => {
+    delete require.cache[require.resolve('../src/lens/json')]
+    const originalEnvExprRe = process.env.FOCAL_PROP_EXPR_RE
+    const originalEnvExprReGroup = process.env.FOCAL_PROP_EXPR_RE_GROUP
+    const error = console.error
+
+    let consoleErrorWasCalled
+    // tslint:disable-next-line no-function-expression
+    console.error = function (message: any) {
+      error(message)
+      consoleErrorWasCalled = true
+    }
+
+    consoleErrorWasCalled = false
+
+    process.env.FOCAL_PROP_EXPR_RE = 'regexp'
+    process.env.FOCAL_PROP_EXPR_RE_GROUP = 'number'
+    require('../src/lens/json')
+
+    t.ok(consoleErrorWasCalled, 'console.error() was called')
+
+    delete require.cache[require.resolve('../src/lens/json')]
+    process.env.FOCAL_PROP_EXPR_RE = originalEnvExprRe
+    process.env.FOCAL_PROP_EXPR_RE_GROUP = originalEnvExprReGroup
+    console.error = error
+
     t.end()
   })
 

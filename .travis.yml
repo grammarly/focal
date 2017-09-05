@@ -18,7 +18,7 @@ env:
   - TEST_SUITE=todomvc
   - TEST_SUITE=manual
 
-scirpt:
+script:
   - npm run test:$TEST_SUITE
 
 # env:

@@ -11,6 +11,16 @@ cache:
     - examples/todomvc/node_modules
     - test/manual/node_modules
 
+env:
+  matrix:
+  - TEST_SUITE=unit
+  - TEST_SUITE=examples
+  - TEST_SUITE=todomvc
+  - TEST_SUITE=manual
+
+scirpt:
+  - npm run test:$TEST_SUITE
+
 # env:
 #   matrix:
 #   - NODE_VER=4 FULL_VALIDATE=false

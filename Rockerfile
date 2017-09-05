@@ -1,5 +1,7 @@
 FROM dockerhub.grammarly.io/nodejs-yarn:6.9.1-0.19.1
 
+RUN echo "TeamCity build purposefully broken – migrating to Travis" && exit 1
+
 # dev mode
 {{ $dev := (or .dev_mode false) }}
 # token to access private NPM registry

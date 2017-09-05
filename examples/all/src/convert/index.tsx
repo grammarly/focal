@@ -12,7 +12,7 @@ namespace AppState {
 }
 
 const App = (props: { state: Atom<AppState> }) => {
-  const temperature = props.state.lens(x => x.temperature)
+  const temperature = props.state.lens('temperature')
   return (
     <div>
       <F.input {...bind({ value: temperature })} type='text' />

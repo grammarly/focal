@@ -21,11 +21,11 @@ function addItem({ values, entry }: AppState): AppState {
 }
 
 const App = (props: { state: Atom<AppState> }) => {
-  const values = props.state.lens(x => x.values)
+  const values = props.state.lens('values')
   return (
     <div>
       <div>
-        <F.input { ...bind({ value: props.state.lens(x => x.entry) }) } type='text' />
+        <F.input { ...bind({ value: props.state.lens('entry') }) } type='text' />
         <input type='submit' value='Add' onClick={() => props.state.modify(addItem)} />
       </div>
       <F.ul>

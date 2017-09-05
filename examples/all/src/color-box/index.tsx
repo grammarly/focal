@@ -21,8 +21,8 @@ const Box = lift(styled.div`
 `)
 
 const App = (props: { state: Atom<AppState> }) => {
-  const color = props.state.lens(x => x.color)
-  const width = props.state.lens(x => x.width)
+  const color = props.state.lens('color')
+  const width = props.state.lens('width')
   return (
     <Box color={color} width={width}>
       Color: <F.input {...bind({ value: color })} type='text' />

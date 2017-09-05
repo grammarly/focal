@@ -13,10 +13,10 @@ const Counter = (props: { value: Atom<number> }) =>
   </div>
 
 const Node = (props: { state: Atom<NodeState>, removeNode?: () => void }): JSX.Element => {
-  const children = props.state.lens(x => x.children)
+  const children = props.state.lens('children')
   return (
     <div>
-      <Counter value={props.state.lens(x => x.value)} />
+      <Counter value={props.state.lens('value')} />
       {
         props.removeNode &&
         <F.input
@@ -46,7 +46,7 @@ const Node = (props: { state: Atom<NodeState>, removeNode?: () => void }): JSX.E
       <F.input
         type='submit'
         value='Add child'
-        onClick={() => props.state.lens(x => x.children).modify(x => [...x, defaultNodeState])}
+        onClick={() => props.state.lens('children').modify(x => [...x, defaultNodeState])}
       />
     </div>
   )
@@ -54,7 +54,7 @@ const Node = (props: { state: Atom<NodeState>, removeNode?: () => void }): JSX.E
 
 const App = (props: { state: Atom<AppState> }) =>
   <div>
-    <Node state={props.state.lens(x => x.tree)} />
+    <Node state={props.state.lens('tree')} />
   </div>
 
 export default {

@@ -8,7 +8,6 @@ import {
   Observable, Subscriber, Subscription, BehaviorSubject
 } from 'rxjs/Rx'
 
-// tslint:disable no-unused-vars
 /**
  * Read-only atom.
  *
@@ -82,17 +81,65 @@ export interface ReadOnlyAtom<T> extends Observable<T> {
   view<U>(getter: (x: T) => U): ReadOnlyAtom<U>
 
   /**
-   * View this atom through a lens.
+   * View this atom through a given lens.
    *
    * @param lens lens that defines the view
    * @returns atom viewed through the given transformation
    */
   view<U>(lens: Lens<T, U>): ReadOnlyAtom<U>
-  view<U>(prism: Prism<T, U>): ReadOnlyAtom<Option<U>>
-}
-// tslint:enable no-unused-vars
 
-// tslint:disable no-unused-vars
+  /**
+   * View this atom through a given prism.
+   *
+   * @param prism prism that defines the view
+   * @returns atom viewed through the given transformation
+   */
+  view<U>(prism: Prism<T, U>): ReadOnlyAtom<Option<U>>
+
+  /**
+   * View this atom at a property of given name.
+   */
+  view<K extends keyof T>(k: K): ReadOnlyAtom<T[K]>
+
+  /**
+   * View this atom at a give property path.
+   */
+  view<
+    K1 extends keyof T,
+    K2 extends keyof T[K1]
+  >(k1: K1, k2: K2): ReadOnlyAtom<T[K1][K2]>
+
+  /**
+   * View this atom at a give property path.
+   */
+  view<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2]
+  >(k1: K1, k2: K2, k3: K3): ReadOnlyAtom<T[K1][K2][K3]>
+
+  /**
+   * View this atom at a give property path.
+   */
+  view<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2],
+    K4 extends keyof T[K1][K2][K3]
+  >(k1: K1, k2: K2, k3: K3, k4: K4): ReadOnlyAtom<T[K1][K2][K3][K4]>
+
+  /**
+   * View this atom at a give property path.
+   */
+  view<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2],
+    K4 extends keyof T[K1][K2][K3],
+    K5 extends keyof T[K1][K2][K3][K4]
+  >(k1: K1, k2: K2, k3: K3, k4: K4, k5: K5): ReadOnlyAtom<T[K1][K2][K3][K4][K5]>
+}
+
 /**
  * A read/write atom.
  *
@@ -119,11 +166,15 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
   set(newValue: T): void
 
   /**
-   * Lens into this atom. The argument is a property expression, which
-   * is a limited form of a getter, with following restrictions:
+   * Create a lensed atom using a property expression, which specifies
+   * a path inside the atom value's data structure.
+   *
+   * The property expression is a limited form of a getter,
+   * with following restrictions:
    * - should be a pure function
    * - should be a single-expression function (i.e. return immediately)
    * - should only access object properties (nested access is OK)
+   * - should not access array items
    *
    * @example
    * const atom = Atom.create({ a: { b: 5 } })
@@ -133,47 +184,89 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
    * // => { a: { b: 6 } }
    * @template U destination value type
    * @param propExpr property expression
-   * @returns lensed atom
+   * @returns a lensed atom
    */
   lens<U>(propExpr: PropExpr<T, U>): Atom<U>
 
   /**
-   * Lens into this atom.
+   * Create a lensed atom by supplying a lens.
    *
    * @template U destination value type
    * @param lens a lens
-   * @returns lensed atom
+   * @returns a lensed atom
    */
   lens<U>(lens: Lens<T, U>): Atom<U>
+
+  /**
+   * Create a lensed atom that's focused on a property of given name.
+   */
+  lens<K extends keyof T>(k: K): Atom<T[K]>
+
+  /**
+   * Create a lensed atom that's focused on a given property path.
+   */
+  lens<
+    K1 extends keyof T,
+    K2 extends keyof T[K1]
+  >(k1: K1, k2: K2): Atom<T[K1][K2]>
+
+  /**
+   * Create a lensed atom that's focused on a given property path.
+   */
+  lens<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2]
+  >(k1: K1, k2: K2, k3: K3): Atom<T[K1][K2][K3]>
+
+  /**
+   * Create a lensed atom that's focused on a given property path.
+   */
+  lens<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2],
+    K4 extends keyof T[K1][K2][K3]
+  >(k1: K1, k2: K2, k3: K3, k4: K4): Atom<T[K1][K2][K3][K4]>
+
+  /**
+   * Create a lensed atom that's focused on a given property path.
+   */
+  lens<
+    K1 extends keyof T,
+    K2 extends keyof T[K1],
+    K3 extends keyof T[K1][K2],
+    K4 extends keyof T[K1][K2][K3],
+    K5 extends keyof T[K1][K2][K3][K4]
+  >(k1: K1, k2: K2, k3: K3, k4: K4, k5: K5): Atom<T[K1][K2][K3][K4][K5]>
 }
-// tslint:enable no-unused-vars
 
 export abstract class AbstractReadOnlyAtom<T>
     extends BehaviorSubject<T>
     implements ReadOnlyAtom<T> {
   abstract get(): T
 
-  // tslint:disable no-unused-vars
   view(): ReadOnlyAtom<T>
   view<U>(getter: (x: T) => U): ReadOnlyAtom<U>
   view<U>(lens: Lens<T, U>): ReadOnlyAtom<U>
   view<U>(prism: Prism<T, U>): ReadOnlyAtom<Option<U>>
-  // tslint:enable no-unused-vars
+  view<K extends keyof T>(k: K): ReadOnlyAtom<T[K]>
 
-  view<U>(
-    arg?: ((x: T) => U) | Lens<T, U> | Prism<T, U>
-  ): ReadOnlyAtom<U> | ReadOnlyAtom<Option<U>> | ReadOnlyAtom<T> {
-    return arg
-      ? typeof arg === 'function'
-        // handle view(getter) case
-        // tslint:disable-next-line no-use-before-declare
-        ? new AtomViewImpl<T, U>(this, arg as (x: T) => U)
-        // handle view(lens) and view(prism) cases
-        // @NOTE single case handles both lens and prism arg
-        // tslint:disable-next-line no-use-before-declare
-        : new AtomViewImpl<T, U>(this, x => (arg as Lens<T, U>).get(x))
-      // handle view() case
+  view<U>(...args: any[]): ReadOnlyAtom<any> {
+    // tslint:disable no-use-before-declare
+    return args[0] !== undefined
+      // view(getter) case
+      ? typeof args[0] === 'function'
+        ? new AtomViewImpl<T, U>(this, args[0] as (x: T) => U)
+        // view('key') case
+        : typeof args[0] === 'string'
+          ? new AtomViewImpl<T, U>(this, Lens.compose<T, U>(...args.map(Lens.key())).get)
+          // view(lens) and view(prism) cases
+          // @NOTE single case handles both lens and prism arg
+          : new AtomViewImpl<T, U>(this, x => (args[0] as Lens<T, U>).get(x))
+      // view() case
       : this as ReadOnlyAtom<T>
+    // tslint:enable no-use-before-declare
   }
 }
 
@@ -186,20 +279,22 @@ export abstract class AbstractAtom<T>
     this.modify(() => x)
   }
 
-  // tslint:disable no-unused-vars
   lens<U>(propExpr: PropExpr<T, U>): Atom<U>
   lens<U>(lens: Lens<T, U>): Atom<U>
-  // tslint:enable no-unused-vars
+  lens<K extends keyof T>(k: K): Atom<T[K]>
 
-  lens<U>(arg: Lens<T, U> | PropExpr<T, U>): Atom<U> {
-    return typeof arg === 'function'
-      // handle lens(prop expr) case
-      // tslint:disable-next-line no-use-before-declare
-      ? new LensedAtom<T, U>(
-        this, Lens.prop(arg as (x: T) => U), structEq)
-      // handle lens(lens) case
-      // tslint:disable-next-line no-use-before-declare
-      : new LensedAtom<T, U>(this, arg as Lens<T, U>, structEq)
+  lens<U>(arg1: Lens<T, U> | PropExpr<T, U> | string, ...args: string[]): Atom<any> {
+    // tslint:disable no-use-before-declare
+
+    // lens(prop expr) case
+    return typeof arg1 === 'function'
+      ? new LensedAtom<T, U>(this, Lens.prop(arg1 as (x: T) => U), structEq)
+      // lens('key') case
+      : typeof arg1 === 'string'
+        ? new LensedAtom(this, Lens.compose(Lens.key(arg1), ...args.map(Lens.key)), structEq)
+        // lens(lens) case
+        : new LensedAtom<T, U>(this, arg1 as Lens<T, U>, structEq)
+    // tslint:enable no-use-before-declare
   }
 }
 

@@ -113,7 +113,6 @@ export namespace Lens {
     }
   }
 
-  // tslint:disable no-unused-vars
   /**
    * Compose several lenses, where each subsequent lens' state type is the previous
    * lens' output type.
@@ -126,18 +125,22 @@ export namespace Lens {
    * @template A the resulting lens' output
    */
   export function compose<T, U>(l: Lens<T, U>): Lens<T, U>
+
   export function compose<T1, T2, U>(l1: Lens<T1, T2>, l2: Lens<T2, U>): Lens<T1, U>
+
   export function compose<T1, T2, T3, U>(
     l1: Lens<T1, T2>, l2: Lens<T2, T3>, l3: Lens<T3, U>
   ): Lens<T1, U>
+
   export function compose<T1, T2, T3, T4, U>(
     l1: Lens<T1, T2>, l2: Lens<T2, T3>, l3: Lens<T3, T4>, l4: Lens<T4, U>
   ): Lens<T1, U>
+
   export function compose<T1, T2, T3, T4, T5, U>(
     l1: Lens<T1, T2>, l2: Lens<T2, T3>, l3: Lens<T3, T4>, l4: Lens<T4, T5>, l5: Lens<T5, U>
   ): Lens<T1, U>
+
   export function compose<T, U>(...lenses: Lens<any, any>[]): Lens<T, U>
-  // tslint:enable no-unused-vars
 
   export function compose<T, U>(...lenses: Lens<any, any>[]): Lens<T, U> {
     if (lenses.length === 0) {

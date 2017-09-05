@@ -54,7 +54,7 @@ export function parsePropertyPath(getterSource: string): string[] {
 }
 
 /**
- * Extract a list of property names from a {@link LensExpr}
+ * Extract a list of property names from a {@link PropExpr}
  *
  * @param target The target property expressions
  * @example
@@ -71,20 +71,84 @@ export function extractPropertyPath<TObject, TProperty>(
   return parsePropertyPath(target.toString())
 }
 
-// tslint:disable no-unused-vars
-export function keyImpl(k: string): Prism<{ [k: string]: any }, any>
-export function keyImpl<TValue>(k: string): Prism<{ [k: string]: TValue }, TValue>
-// tslint:enable no-unused-vars
-
-export function keyImpl(k: string): Prism<{ [k: string]: any }, any> {
-  return Lens.create(
-    (s: { [k: string]: any }) => s[k] as Option<any>,
-    (v: any, s: { [k: string]: any }) => setKey(k, v, s)
-  )
+// @NOTE only need this interface to add JSDocs for this call.
+export interface KeyImplFor<TObject> {
+  /**
+   * Create a lens focusing on a key of an object.
+   *
+   * Requires two subsequent calls, first with only a type argument and no function
+   * arguments and second with the key argument.
+   *
+   * This enables better auto-completion, and is required because TypeScript does not
+   * allow to specify only some of the type arguments.
+   *
+   * This is the second call, where you supply the key argument.
+   * @example
+   * interface SomeObject {
+   *   someProp: number
+   * }
+   *
+   * const lens = Lens.key<SomeObject>()('someProp')
+   */
+  <K extends keyof TObject>(k: K): Lens<TObject, TObject[K]>
 }
 
-export function unsafeKeyImpl<TValue>(k: string): Prism<{ [k: string]: any }, TValue> {
-  return Lens.key(k)
+/**
+ * Create a prism focusing on a key of a dictionary.
+ *
+ * @param k the key to focus on
+ */
+export function keyImpl<TValue = any>(k: string): Prism<{ [k: string]: TValue }, TValue>
+
+/**
+ * Create a lens focusing on a key of an object.
+ *
+ * Requires two subsequent calls, first with only a type argument and no function
+ * arguments and second with the key argument.
+ *
+ * This enables better auto-completion, and is required because TypeScript does not
+ * allow to specify only some of the type arguments.
+ *
+ * This is the first call, where you only supply the type argument.
+ *
+ * @example
+ * interface SomeObject {
+ *   someProp: number
+ * }
+ *
+ * const lens = Lens.key<SomeObject>()('someProp')
+ * @template TObject type of the data structure the lens is focusing into
+ */
+// @NOTE we're doing this in two subsequent function applications because TS can either
+// infer all type parameters or none, and in this case there's nothing for it to infer the
+// TObject parameter from.
+//
+// By doing this in two function applications we can make TS infer they key type parameter
+// (K), which enables auto-completion for keys without needing to also state the key twice,
+// once as a type argument, and once as a function argument.
+//
+// Without this hack, it would look like this:
+//   keyImpl<SomeObject, 'someKey'>('someKey')
+//
+// Instead, we get this:
+//   keyImpl<SomeObject>()('someKey')
+//
+// Pretty cool!
+export function keyImpl<TObject = any>(): KeyImplFor<TObject>
+
+export function keyImpl<TObject>(k?: string) {
+  return k === undefined
+    // type-safe key
+    ? <K extends keyof TObject>(k: K): Lens<TObject, TObject[K]> =>
+      Lens.create<TObject, TObject[K]>(
+        (s: TObject) => s[k],
+        (v: TObject[K], s: TObject) => setKey(k, v, s)
+      )
+    // untyped key
+    : Lens.create(
+      (s: { [k: string]: any }) => s[k] as Option<any>,
+      (v: any, s: { [k: string]: any }) => setKey(k, v, s)
+    )
 }
 
 export function propImpl<TObject, TProperty>(
@@ -93,7 +157,7 @@ export function propImpl<TObject, TProperty>(
   // @TODO can we optimize this?
   return Lens.compose<TObject, TProperty>(
     ...extractPropertyPath(getter as PropExpr<TObject, TProperty>)
-      .map(keyImpl))
+      .map(keyImpl()))
 }
 
 export function indexImpl<TItem>(i: number): Prism<TItem[], TItem> {
@@ -149,25 +213,7 @@ export function findImpl<T>(predicate: (x: T) => boolean): Prism<T[], T> {
 // together with the lens type.
 declare module './base' {
   export namespace Lens {
-    /**
-     * Create a prism to an object's key.
-     *
-     * @static
-     * @template TValue the type of key's value
-     * @param k target key name
-     * @returns a lens to an object's value at key k
-     */
     export let key: typeof keyImpl
-
-    /**
-     * Create an *unsafe* prism to an object's key.
-     *
-     * This optic is unsafe in it's generic parameter, as it disregards the
-     * actual type of the value at runtime – it just does unsafe type assertion.
-     *
-     * @TODO how's this different from key?
-     */
-    export let unsafeKey: typeof unsafeKeyImpl
 
     /**
      * Create a lens to an object's property. The argument is a property expression, which
@@ -222,7 +268,6 @@ declare module './base' {
 }
 
 Lens.key = keyImpl
-Lens.unsafeKey = unsafeKeyImpl
 Lens.prop = propImpl
 Lens.index = indexImpl
 Lens.withDefault = withDefaultImpl

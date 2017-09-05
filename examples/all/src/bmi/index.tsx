@@ -19,8 +19,8 @@ function getBmi(weight: number, height: number) {
 }
 
 const App = (props: { state: Atom<AppState> }) => {
-  const weight = props.state.lens(x => x.weightKg)
-  const height = props.state.lens(x => x.heightCm)
+  const weight = props.state.lens('weightKg')
+  const height = props.state.lens('heightCm')
 
   return (
     <div>

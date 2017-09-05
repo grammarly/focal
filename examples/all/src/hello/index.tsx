@@ -14,8 +14,8 @@ namespace AppState {
 }
 
 const App = (props: { state: Atom<AppState> }) => {
-  const firstName = props.state.lens(x => x.firstName)
-  const lastName = props.state.lens(x => x.lastName)
+  const firstName = props.state.lens('firstName')
+  const lastName = props.state.lens('lastName')
   return (
     <div>
       First Name: <F.input {...bind({ value: firstName })} type='text' />

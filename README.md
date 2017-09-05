@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/grammarly/focal.svg?branch=master)](https://travis-ci.org/grammarly/focal)
+[![npm version](https://badge.fury.io/js/%40grammarly%2Ffocal.svg)](http://badge.fury.io/js/%40grammarly%2Ffocal)
+
 # Focal 🔍
 
 Type safe, expressive and composable state management for [React](https://facebook.github.io/react/) applications.

@@ -1,7 +1,6 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.0.0-dev",
-  "versionBase": "0.6",
+  "version": "0.6.433",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -18,9 +17,8 @@
     "test:examples": "cd examples/all && rm -rf node_modules/@grammarly/focal && npm i --ignore-scripts && npm run build",
     "test:todomvc": "cd examples/todomvc && rm -rf node_modules/@grammarly/focal && npm i --ignore-scripts && npm run build",
     "test:watch": "watch 'npm test' src test",
-    "ci": "npm run test",
-    "get-ci-version": "node -e \"console.log(require('./package.json').versionBase + '.' + process.argv[1])\"",
-    "lint": "tslint --type-check --project tsconfig.json -c tslint.json"
+    "lint": "tslint --type-check --project tsconfig.json -c tslint.json",
+    "preversion": "if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then echo \"Not on the master branch.\" && exit 1; fi"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "contributors": [

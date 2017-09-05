@@ -6,8 +6,10 @@ node_js:
 
 cache:
   yarn: true
-  # directories:
-  #   - node_modules
+  directories:
+    - examples/all/node_modules
+    - examples/todomvc/node_modules
+    - test/manual/node_modules
 
 # env:
 #   matrix:

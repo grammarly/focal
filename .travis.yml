@@ -19,6 +19,8 @@ jobs:
       script: npm run build && npm pack
       deploy:
         provider: releases
+        api_key:
+          secure: $GITHUB_API_KEY
         skip_cleanup: true
         file_glob: true
         file: grammarly-focal-*.tgz

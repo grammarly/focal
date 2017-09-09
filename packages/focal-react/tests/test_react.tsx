@@ -1,5 +1,6 @@
 import * as test from 'tape'
 import { Observable } from 'rxjs/Observable'
+import { Atom } from 'focal'
 import 'rxjs/add/observable/of'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/server'
@@ -8,7 +9,6 @@ import {
   F,
   lift,
   bind,
-  Atom,
   reactiveList,
   classes,
   bindElementProps

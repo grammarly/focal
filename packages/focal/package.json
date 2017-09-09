@@ -1,14 +1,18 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.6.433",
+  "version": "0.7.0",
   "description": "FRP UI with React, observables, immutable data and lenses",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
+  "files": [
+    "dist/src/"
+  ],
   "scripts": {
-    "test": "npm run test:examples && npm run test:todomvc",
-    "test:examples": "cd examples/all && rm -rf node_modules/@grammarly/focal && npm i --ignore-scripts && npm run build",
-    "test:todomvc": "cd examples/todomvc && rm -rf node_modules/@grammarly/focal && npm i --ignore-scripts && npm run build",
-    "preversion": "if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then echo \"Not on the master branch.\" && exit 1; fi",
-    "postversion": "git push && git push --tags",
-    "release": "echo Publishing v${VER:?\"Usage: VER=1.2.3 npm run release\"}... && npm publish https://github.com/grammarly/focal/releases/download/v$VER/grammarly-focal-$VER.tgz --access public"
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && tsc && npm run lint",
+    "test": "npm run build && tape ./dist/test/**/*.js | tap-spec",
+    "test:watch": "watch 'npm test' src test",
+    "lint": "tslint --type-check --project tsconfig.json -c tslint.json"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "contributors": [
@@ -65,7 +69,15 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "lerna": "2.0.0-beta.38"
+    "@grammarly/tslint-config": "0.5.1",
+    "@types/node": "^6.0.34",
+    "@types/tape": "^4.2.27",
+    "tslint": "5.2.0",
+    "typescript": "2.4.1",
+    "watch": "^0.18.0",
+    "rxjs": "5.4.2"
   },
-  "peerDependencies": {}
+  "peerDependencies": {
+    "rxjs": "5.4.2"
+  }
 }

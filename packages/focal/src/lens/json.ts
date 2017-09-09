@@ -5,10 +5,10 @@
  */
 
 import {
-  structEq,
   setKey,
   conservatively,
   findIndex,
+  structEq,
   Option
 } from './../utils'
 

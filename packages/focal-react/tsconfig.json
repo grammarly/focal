@@ -19,7 +19,7 @@
     "strictNullChecks": true,
     "noImplicitThis": true,
     "lib": ["es6", "es2015", "dom", "scripthost"],
-    "types": []
+    "typeRoots": ["node_modules/@types"]
   },
   "include": [
     "src/**/*.ts*",

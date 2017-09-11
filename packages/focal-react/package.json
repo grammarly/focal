@@ -8,6 +8,7 @@
     "dist/src/"
   ],
   "scripts": {
+    "postinstall": "npm run build",
     "clean": "rm -rf ./dist",
     "build": "npm run clean && tsc && npm run lint",
     "test": "npm run test:unit && npm run test:manual",
@@ -71,10 +72,10 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@grammarly/focal": "0.7.0",    
     "@grammarly/tslint-config": "0.5.1",
     "@types/node": "^6.0.34",
     "@types/tape": "^4.2.27",
-    "focal": "0.7.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.5.1",
     "tslint": "5.2.0",

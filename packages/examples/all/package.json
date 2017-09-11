@@ -8,7 +8,6 @@
     "npm": ">=3.0.0"
   },
   "scripts": {
-    "preinstall": "cd ../.. && (yarn || npm i) && npm run build",
     "build:webpack": "NODE_ENV=production webpack --config webpack/webpack.prod.js",
     "build": "npm run clean && npm run build:static && npm run build:webpack",
     "build:static": "cp -r ./static ./build",
@@ -20,7 +19,8 @@
   "author": "Grammarly, Inc.",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grammarly/focal": "file:../../",
+    "@grammarly/focal": "0.7.0",
+    "@grammarly/focal-react": "0.7.0",
     "@grammarly/tslint-config": "^0.3.1",
     "@types/react": "15.0.38",
     "@types/react-dom": "15.5.1",

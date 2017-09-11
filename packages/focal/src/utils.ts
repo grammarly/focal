@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { equals as structEq } from './equals'
 export { equals as structEq } from './equals'
 

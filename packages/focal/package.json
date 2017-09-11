@@ -8,6 +8,7 @@
     "dist/src/"
   ],
   "scripts": {
+    "postinstall": "npm run build",
     "clean": "rm -rf ./dist",
     "build": "npm run clean && tsc && npm run lint",
     "test": "npm run build && tape ./dist/test/**/*.js | tap-spec",

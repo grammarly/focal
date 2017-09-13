@@ -26,3 +26,6 @@ jobs:
         file: grammarly-focal-*.tgz
         on:
           tags: true
+
+notifications:
+  email: false

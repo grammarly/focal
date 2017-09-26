@@ -9,8 +9,13 @@ cache:
     - examples/todomvc/node_modules
     - test/manual/node_modules
 
+env:
+- V_REACT=15.6.1 V_REACT_TYPES=15.0.38 V_REACT_DOM_TYPES=15.5.1 V_RXJS=5.4.2
+- V_REACT=16.0.0 V_REACT_TYPES=16.0.7 V_REACT_DOM_TYPES=15.5.4 V_RXJS=5.4.3
+
 jobs:
   include:
+    - script: yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS
     - script: npm run test:unit
     - script: npm run test:examples
     - script: npm run test:todomvc

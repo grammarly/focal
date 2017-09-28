@@ -32,98 +32,167 @@ export interface ObservableReactDOMAttributes<E> {
   children?: React.ReactNode | Observable<React.ReactNode>
   // Clipboard Events
   onCopy?: React.ClipboardEventHandler<E> | Observable<React.ClipboardEventHandler<E>>
+  onCopyCapture?: React.ClipboardEventHandler<E> | Observable<React.ClipboardEventHandler<E>>
   onCut?: React.ClipboardEventHandler<E> | Observable<React.ClipboardEventHandler<E>>
+  onCutCapture?: React.ClipboardEventHandler<E> | Observable<React.ClipboardEventHandler<E>>
   onPaste?: React.ClipboardEventHandler<E> | Observable<React.ClipboardEventHandler<E>>
+  onPasteCapture?: React.ClipboardEventHandler<E> | Observable<React.ClipboardEventHandler<E>>
 
   // Composition Events
   onCompositionEnd?: React.CompositionEventHandler<E> | Observable<React.CompositionEventHandler<E>>
+  onCompositionEndCapture?: React.CompositionEventHandler<E> | Observable<React.CompositionEventHandler<E>>
   onCompositionStart?: React.CompositionEventHandler<E> | Observable<React.CompositionEventHandler<E>>
+  onCompositionStartCapture?: React.CompositionEventHandler<E> | Observable<React.CompositionEventHandler<E>>
   onCompositionUpdate?: React.CompositionEventHandler<E> | Observable<React.CompositionEventHandler<E>>
+  onCompositionUpdateCapture?: React.CompositionEventHandler<E> | Observable<React.CompositionEventHandler<E>>
 
   // Focus Events
   onFocus?: React.FocusEventHandler<E> | Observable<React.FocusEventHandler<E>>
+  onFocusCapture?: React.FocusEventHandler<E> | Observable<React.FocusEventHandler<E>>
   onBlur?: React.FocusEventHandler<E> | Observable<React.FocusEventHandler<E>>
+  onBlurCapture?: React.FocusEventHandler<E> | Observable<React.FocusEventHandler<E>>
 
   // Form Events
   onChange?: React.FormEventHandler<E> | Observable<React.FormEventHandler<E>>
+  onChangeCapture?: React.FormEventHandler<E> | Observable<React.FormEventHandler<E>>
   onInput?: React.FormEventHandler<E> | Observable<React.FormEventHandler<E>>
+  onInputCapture?: React.FormEventHandler<E> | Observable<React.FormEventHandler<E>>
+  onReset?: React.FormEventHandler<E> | Observable<React.FormEventHandler<E>>
+  onResetCapture?: React.FormEventHandler<E> | Observable<React.FormEventHandler<E>>
   onSubmit?: React.FormEventHandler<E> | Observable<React.FormEventHandler<E>>
+  onSubmitCapture?: React.FormEventHandler<E> | Observable<React.FormEventHandler<E>>
+  onInvalid?: React.FormEventHandler<E> | Observable<React.FormEventHandler<E>>
+  onInvalidCapture?: React.FormEventHandler<E> | Observable<React.FormEventHandler<E>>
 
   // Image Events
   onLoad?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onLoadCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onError?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>> // also a Media Event
+  onErrorCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>> // also a Media Event
 
   // Keyboard Events
   onKeyDown?: React.KeyboardEventHandler<E> | Observable<React.KeyboardEventHandler<E>>
+  onKeyDownCapture?: React.KeyboardEventHandler<E> | Observable<React.KeyboardEventHandler<E>>
   onKeyPress?: React.KeyboardEventHandler<E> | Observable<React.KeyboardEventHandler<E>>
+  onKeyPressCapture?: React.KeyboardEventHandler<E> | Observable<React.KeyboardEventHandler<E>>
   onKeyUp?: React.KeyboardEventHandler<E> | Observable<React.KeyboardEventHandler<E>>
+  onKeyUpCapture?: React.KeyboardEventHandler<E> | Observable<React.KeyboardEventHandler<E>>
 
   // Media Events
   onAbort?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onAbortCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onCanPlay?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onCanPlayCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onCanPlayThrough?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onCanPlayThroughCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onDurationChange?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onDurationChangeCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onEmptied?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onEmptiedCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onEncrypted?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onEncryptedCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onEnded?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onEndedCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onLoadedData?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onLoadedDataCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onLoadedMetadata?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onLoadedMetadataCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onLoadStart?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onLoadStartCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onPause?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onPauseCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onPlay?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onPlayCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onPlaying?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onPlayingCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onProgress?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onProgressCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onRateChange?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onRateChangeCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onSeeked?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onSeekedCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onSeeking?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onSeekingCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onStalled?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onStalledCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onSuspend?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onSuspendCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onTimeUpdate?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onTimeUpdateCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onVolumeChange?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onVolumeChangeCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
   onWaiting?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onWaitingCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
 
   // MouseEvents
   onClick?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
+  onClickCapture?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
   onContextMenu?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
+  onContextMenuCapture?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
   onDoubleClick?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
+  onDoubleClickCapture?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
   onDrag?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
+  onDragCapture?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
   onDragEnd?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
+  onDragEndCapture?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
   onDragEnter?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
+  onDragEnterCapture?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
   onDragExit?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
+  onDragExitCapture?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
   onDragLeave?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
+  onDragLeaveCapture?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
   onDragOver?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
+  onDragOverCapture?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
   onDragStart?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
+  onDragStartCapture?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
   onDrop?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
+  onDropCapture?: React.DragEventHandler<E> | Observable<React.DragEventHandler<E>>
   onMouseDown?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
+  onMouseDownCapture?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
   onMouseEnter?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
   onMouseLeave?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
   onMouseMove?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
+  onMouseMoveCapture?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
   onMouseOut?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
+  onMouseOutCapture?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
   onMouseOver?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
+  onMouseOverCapture?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
   onMouseUp?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
+  onMouseUpCapture?: React.MouseEventHandler<E> | Observable<React.MouseEventHandler<E>>
 
   // Selection Events
   onSelect?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
+  onSelectCapture?: React.ReactEventHandler<E> | Observable<React.ReactEventHandler<E>>
 
   // Touch Events
   onTouchCancel?: React.TouchEventHandler<E> | Observable<React.TouchEventHandler<E>>
+  onTouchCancelCapture?: React.TouchEventHandler<E> | Observable<React.TouchEventHandler<E>>
   onTouchEnd?: React.TouchEventHandler<E> | Observable<React.TouchEventHandler<E>>
+  onTouchEndCapture?: React.TouchEventHandler<E> | Observable<React.TouchEventHandler<E>>
   onTouchMove?: React.TouchEventHandler<E> | Observable<React.TouchEventHandler<E>>
+  onTouchMoveCapture?: React.TouchEventHandler<E> | Observable<React.TouchEventHandler<E>>
   onTouchStart?: React.TouchEventHandler<E> | Observable<React.TouchEventHandler<E>>
+  onTouchStartCapture?: React.TouchEventHandler<E> | Observable<React.TouchEventHandler<E>>
 
   // UI Events
   onScroll?: React.UIEventHandler<E> | Observable<React.UIEventHandler<E>>
+  onScrollCapture?: React.UIEventHandler<E> | Observable<React.UIEventHandler<E>>
 
   // Wheel Events
   onWheel?: React.WheelEventHandler<E> | Observable<React.WheelEventHandler<E>>
+  onWheelCapture?: React.WheelEventHandler<E> | Observable<React.WheelEventHandler<E>>
 
   // Animation Events
   onAnimationStart?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
+  onAnimationStartCapture?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
   onAnimationEnd?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
+  onAnimationEndCapture?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
   onAnimationIteration?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
+  onAnimationIterationCapture?: React.AnimationEventHandler<E> | Observable<React.AnimationEventHandler<E>>
 
   // Transition Events
   onTransitionEnd?: React.TransitionEventHandler<E> | Observable<React.TransitionEventHandler<E>>
+  onTransitionEndCapture?: React.TransitionEventHandler<E> | Observable<React.TransitionEventHandler<E>>
 }
 
 export interface ObservableReactHTMLAttributes<E> extends ObservableReactDOMAttributes<E> {

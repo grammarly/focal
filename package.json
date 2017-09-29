@@ -1,6 +1,6 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.6.433",
+  "version": "0.6.434",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -59,6 +59,10 @@
     {
       "name": "Anton Verinov",
       "email": "anton@verinov.com"
+    },
+    {
+      "name": "Oleksii Levzhynskyi",
+      "email": "oleksii.levzhynskyi@gmail.com"
     }
   ],
   "keywords": [

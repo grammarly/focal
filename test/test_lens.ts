@@ -157,6 +157,46 @@ test('json', t => {
     t.end()
   })
 
+  t.test('withDefault 2', t => {
+    const s = { a: 5, b: 6 } // c is undefined
+    const l1 = Lens.key<number>('a').compose(Lens.withDefault(666))
+    const l2 = Lens.key<number>('c').compose(Lens.withDefault(666))
+
+    t.is(l1.get(s), 5, 'get defined')
+    t.deepEqual(l1.set(6, s), { a: 6, b: 6 }, 'set defined')
+    t.is(l2.get(s), 666, 'get undefined')
+    t.deepEqual(l2.set(6, s), { a: 5, b: 6, c: 6 }, 'set undefined')
+
+    t.end()
+  })
+
+  t.test('withDefault lens tests', t => {
+    const s = { a: 5, b: 6 } // c is undefined
+    const l1 = Lens.key<number>('a').compose(Lens.withDefault(666))
+    const l2 = Lens.key<number>('c').compose(Lens.withDefault(666))
+
+    testLens(t, 'test 1', l1, s, 5, 6, 7)
+    testLens(t, 'test 2', l2, s, 666, 6, 7)
+
+    t.end()
+  })
+
+  t.test('index + withDefault #17', t => {
+    testLens(t,
+      'test lens, basic',
+      Lens.index<number>(0).compose(Lens.withDefault(5)),
+      [1, 2, 3], 1, 10, 5
+    )
+
+    testLens(t,
+      'testLens, default values',
+      Lens.index<number>(0).compose(Lens.withDefault(5)),
+      [5, 5, 5], 5, 10, 5
+    )
+
+    t.end()
+  })
+
   t.test('withDefault transforms Prism into Lens', t => {
     const s = { a: 5, b: 6 } // c is undefined
     const l1 = Lens.key<number>('a').compose(Lens.withDefault(666))

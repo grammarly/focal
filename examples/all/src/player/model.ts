@@ -24,7 +24,7 @@ export const audioSrc = 'http://api.audiotool.com/track/volution/play.mp3'
 
 export class AudioModel {
   private audio: HTMLAudioElement
-  private durationSubscription: Subscription  
+  private durationSubscription: Subscription
   private timeSubscription: Subscription
   private statusSubscription: Subscription
   private volumeSubscription: Subscription

@@ -3,123 +3,164 @@
  *
  * @module
  */
-// tslint:disable-next-line no-unused-variable
+import * as React from 'react'
 import { ObservableReactHTMLProps } from './observablePropTypes'
-// tslint:disable-next-line no-unused-variable
-import { liftIntrinsic, LiftWrapperProps, LiftedIntrinsicComponentProps } from './react'
+import { LiftWrapperProps, LiftWrapper } from './react'
 
-export const a = liftIntrinsic<HTMLAnchorElement>('a')
-export const abbr = liftIntrinsic<HTMLElement>('abbr')
-export const address = liftIntrinsic<HTMLElement>('address')
-export const area = liftIntrinsic<HTMLAreaElement>('area')
-export const article = liftIntrinsic<HTMLElement>('article')
-export const aside = liftIntrinsic<HTMLElement>('aside')
-export const audio = liftIntrinsic<HTMLAudioElement>('audio')
-export const b = liftIntrinsic<HTMLElement>('b')
-export const base = liftIntrinsic<HTMLBaseElement>('base')
-export const bdi = liftIntrinsic<HTMLElement>('bdi')
-export const bdo = liftIntrinsic<HTMLElement>('bdo')
-export const big = liftIntrinsic<HTMLElement>('big')
-export const blockquote = liftIntrinsic<HTMLElement>('blockquote')
-export const body = liftIntrinsic<HTMLBodyElement>('body')
-export const br = liftIntrinsic<HTMLBRElement>('br')
-export const button = liftIntrinsic<HTMLButtonElement>('button')
-export const canvas = liftIntrinsic<HTMLCanvasElement>('canvas')
-export const caption = liftIntrinsic<HTMLElement>('caption')
-export const cite = liftIntrinsic<HTMLElement>('cite')
-export const code = liftIntrinsic<HTMLElement>('code')
-export const col = liftIntrinsic<HTMLTableColElement>('col')
-export const colgroup = liftIntrinsic<HTMLTableColElement>('colgroup')
-export const data = liftIntrinsic<HTMLElement>('data')
-export const datalist = liftIntrinsic<HTMLDataListElement>('datalist')
-export const dd = liftIntrinsic<HTMLElement>('dd')
-export const del = liftIntrinsic<HTMLElement>('del')
-export const details = liftIntrinsic<HTMLElement>('details')
-export const dfn = liftIntrinsic<HTMLElement>('dfn')
-export const dialog = liftIntrinsic<HTMLElement>('dialog')
-export const div = liftIntrinsic<HTMLDivElement>('div')
-export const dl = liftIntrinsic<HTMLDListElement>('dl')
-export const dt = liftIntrinsic<HTMLElement>('dt')
-export const em = liftIntrinsic<HTMLElement>('em')
-export const embed = liftIntrinsic<HTMLEmbedElement>('embed')
-export const fieldset = liftIntrinsic<HTMLFieldSetElement>('fieldset')
-export const figcaption = liftIntrinsic<HTMLElement>('figcaption')
-export const figure = liftIntrinsic<HTMLElement>('figure')
-export const footer = liftIntrinsic<HTMLElement>('footer')
-export const form = liftIntrinsic<HTMLFormElement>('form')
-export const h1 = liftIntrinsic<HTMLHeadingElement>('h1')
-export const h2 = liftIntrinsic<HTMLHeadingElement>('h2')
-export const h3 = liftIntrinsic<HTMLHeadingElement>('h3')
-export const h4 = liftIntrinsic<HTMLHeadingElement>('h4')
-export const h5 = liftIntrinsic<HTMLHeadingElement>('h5')
-export const h6 = liftIntrinsic<HTMLHeadingElement>('h6')
-export const head = liftIntrinsic<HTMLHeadElement>('head')
-export const header = liftIntrinsic<HTMLElement>('header')
-export const hgroup = liftIntrinsic<HTMLElement>('hgroup')
-export const hr = liftIntrinsic<HTMLHRElement>('hr')
-export const html = liftIntrinsic<HTMLHtmlElement>('html')
-export const i = liftIntrinsic<HTMLElement>('i')
-export const iframe = liftIntrinsic<HTMLIFrameElement>('iframe')
-export const img = liftIntrinsic<HTMLImageElement>('img')
-export const input = liftIntrinsic<HTMLInputElement>('input')
-export const ins = liftIntrinsic<HTMLModElement>('ins')
-export const kbd = liftIntrinsic<HTMLElement>('kbd')
-export const keygen = liftIntrinsic<HTMLElement>('keygen')
-export const label = liftIntrinsic<HTMLLabelElement>('label')
-export const legend = liftIntrinsic<HTMLLegendElement>('legend')
-export const li = liftIntrinsic<HTMLLIElement>('li')
-export const link = liftIntrinsic<HTMLLinkElement>('link')
-export const main = liftIntrinsic<HTMLElement>('main')
-export const map = liftIntrinsic<HTMLMapElement>('map')
-export const mark = liftIntrinsic<HTMLElement>('mark')
-export const menu = liftIntrinsic<HTMLElement>('menu')
-export const menuitem = liftIntrinsic<HTMLElement>('menuitem')
-export const meta = liftIntrinsic<HTMLMetaElement>('meta')
-export const meter = liftIntrinsic<HTMLElement>('meter')
-export const nav = liftIntrinsic<HTMLElement>('nav')
-export const noscript = liftIntrinsic<HTMLElement>('noscript')
-export const object = liftIntrinsic<HTMLObjectElement>('object')
-export const ol = liftIntrinsic<HTMLOListElement>('ol')
-export const optgroup = liftIntrinsic<HTMLOptGroupElement>('optgroup')
-export const option = liftIntrinsic<HTMLOptionElement>('option')
-export const output = liftIntrinsic<HTMLElement>('output')
-export const p = liftIntrinsic<HTMLParagraphElement>('p')
-export const param = liftIntrinsic<HTMLParamElement>('param')
-export const picture = liftIntrinsic<HTMLElement>('picture')
-export const pre = liftIntrinsic<HTMLPreElement>('pre')
-export const progress = liftIntrinsic<HTMLProgressElement>('progress')
-export const q = liftIntrinsic<HTMLQuoteElement>('q')
-export const rp = liftIntrinsic<HTMLElement>('rp')
-export const rt = liftIntrinsic<HTMLElement>('rt')
-export const ruby = liftIntrinsic<HTMLElement>('ruby')
-export const s = liftIntrinsic<HTMLElement>('s')
-export const samp = liftIntrinsic<HTMLElement>('samp')
-export const script = liftIntrinsic<HTMLElement>('script')
-export const section = liftIntrinsic<HTMLElement>('section')
-export const select = liftIntrinsic<HTMLSelectElement>('select')
-export const small = liftIntrinsic<HTMLElement>('small')
-export const source = liftIntrinsic<HTMLSourceElement>('source')
-export const span = liftIntrinsic<HTMLSpanElement>('span')
-export const strong = liftIntrinsic<HTMLElement>('strong')
-export const style = liftIntrinsic<HTMLStyleElement>('style')
-export const sub = liftIntrinsic<HTMLElement>('sub')
-export const summary = liftIntrinsic<HTMLElement>('summary')
-export const sup = liftIntrinsic<HTMLElement>('sup')
-export const table = liftIntrinsic<HTMLTableElement>('table')
-export const tbody = liftIntrinsic<HTMLTableSectionElement>('tbody')
-export const td = liftIntrinsic<HTMLTableDataCellElement>('td')
-export const textarea = liftIntrinsic<HTMLTextAreaElement>('textarea')
-export const tfoot = liftIntrinsic<HTMLTableSectionElement>('tfoot')
-export const th = liftIntrinsic<HTMLTableHeaderCellElement>('th')
-export const thead = liftIntrinsic<HTMLTableSectionElement>('thead')
-export const time = liftIntrinsic<HTMLElement>('time')
-export const title = liftIntrinsic<HTMLTitleElement>('title')
-export const tr = liftIntrinsic<HTMLTableRowElement>('tr')
-export const track = liftIntrinsic<HTMLTrackElement>('track')
-export const u = liftIntrinsic<HTMLElement>('u')
-export const ul = liftIntrinsic<HTMLUListElement>('ul')
-export const var_ = liftIntrinsic<HTMLElement>('var')
-export const video = liftIntrinsic<HTMLVideoElement>('video')
-export const wbr = liftIntrinsic<HTMLElement>('wbr')
+export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {
+  mount?(el: E): void
+}
+
+export interface LiftedIntrinsic<E extends Element> {
+  (props: LiftedIntrinsicComponentProps<E>):
+    React.ReactElement<LiftWrapperProps<ObservableReactHTMLProps<E>>>
+}
+
+export function liftIntrinsic<E extends Element>(
+  intrinsicClassName: keyof React.ReactHTML
+): LiftedIntrinsic<E> {
+  return (props: LiftedIntrinsicComponentProps<E>) =>
+    React.createElement<LiftWrapperProps<ObservableReactHTMLProps<E>>>(
+      LiftWrapper,
+      { component: intrinsicClassName, props: props }
+    )
+}
+
+export interface LiftedIntrinsics {
+  readonly a: LiftedIntrinsic<HTMLAnchorElement>
+  readonly abbr: LiftedIntrinsic<HTMLElement>
+  readonly address: LiftedIntrinsic<HTMLElement>
+  readonly area: LiftedIntrinsic<HTMLAreaElement>
+  readonly article: LiftedIntrinsic<HTMLElement>
+  readonly aside: LiftedIntrinsic<HTMLElement>
+  readonly audio: LiftedIntrinsic<HTMLAudioElement>
+  readonly b: LiftedIntrinsic<HTMLElement>
+  readonly base: LiftedIntrinsic<HTMLBaseElement>
+  readonly bdi: LiftedIntrinsic<HTMLElement>
+  readonly bdo: LiftedIntrinsic<HTMLElement>
+  readonly big: LiftedIntrinsic<HTMLElement>
+  readonly blockquote: LiftedIntrinsic<HTMLElement>
+  readonly body: LiftedIntrinsic<HTMLBodyElement>
+  readonly br: LiftedIntrinsic<HTMLBRElement>
+  readonly button: LiftedIntrinsic<HTMLButtonElement>
+  readonly canvas: LiftedIntrinsic<HTMLCanvasElement>
+  readonly caption: LiftedIntrinsic<HTMLElement>
+  readonly cite: LiftedIntrinsic<HTMLElement>
+  readonly code: LiftedIntrinsic<HTMLElement>
+  readonly col: LiftedIntrinsic<HTMLTableColElement>
+  readonly colgroup: LiftedIntrinsic<HTMLTableColElement>
+  readonly data: LiftedIntrinsic<HTMLElement>
+  readonly datalist: LiftedIntrinsic<HTMLDataListElement>
+  readonly dd: LiftedIntrinsic<HTMLElement>
+  readonly del: LiftedIntrinsic<HTMLElement>
+  readonly details: LiftedIntrinsic<HTMLElement>
+  readonly dfn: LiftedIntrinsic<HTMLElement>
+  readonly dialog: LiftedIntrinsic<HTMLElement>
+  readonly div: LiftedIntrinsic<HTMLDivElement>
+  readonly dl: LiftedIntrinsic<HTMLDListElement>
+  readonly dt: LiftedIntrinsic<HTMLElement>
+  readonly em: LiftedIntrinsic<HTMLElement>
+  readonly embed: LiftedIntrinsic<HTMLEmbedElement>
+  readonly fieldset: LiftedIntrinsic<HTMLFieldSetElement>
+  readonly figcaption: LiftedIntrinsic<HTMLElement>
+  readonly figure: LiftedIntrinsic<HTMLElement>
+  readonly footer: LiftedIntrinsic<HTMLElement>
+  readonly form: LiftedIntrinsic<HTMLFormElement>
+  readonly h1: LiftedIntrinsic<HTMLHeadingElement>
+  readonly h2: LiftedIntrinsic<HTMLHeadingElement>
+  readonly h3: LiftedIntrinsic<HTMLHeadingElement>
+  readonly h4: LiftedIntrinsic<HTMLHeadingElement>
+  readonly h5: LiftedIntrinsic<HTMLHeadingElement>
+  readonly h6: LiftedIntrinsic<HTMLHeadingElement>
+  readonly head: LiftedIntrinsic<HTMLHeadElement>
+  readonly header: LiftedIntrinsic<HTMLElement>
+  readonly hgroup: LiftedIntrinsic<HTMLElement>
+  readonly hr: LiftedIntrinsic<HTMLHRElement>
+  readonly html: LiftedIntrinsic<HTMLHtmlElement>
+  readonly i: LiftedIntrinsic<HTMLElement>
+  readonly iframe: LiftedIntrinsic<HTMLIFrameElement>
+  readonly img: LiftedIntrinsic<HTMLImageElement>
+  readonly input: LiftedIntrinsic<HTMLInputElement>
+  readonly ins: LiftedIntrinsic<HTMLModElement>
+  readonly kbd: LiftedIntrinsic<HTMLElement>
+  readonly keygen: LiftedIntrinsic<HTMLElement>
+  readonly label: LiftedIntrinsic<HTMLLabelElement>
+  readonly legend: LiftedIntrinsic<HTMLLegendElement>
+  readonly li: LiftedIntrinsic<HTMLLIElement>
+  readonly link: LiftedIntrinsic<HTMLLinkElement>
+  readonly main: LiftedIntrinsic<HTMLElement>
+  readonly map: LiftedIntrinsic<HTMLMapElement>
+  readonly mark: LiftedIntrinsic<HTMLElement>
+  readonly menu: LiftedIntrinsic<HTMLElement>
+  readonly menuitem: LiftedIntrinsic<HTMLElement>
+  readonly meta: LiftedIntrinsic<HTMLMetaElement>
+  readonly meter: LiftedIntrinsic<HTMLElement>
+  readonly nav: LiftedIntrinsic<HTMLElement>
+  readonly noscript: LiftedIntrinsic<HTMLElement>
+  readonly object: LiftedIntrinsic<HTMLObjectElement>
+  readonly ol: LiftedIntrinsic<HTMLOListElement>
+  readonly optgroup: LiftedIntrinsic<HTMLOptGroupElement>
+  readonly option: LiftedIntrinsic<HTMLOptionElement>
+  readonly output: LiftedIntrinsic<HTMLElement>
+  readonly p: LiftedIntrinsic<HTMLParagraphElement>
+  readonly param: LiftedIntrinsic<HTMLParamElement>
+  readonly picture: LiftedIntrinsic<HTMLElement>
+  readonly pre: LiftedIntrinsic<HTMLPreElement>
+  readonly progress: LiftedIntrinsic<HTMLProgressElement>
+  readonly q: LiftedIntrinsic<HTMLQuoteElement>
+  readonly rp: LiftedIntrinsic<HTMLElement>
+  readonly rt: LiftedIntrinsic<HTMLElement>
+  readonly ruby: LiftedIntrinsic<HTMLElement>
+  readonly s: LiftedIntrinsic<HTMLElement>
+  readonly samp: LiftedIntrinsic<HTMLElement>
+  readonly script: LiftedIntrinsic<HTMLElement>
+  readonly section: LiftedIntrinsic<HTMLElement>
+  readonly select: LiftedIntrinsic<HTMLSelectElement>
+  readonly small: LiftedIntrinsic<HTMLElement>
+  readonly source: LiftedIntrinsic<HTMLSourceElement>
+  readonly span: LiftedIntrinsic<HTMLSpanElement>
+  readonly strong: LiftedIntrinsic<HTMLElement>
+  readonly style: LiftedIntrinsic<HTMLStyleElement>
+  readonly sub: LiftedIntrinsic<HTMLElement>
+  readonly summary: LiftedIntrinsic<HTMLElement>
+  readonly sup: LiftedIntrinsic<HTMLElement>
+  readonly table: LiftedIntrinsic<HTMLTableElement>
+  readonly tbody: LiftedIntrinsic<HTMLTableSectionElement>
+  readonly td: LiftedIntrinsic<HTMLTableDataCellElement>
+  readonly textarea: LiftedIntrinsic<HTMLTextAreaElement>
+  readonly tfoot: LiftedIntrinsic<HTMLTableSectionElement>
+  readonly th: LiftedIntrinsic<HTMLTableHeaderCellElement>
+  readonly thead: LiftedIntrinsic<HTMLTableSectionElement>
+  readonly time: LiftedIntrinsic<HTMLElement>
+  readonly title: LiftedIntrinsic<HTMLTitleElement>
+  readonly tr: LiftedIntrinsic<HTMLTableRowElement>
+  readonly track: LiftedIntrinsic<HTMLTrackElement>
+  readonly u: LiftedIntrinsic<HTMLElement>
+  readonly ul: LiftedIntrinsic<HTMLUListElement>
+  readonly var: LiftedIntrinsic<HTMLElement>
+  readonly video: LiftedIntrinsic<HTMLVideoElement>
+  readonly wbr: LiftedIntrinsic<HTMLElement>
+}
+
+export function createLiftedIntrinsics(): LiftedIntrinsics {
+  const html: (keyof LiftedIntrinsics)[] = [
+    'a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'big',
+    'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup',
+    'data', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'div', 'dl', 'dt', 'em', 'embed',
+    'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'head', 'header', 'hgroup', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd',
+    'keygen', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meta',
+    'meter', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param',
+    'picture', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section',
+    'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table',
+    'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul',
+    'var', 'video', 'wbr'
+  ]
+
+  const r = {} as any
+  html.forEach(e => r[e] = liftIntrinsic(e))
+
+  return r as LiftedIntrinsics
+}
 
 // @TODO SVG support

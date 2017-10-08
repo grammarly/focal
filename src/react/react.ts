@@ -40,7 +40,7 @@ export interface LiftWrapperState {
  * A wrapper component that allows to use observables for prop values of a
  * given component.
  */
-class LiftWrapper<TProps>
+export class LiftWrapper<TProps>
     extends React.Component<LiftWrapperProps<TProps>, LiftWrapperState> {
   constructor(props: LiftWrapperProps<TProps>) {
     super(props, LiftWrapper._initState)
@@ -158,18 +158,6 @@ export function lift<TProps>(
     React.createElement<LiftWrapperProps<TProps>>(
       LiftWrapper,
       { component: component, props: props }
-    )
-}
-
-export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {
-  mount?(el: E): void
-}
-
-export function liftIntrinsic<E extends Element>(intrinsicClassName: keyof React.ReactHTML) {
-  return (props: LiftedIntrinsicComponentProps<E>) =>
-    React.createElement<LiftWrapperProps<ObservableReactHTMLProps<E>>>(
-      LiftWrapper,
-      { component: intrinsicClassName, props: props }
     )
 }
 

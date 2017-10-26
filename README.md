@@ -73,7 +73,9 @@ ReactDOM.render(
 )
 ```
 
-You can run and explore a more elaborate version of [this example](examples/all/src/counter/index.tsx), as well as some other examples, in the [examples directory](examples).
+You can play with this example online [on CodeSandbox](https://codesandbox.io/s/52l109yowl).
+
+There's also a more elaborate version of [this example](examples/all/src/counter/index.tsx), as well as some other examples, in the [examples directory](examples).
 
 # Installation
 

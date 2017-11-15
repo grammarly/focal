@@ -1,4 +1,4 @@
-# [![Focal 🔍](?)](http://github.com/grammarly/focal)
+# [![Focal 🔍](https://raw.githubusercontent.com/grammarly/focal/master/logo/logo.png)](http://github.com/grammarly/focal)
 
 Type safe, expressive and composable state management for [React](https://facebook.github.io/react/) applications.
 

@@ -1,7 +1,4 @@
-[![Build Status](https://travis-ci.org/grammarly/focal.svg?branch=master)](https://travis-ci.org/grammarly/focal)
-[![npm version](https://badge.fury.io/js/%40grammarly%2Ffocal.svg)](http://badge.fury.io/js/%40grammarly%2Ffocal)
-
-# Focal 🔍
+# [![Focal 🔍](?)](http://github.com/grammarly/focal)
 
 Type safe, expressive and composable state management for [React](https://facebook.github.io/react/) applications.
 
@@ -10,6 +7,9 @@ Type safe, expressive and composable state management for [React](https://facebo
 - Leverage the power of [Rx.JS](http://reactivex.io/) (and observables in general) to enrich and combine parts of application state, explicitly controlling the data flow.
 - Use [lenses](https://en.wikibooks.org/wiki/Haskell/Lenses_and_functional_references) to decompose the application state into smaller parts, so you can isolate UI components in a clean way and manipulate application state effortlessly.
 - Write less code that is easier to understand.
+
+[![Build Status](https://travis-ci.org/grammarly/focal.svg?branch=master)](https://travis-ci.org/grammarly/focal)
+[![npm version](https://badge.fury.io/js/%40grammarly%2Ffocal.svg)](http://badge.fury.io/js/%40grammarly%2Ffocal)
 
 # Example
 

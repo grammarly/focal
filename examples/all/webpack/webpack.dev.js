@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+var failPlugin = require('webpack-fail-plugin');
 
 var APP_DIR = path.join(__dirname, '..', 'src');
 
@@ -38,7 +39,8 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
+    failPlugin
   ],
   resolve: {
     root: [path.resolve('../src')],

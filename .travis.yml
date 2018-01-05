@@ -21,14 +21,6 @@ before_install: yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT
 
 jobs:
   include:
-    - stage: test
-      script: npm run test:unit
-    - stage: test
-      script: npm run test:examples
-    - stage: test
-      script: npm run test:todomvc
-    - stage: test
-      script: npm run test:manual
     - stage: github release
       script: npm run build && npm pack
       deploy:

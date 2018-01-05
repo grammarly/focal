@@ -10,21 +10,29 @@ cache:
     - test/manual/node_modules
 
 env:
-  - V_REACT=16.2.0 V_REACT_TYPES=16.0.33 V_REACT_DOM_TYPES=16.0.3 V_RXJS=5.4.2
-  - V_REACT=16.2.0 V_REACT_TYPES=16.0.33 V_REACT_DOM_TYPES=16.0.3 V_RXJS=5.5.6
-  - V_REACT=16.2.0 V_REACT_TYPES=16.0.33 V_REACT_DOM_TYPES=16.0.3 V_RXJS=5.*
+  global:
+    - V_REACT=16.2.0 V_REACT_TYPES=16.0.33 V_REACT_DOM_TYPES=16.0.3
+  matrix:
+    - V_RXJS=5.4.2
+    - V_RXJS=5.5.6
+    - V_RXJS=5.*
 
-before_install: yarn remove react react-dom @types/react @types/react-dom rxjs && yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS
+before_install: yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS
 
 jobs:
   include:
-    - script: npm run test:unit
-    - script: npm run test:examples
-    - script: npm run test:todomvc
-    - script: npm run test:manual
+    - stage: test
+      script: npm run test:unit
+    - stage: test
+      script: npm run test:examples
+    - stage: test
+      script: npm run test:todomvc
+    - stage: test
+      script: npm run test:manual
     - stage: github release
       script: npm run build && npm pack
       deploy:
+        env: V_RXJS=5.5.6
         provider: releases
         api_key:
           secure: k+Pvk4XKUjjVjc7jJ8OVW4fjOc8dFacupYjEZ3qV8JAFPSCpLcJi0ijGHZx44r/EaaVaVMBamGCtUQR1eotq8xturxfQZz6Jug+Eu6zOUh1KqVNzqGyv4y7UfLT5HHq7bthFBmdJ7gIN0hm0Fvi0/xm7FZWoPeucnhu31WQ16dSFUw5HBMLgjDk7IaKyVslCrERwccBshxYRuwy3+Qs3kvmwu0QHGxnZmlgNdacKdgXcrdw6QfJOmAQsoidbyhIaCfxmh/ZQESCDU5WIOBjoZnEh3qZlGxvgUPUVp7bYZ68Q3g0/Xs2y5khyIKwtlCDum5E7GGUUwXtuX1WltfhWhKLtaeFN68OANI9GZTaLYWiBYsF32szkvsjB4NL8t5rsPFJ0D4zzY9WGzaBPVtE3JmwrSpPm+M2A2gbgmEzh7CT+UFIWtmNcKtQkuLVBTNnpgMBhW2XRQmVlpvMfykQuQbISsypeUqqNyIQ5br87zWIILfdGkcminSM4qtESvO/Ltd3/JxfZIv2Xdc3oq0GpB+Pl62EWGn8hnAJ0FcWX/XDTTpDLWgld26VchfQp3+T5k4ZxMyl8lSuR0okPzj+GpLkoW2hc8fqtEVcTIwU+53C/wKcPWvBbf5WTHryDLXYptjAXhOorSIybfzeVkGSbaejH7ROQBKm7n53kjy1OGv0=

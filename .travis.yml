@@ -19,9 +19,9 @@ env:
 
 before_install:
   - yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS
-  - cd ./examples/all && yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS
-  - cd ./examples/todomvc && yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS
-  - cd ./test/manual && yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS
+  - cd ./examples/all && yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS && cd ../..
+  - cd ./examples/todomvc && yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS && cd ../..
+  - cd ./test/manual && yarn add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS && cd ../..
 
 jobs:
   include:

@@ -60,49 +60,63 @@ test('react', t => {
   )
 
   t.test('show warning for empty observable', t => {
-    (() => {
-      let consoleErrorWasCalled: boolean
-      const error = console.error
-      // tslint:disable-next-line no-function-expression
-      console.error = function (message: any) {
-        error(message)
+    function testWarning(name: string, render: () => JSX.Element) {
+      t.test(name, t => {
+        let consoleErrorWasCalled = false
+        let consoleErrorMessage: string | null = null
+        const origConsoleError = console.error
+        // tslint:disable-next-line no-function-expression
+        console.error = function (message: any) {
+          origConsoleError(message)
+          consoleErrorMessage = message
+          consoleErrorWasCalled = true
+        }
+
+        testRender(t, render(), '', 'no render')
+        t.ok(consoleErrorWasCalled, 'console.error() called')
         t.is(
-          message,
+          consoleErrorMessage,
           `[Focal]: The component <span> has received an empty observable ` +
           `in one of its props. Since such observable never calls its ` +
           `subscription handler, this component can never be rendered. ` +
           `Check the props of <span>.`,
-          'Focal should print the warning'
+          'warning displayed'
         )
-        consoleErrorWasCalled = true
-      }
 
-      consoleErrorWasCalled = false
-      testRender(t,
-        <F.span style={fromConst({ color: 'red' })}>{Observable.empty()}</F.span>,
-        '',
-        'Render empty element with an empty observable'
-      )
-      t.ok(consoleErrorWasCalled, 'console.error() was called')
+        console.error = origConsoleError
+        t.end()
+      })
+    }
 
-      consoleErrorWasCalled = false
-      testRender(t,
-        <F.span>{Observable.empty()}</F.span>,
-        '',
-        'Render empty element with a single empty observable'
-      )
-      t.ok(consoleErrorWasCalled, 'console.error() was called')
+    testWarning(
+      'single empty',
+      () => <F.span>{Observable.empty()}</F.span>
+    )
 
-      consoleErrorWasCalled = false
-      testRender(t,
-        <F.span className={Observable.never()}></F.span>,
-        '',
-        'Render empty element with Observable.never()'
-      )
-      t.ok(consoleErrorWasCalled, 'console.error() was called')
+    testWarning(
+      'multiple empty',
+      () => <F.span className={Observable.never()}>{Observable.empty()}</F.span>
+    )
 
-      console.error = error
-    })()
+    testWarning(
+      'empty and non-empty',
+      () => <F.span style={fromConst({ color: 'red' })}>{Observable.empty()}</F.span>
+    )
+
+    testWarning(
+      'single never',
+      () => <F.span className={Observable.never()}></F.span>
+    )
+
+    testWarning(
+      'multiple never',
+      () => <F.span className={Observable.never()} style={Observable.never()}></F.span>
+    )
+
+    testWarning(
+      'mixed never and empty',
+      () => <F.span className={Observable.empty()} style={Observable.never()}></F.span>
+    )
 
     t.end()
   })

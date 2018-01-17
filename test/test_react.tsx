@@ -93,6 +93,14 @@ test('react', t => {
       )
       t.ok(consoleErrorWasCalled, 'console.error() was called')
 
+      consoleErrorWasCalled = false
+      testRender(t,
+        <F.span className={Observable.never()}></F.span>,
+        '',
+        'Render empty element with Observable.never()'
+      )
+      t.ok(consoleErrorWasCalled, 'console.error() was called')
+
       console.error = error
     })()
 

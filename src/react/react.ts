@@ -368,6 +368,9 @@ class RenderOne<P> implements Subscription {
           this._innerSubscription = null
       })
 
+    if (!this._receivedValue && DEV_ENV)
+      warnEmptyObservable(getReactComponentName(this._liftedComponent.props.component))
+
     this._liftedComponent = liftedComponent
     liftedComponent.setState(state)
   }
@@ -378,7 +381,7 @@ class RenderOne<P> implements Subscription {
   }
 
   private _handleValue(value: any) {
-    // only required for empty observable check in _handleCompleted
+    // only required for empty observable check
     this._receivedValue = true
 
     const liftedComponent = this._liftedComponent
@@ -390,9 +393,6 @@ class RenderOne<P> implements Subscription {
   }
 
   private _handleCompleted() {
-    if (!this._receivedValue && DEV_ENV)
-      warnEmptyObservable(getReactComponentName(this._liftedComponent.props.component))
-
     this._innerSubscription = null
     this._liftedComponent.setState(LiftWrapper._endState)
   }

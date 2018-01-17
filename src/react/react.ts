@@ -368,7 +368,7 @@ class RenderOne<P> implements Subscription {
           this._innerSubscription = null
       })
 
-    if (!this._receivedValue && DEV_ENV)
+    if (DEV_ENV && !this._receivedValue)
       warnEmptyObservable(getReactComponentName(this._liftedComponent.props.component))
 
     this._liftedComponent = liftedComponent
@@ -382,7 +382,7 @@ class RenderOne<P> implements Subscription {
 
   private _handleValue(value: any) {
     // only required for empty observable check
-    this._receivedValue = true
+    if (DEV_ENV) this._receivedValue = true
 
     const liftedComponent = this._liftedComponent
     const { component, props } = liftedComponent.props

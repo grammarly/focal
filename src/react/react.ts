@@ -327,8 +327,9 @@ const handleError = (e: any) => {
 function warnEmptyObservable(componentName: string | undefined) {
   warning(
     `${componentName ? `The component <${componentName}>` : 'An unnamed component'} has ` +
-    `received an empty observable in one of its props. Since such observable never calls ` +
-    `its subscription handler, this component can never be rendered. ` +
+    `received an observable that doesn't immediately emit a value in one of its props. ` +
+    `Since this observable hasn't yet called its subscription handler, the component ` +
+    `can not be rendered at the time. ` +
     `Check the props of ${componentName ? `<${componentName}>` : 'this component'}.`
   )
 }

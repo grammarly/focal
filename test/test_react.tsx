@@ -76,10 +76,10 @@ test('react', t => {
         t.ok(consoleErrorWasCalled, 'console.error() called')
         t.is(
           consoleErrorMessage,
-          `[Focal]: The component <span> has received an empty observable ` +
-          `in one of its props. Since such observable never calls its ` +
-          `subscription handler, this component can never be rendered. ` +
-          `Check the props of <span>.`,
+          `[Focal]: The component <span> has received an observable that doesn\'t immediately ` +
+          `emit a value in one of its props. Since this observable hasn\'t yet called its ` +
+          `subscription handler, the component can not be rendered at the time. Check the ` +
+          `props of <span>.`,
           'warning displayed'
         )
 

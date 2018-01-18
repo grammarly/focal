@@ -327,8 +327,9 @@ const handleError = (e: any) => {
 function warnEmptyObservable(componentName: string | undefined) {
   warning(
     `${componentName ? `The component <${componentName}>` : 'An unnamed component'} has ` +
-    `received an empty observable in one of its props. Since such observable never calls ` +
-    `its subscription handler, this component can never be rendered. ` +
+    `received an observable that doesn't immediately emit a value in one of its props. ` +
+    `Since this observable hasn't yet called its subscription handler, the component ` +
+    `can not be rendered at the time. ` +
     `Check the props of ${componentName ? `<${componentName}>` : 'this component'}.`
   )
 }
@@ -368,6 +369,9 @@ class RenderOne<P> implements Subscription {
           this._innerSubscription = null
       })
 
+    if (DEV_ENV && !this._receivedValue)
+      warnEmptyObservable(getReactComponentName(this._liftedComponent.props.component))
+
     this._liftedComponent = liftedComponent
     liftedComponent.setState(state)
   }
@@ -378,8 +382,8 @@ class RenderOne<P> implements Subscription {
   }
 
   private _handleValue(value: any) {
-    // only required for empty observable check in _handleCompleted
-    this._receivedValue = true
+    // only required for empty observable check
+    if (DEV_ENV) this._receivedValue = true
 
     const liftedComponent = this._liftedComponent
     const { component, props } = liftedComponent.props
@@ -390,9 +394,6 @@ class RenderOne<P> implements Subscription {
   }
 
   private _handleCompleted() {
-    if (!this._receivedValue && DEV_ENV)
-      warnEmptyObservable(getReactComponentName(this._liftedComponent.props.component))
-
     this._innerSubscription = null
     this._liftedComponent.setState(LiftWrapper._endState)
   }

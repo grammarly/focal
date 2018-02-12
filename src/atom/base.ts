@@ -1,12 +1,10 @@
 import { Lens, Prism, PropExpr } from './../lens'
 import { structEq, Option } from './../utils'
 
-// @TODO importing the whole RxJS here. there is a way to
-// only import operators/types that are used to reduce the
-// resulting bundle size, but I couldn't make it work.
-import {
-  Observable, Subscriber, Subscription, BehaviorSubject
-} from 'rxjs/Rx'
+import { Observable } from 'rxjs/Observable'
+import { Subscriber } from 'rxjs/Subscriber'
+import { Subscription } from 'rxjs/Subscription'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 
 /**
  * Read-only atom.

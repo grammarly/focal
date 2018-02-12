@@ -1,6 +1,8 @@
 import * as test from 'tape'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/of'
+import 'rxjs/add/observable/empty'
+import 'rxjs/add/observable/never'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/server'
 

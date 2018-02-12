@@ -1,5 +1,6 @@
 // tslint:disable no-unnecessary-local-variable
 import * as test from 'tape'
+import 'rxjs/add/operator/merge'
 import { Atom, Lens } from '../src'
 import { structEq } from '../src/utils'
 

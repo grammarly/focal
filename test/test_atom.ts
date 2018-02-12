@@ -580,4 +580,38 @@ test('atom', t => {
 
     t.end()
   })
+
+  t.test('unsub in modify', t => {
+    const a = Atom.create(5)
+
+    const viewFnCalls: number[] = []
+    const os: number[] = []
+
+    const v = a.view(x => {
+      viewFnCalls.push(x)
+      return x + 1
+    })
+
+    t.deepEqual(viewFnCalls, [])
+    t.deepEqual(os, [])
+
+    const sub = v.subscribe(x => {
+      os.push(x)
+    })
+    t.deepEqual(viewFnCalls, [5])
+    t.deepEqual(os, [6])
+
+    a.modify(x => x + 1)
+    t.deepEqual(viewFnCalls, [5, 6])
+    t.deepEqual(os, [6, 7])
+
+    a.modify(x => {
+      sub.unsubscribe()
+      return 0
+    })
+    t.deepEqual(viewFnCalls, [5, 6])
+    t.deepEqual(os, [6, 7])
+
+    t.end()
+  })
 })

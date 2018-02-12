@@ -648,4 +648,34 @@ test('atom', t => {
 
     t.end()
   })
+
+  t.test('multiple subscriptions to same view', t => {
+    const a = Atom.create(5)
+    const v = a.view(x => x + 1)
+
+    const os1: number[] = []
+    const sub1 = v.subscribe(x => os1.push(x))
+
+    const os2: number[] = []
+    const sub2 = v.subscribe(x => os2.push(x))
+
+    t.deepEqual(os1, [6])
+    t.deepEqual(os2, [6])
+
+    a.set(6)
+    t.deepEqual(os1, [6, 7])
+    t.deepEqual(os2, [6, 7])
+
+    sub1.unsubscribe()
+    a.set(7)
+    t.deepEqual(os1, [6, 7])
+    t.deepEqual(os2, [6, 7, 8])
+
+    sub2.unsubscribe()
+    a.set(8)
+    t.deepEqual(os1, [6, 7])
+    t.deepEqual(os2, [6, 7, 8])
+
+    t.end()
+  })
 })

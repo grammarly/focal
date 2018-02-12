@@ -614,4 +614,38 @@ test('atom', t => {
 
     t.end()
   })
+
+  t.test('resubscribe to view', t => {
+    const a = Atom.create(5)
+    const v = a.view(x => x + 1)
+
+    const os: number[] = []
+    const sub1 = v.subscribe(x => {
+      os.push(x)
+    })
+    t.deepEqual(os, [6])
+
+    a.modify(x => x + 1)
+    t.deepEqual(os, [6, 7])
+
+    sub1.unsubscribe()
+
+    a.modify(x => x + 1)
+    t.deepEqual(os, [6, 7])
+
+    const sub2 = v.subscribe(x => {
+      os.push(x)
+    })
+    t.deepEqual(os, [6, 7, 8])
+
+    a.modify(x => x + 1)
+    t.deepEqual(os, [6, 7, 8, 9])
+
+    sub2.unsubscribe()
+
+    a.modify(x => x + 1)
+    t.deepEqual(os, [6, 7, 8, 9])
+
+    t.end()
+  })
 })

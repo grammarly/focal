@@ -28,7 +28,7 @@ function testAtom(t: test.Test, newAtom: (x: number) => Atom<number>) {
     subscription.unsubscribe()
   })
 
-  t.test('observable semantics', t => {
+  t.test('observable semantics: distinct values', t => {
     const a = newAtom(1)
     const observations: number[] = []
     const cb = (x: number) => observations.push(x)
@@ -478,7 +478,7 @@ test('atom', t => {
       t.deepEqual(combined.get(), ['Hi -2', 'Ho -2', 'HU -2'])
 
       // it's ok to have 3 calls here each as until we are subscribed to this
-      // atom it doesn't track it's sources
+      // atom it doesn't track its sources
       testCalls(3, 3, 3, 1, 1, 1, '3 + 1 call after .get()')
 
       source.set(1)
@@ -564,7 +564,7 @@ test('atom', t => {
     })
   })
 
-  t.test('logger', async t => {
+  t.test('logger', t => {
     let consoleLogFireTime = 0
 
     const atom = Atom.create('bar')

@@ -308,6 +308,19 @@ test('atom', t => {
       })
     })
 
+    testDerivedAtom(
+      t,
+      (a, f, onCalled) => a.lens(
+        Lens.create(
+          (x: number) => {
+            onCalled(x)
+            return f(x)
+          },
+          (v, _) => v
+        )
+      )
+    )
+
     t.end()
   })
 

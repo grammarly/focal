@@ -169,23 +169,135 @@ test('atom', t => {
     t.end()
   })
 
-  t.test('view observable semantics', t => {
-    const source = Atom.create(1)
-    const view = source.view(x => x + 1)
+  t.test('view', t => {
+    t.test('observable semantics: distinct values', t => {
+      const source = Atom.create(1)
+      const view = source.view(x => x + 1)
 
-    const sourceOs: number[] = []
-    const sourceSub = source.subscribe(x => sourceOs.push(x))
+      const sourceOs: number[] = []
+      const sourceSub = source.subscribe(x => sourceOs.push(x))
 
-    const viewOs: number[] = []
-    const viewSub = view.subscribe(x => viewOs.push(x))
+      const viewOs: number[] = []
+      const viewSub = view.subscribe(x => viewOs.push(x))
 
-    ; [2, 2, 2, 3, 3, 3, 1, 1, 1].forEach(x => source.set(x))
+      ; [2, 2, 2, 3, 3, 3, 1, 1, 1].forEach(x => source.set(x))
 
-    t.deepEqual(viewOs, [2, 3, 4, 2])
-    t.deepEqual(sourceOs, [1, 2, 3, 1])
+      t.deepEqual(viewOs, [2, 3, 4, 2])
+      t.deepEqual(sourceOs, [1, 2, 3, 1])
 
-    sourceSub.unsubscribe()
-    viewSub.unsubscribe()
+      sourceSub.unsubscribe()
+      viewSub.unsubscribe()
+      t.end()
+    })
+
+    t.test('unsub in modify', t => {
+      const a = Atom.create(5)
+
+      const viewFnCalls: number[] = []
+      const os: number[] = []
+
+      const v = a.view(x => {
+        viewFnCalls.push(x)
+        return x + 1
+      })
+
+      t.deepEqual(viewFnCalls, [])
+      t.deepEqual(os, [])
+
+      const sub = v.subscribe(x => {
+        os.push(x)
+      })
+      t.deepEqual(viewFnCalls, [5])
+      t.deepEqual(os, [6])
+
+      a.modify(x => x + 1)
+      t.deepEqual(viewFnCalls, [5, 6])
+      t.deepEqual(os, [6, 7])
+
+      a.modify(x => {
+        sub.unsubscribe()
+        return 0
+      })
+      t.deepEqual(viewFnCalls, [5, 6])
+      t.deepEqual(os, [6, 7])
+
+      t.end()
+    })
+
+    t.test('resubscribe', t => {
+      const a = Atom.create(5)
+      const v = a.view(x => x + 1)
+
+      const os: number[] = []
+      const sub1 = v.subscribe(x => os.push(x))
+      t.deepEqual(os, [6], 'immediate observation on subscription')
+
+      a.modify(x => x + 1)
+      t.deepEqual(os, [6, 7], 'observation on modify')
+
+      sub1.unsubscribe()
+
+      a.modify(x => x + 1)
+      t.deepEqual(os, [6, 7], 'no observation after unsubscription')
+
+      const sub2 = v.subscribe(x => os.push(x))
+      t.deepEqual(os, [6, 7, 8], 'immediate observation on subscription 2')
+
+      a.modify(x => x + 1)
+      t.deepEqual(os, [6, 7, 8, 9], 'observation on modify 2')
+
+      sub2.unsubscribe()
+
+      a.modify(x => x + 1)
+      t.deepEqual(os, [6, 7, 8, 9], 'no observation after unsubscription 2')
+
+      t.end()
+    })
+
+    t.test('multiple subscriptions', t => {
+      const a = Atom.create(5)
+      const v = a.view(x => x + 1)
+
+      const os1: number[] = []
+      const sub1 = v.subscribe(x => os1.push(x))
+
+      const os2: number[] = []
+      const sub2 = v.subscribe(x => os2.push(x))
+
+      t.deepEqual(os1, os2, 'same initial observations upon subscription')
+
+      a.set(6)
+      t.deepEqual(os1, os2, 'same observations on modify')
+
+      sub1.unsubscribe()
+      a.set(7)
+      t.deepEqual(os1, [6, 7], 'no modify observation after unsub 1')
+      t.deepEqual(os2, [6, 7, 8], 'observation on 2 after unsub on 1')
+
+      sub2.unsubscribe()
+      a.set(8)
+      t.deepEqual(os1, [6, 7], 'no more observations')
+      t.deepEqual(os2, [6, 7, 8], 'no more observations on 2')
+
+      t.end()
+    })
+
+    t.test('complex expression', t => {
+      const source = Atom.create({ a: { b: { c: 5 } } })
+      const lensed = source.lens(x => x.a.b.c)
+      const view = lensed.view(x => x + 5 > 0)
+
+      t.isEqual(view.get(), true)
+
+      lensed.set(6)
+      t.isEqual(view.get(), true)
+
+      lensed.set(-5)
+      t.isEqual(view.get(), false)
+
+      t.end()
+    })
+
     t.end()
   })
 
@@ -202,22 +314,6 @@ test('atom', t => {
     t.isEqual(x3.get(), 6)
     t.isEqual(x2.get(), 7)
     t.assert(structEq({ a: { b: 6 } }, x1.get()))
-
-    t.end()
-  })
-
-  t.test('view, complex expression', t => {
-    const source = Atom.create({ a: { b: { c: 5 } } })
-    const lensed = source.lens(x => x.a.b.c)
-    const view = lensed.view(x => x + 5 > 0)
-
-    t.isEqual(view.get(), true)
-
-    lensed.set(6)
-    t.isEqual(view.get(), true)
-
-    lensed.set(-5)
-    t.isEqual(view.get(), false)
 
     t.end()
   })
@@ -577,104 +673,6 @@ test('atom', t => {
 
     t.equal(consoleLogFireTime, 2)
     t.deepEqual(consoleLogArguments, [['bar', 'bar'], ['bar', 'foo']])
-
-    t.end()
-  })
-
-  t.test('unsub in modify', t => {
-    const a = Atom.create(5)
-
-    const viewFnCalls: number[] = []
-    const os: number[] = []
-
-    const v = a.view(x => {
-      viewFnCalls.push(x)
-      return x + 1
-    })
-
-    t.deepEqual(viewFnCalls, [])
-    t.deepEqual(os, [])
-
-    const sub = v.subscribe(x => {
-      os.push(x)
-    })
-    t.deepEqual(viewFnCalls, [5])
-    t.deepEqual(os, [6])
-
-    a.modify(x => x + 1)
-    t.deepEqual(viewFnCalls, [5, 6])
-    t.deepEqual(os, [6, 7])
-
-    a.modify(x => {
-      sub.unsubscribe()
-      return 0
-    })
-    t.deepEqual(viewFnCalls, [5, 6])
-    t.deepEqual(os, [6, 7])
-
-    t.end()
-  })
-
-  t.test('resubscribe to view', t => {
-    const a = Atom.create(5)
-    const v = a.view(x => x + 1)
-
-    const os: number[] = []
-    const sub1 = v.subscribe(x => {
-      os.push(x)
-    })
-    t.deepEqual(os, [6])
-
-    a.modify(x => x + 1)
-    t.deepEqual(os, [6, 7])
-
-    sub1.unsubscribe()
-
-    a.modify(x => x + 1)
-    t.deepEqual(os, [6, 7])
-
-    const sub2 = v.subscribe(x => {
-      os.push(x)
-    })
-    t.deepEqual(os, [6, 7, 8])
-
-    a.modify(x => x + 1)
-    t.deepEqual(os, [6, 7, 8, 9])
-
-    sub2.unsubscribe()
-
-    a.modify(x => x + 1)
-    t.deepEqual(os, [6, 7, 8, 9])
-
-    t.end()
-  })
-
-  t.test('multiple subscriptions to same view', t => {
-    const a = Atom.create(5)
-    const v = a.view(x => x + 1)
-
-    const os1: number[] = []
-    const sub1 = v.subscribe(x => os1.push(x))
-
-    const os2: number[] = []
-    const sub2 = v.subscribe(x => os2.push(x))
-
-    t.deepEqual(os1, [6])
-    t.deepEqual(os2, [6])
-
-    a.set(6)
-    t.deepEqual(os1, [6, 7])
-    t.deepEqual(os2, [6, 7])
-
-    sub1.unsubscribe()
-    a.set(7)
-    t.deepEqual(os1, [6, 7])
-    t.deepEqual(os2, [6, 7, 8])
-
-    sub2.unsubscribe()
-    a.set(8)
-    t.deepEqual(os1, [6, 7])
-    t.deepEqual(os2, [6, 7, 8])
 
     t.end()
   })

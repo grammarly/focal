@@ -306,6 +306,8 @@ test('atom', t => {
         subscription.unsubscribe()
         t.end()
       })
+
+      t.end()
     })
 
     testDerivedAtom(

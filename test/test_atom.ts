@@ -658,6 +658,41 @@ test('atom', t => {
       sub.unsubscribe()
       t.end()
     })
+
+    t.test('unsub in modify', t => {
+      const a = Atom.create(5)
+      const b = Atom.create(1)
+
+      const combineFnCalls: number[] = []
+      const os: number[] = []
+
+      const combined = Atom.combine(a, b, (a, b) => {
+        combineFnCalls.push(a)
+        return a + b
+      })
+
+      t.deepEqual(combineFnCalls, [])
+      t.deepEqual(os, [])
+
+      const sub = combined.subscribe(x => {
+        os.push(x)
+      })
+      t.deepEqual(combineFnCalls, [5])
+      t.deepEqual(os, [6])
+
+      a.modify(x => x + 1)
+      t.deepEqual(combineFnCalls, [5, 6])
+      t.deepEqual(os, [6, 7])
+
+      a.modify(x => {
+        sub.unsubscribe()
+        return 0
+      })
+      t.deepEqual(combineFnCalls, [5, 6])
+      t.deepEqual(os, [6, 7])
+
+      t.end()
+    })
   })
 
   t.test('logger', t => {

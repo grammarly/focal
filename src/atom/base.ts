@@ -417,7 +417,7 @@ class AtomViewImpl<TSource, TDest> extends AbstractReadOnlyAtom<TDest> {
       : this._getter(this._source.get())
   }
 
-  private _onSourceValue = (x: TSource) => {
+  private _onSourceValue(x: TSource) {
     const prevValue = this.getValue()
     const next = this._getter(x)
 
@@ -431,7 +431,7 @@ class AtomViewImpl<TSource, TDest> extends AbstractReadOnlyAtom<TDest> {
   // Rx method overrides
   _subscribe(subscriber: Subscriber<TDest>) { // tslint:disable-line function-name
     if (!this._subscription) {
-      this._subscription = this._source.subscribe(this._onSourceValue)
+      this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
     this._refCount++
 

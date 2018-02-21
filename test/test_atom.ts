@@ -83,6 +83,49 @@ function testDerivedAtom(
     t.end()
   })
 
+  t.test('two atoms subscriptions', t => {
+    const a = create(5)
+
+    const viewFnCalls1: number[] = []
+    const os1: number[] = []
+    const viewFnCalls2: number[] = []
+    const os2: number[] = []
+
+    const v1 = createDerived(a, x => x + 1, x => viewFnCalls1.push(x))
+    const v2 = v1.view(x => {
+      viewFnCalls2.push(x)
+      return x + 5
+    })
+
+    t.deepEqual(viewFnCalls1, [])
+    t.deepEqual(viewFnCalls2, [])
+
+    const sub1 = v1.subscribe(x => os1.push(x))
+
+    v2.subscribe(x => os2.push(x))
+
+    t.deepEqual(viewFnCalls1, [5])
+    t.deepEqual(viewFnCalls2, [6])
+    t.deepEqual(os2, [11])
+
+    a.modify(x => x + 1)
+    t.deepEqual(viewFnCalls1, [5, 6])
+    t.deepEqual(viewFnCalls2, [6, 7])
+    t.deepEqual(os2, [11, 12])
+
+    a.modify(x => {
+      sub1.unsubscribe()
+      return 0
+    })
+
+    t.deepEqual(viewFnCalls1, [5, 6, 0])
+    t.deepEqual(viewFnCalls2, [6, 7, 1])
+    t.deepEqual(os1, [6, 7])
+    t.deepEqual(os2, [11, 12, 6])
+
+    t.end()
+  })
+
   t.test('resubscribe', t => {
     const a = create(5)
     const v = createDerived(a, x => x + 1, () => { /* no-op */ })

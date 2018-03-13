@@ -13,7 +13,6 @@ env:
   global:
     - V_REACT=16.2.0 V_REACT_TYPES=16.0.33 V_REACT_DOM_TYPES=16.0.3
   matrix:
-    - V_RXJS=5.4.2
     - V_RXJS=5.5.6
     - V_RXJS=5.*
 

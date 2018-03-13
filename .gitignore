@@ -8,3 +8,4 @@ dist
 lib
 docs
 .idea
+package-lock.json

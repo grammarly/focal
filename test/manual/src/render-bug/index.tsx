@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { F, Atom } from '@grammarly/focal'
-// @TODO nasty hack, fix instanceof Observable check instead
-import { Observable } from '../../node_modules/@grammarly/focal/node_modules/rxjs'
+import { Observable } from 'rxjs'
 
 let globalCounter = 0
 

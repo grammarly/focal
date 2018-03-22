@@ -45,13 +45,13 @@ test('react', t => {
 
   testRender(t,
     <F.span style={fromConst({ color: 'red' })}></F.span>,
-    '<span style="color:red;"></span>',
+    '<span style="color:red"></span>',
     'Render F element with observable in style'
   )
 
   testRender(t,
     <F.span style={fromConst({ color: 'red' })}>{fromConst('test')}</F.span>,
-    '<span style="color:red;">test</span>',
+    '<span style="color:red">test</span>',
     'Render F element with 2 observables'
   )
 
@@ -127,7 +127,7 @@ test('react', t => {
     <F.div onClick={() => { /* no-op */ }} style={{ display: 'block', color: fromConst('red') }}>
       <F.span>Hello</F.span>
     </F.div>,
-    '<div style="display:block;color:red;"><span>Hello</span></div>',
+    '<div style="display:block;color:red"><span>Hello</span></div>',
     'div with onClick'
   )
 

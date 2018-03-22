@@ -366,22 +366,34 @@ class LensedAtom<TSource, TDest> extends AbstractAtom<TDest> {
       this.next(next)
   }
 
-  private __onSourceValue: ((x: TSource) => void) | undefined = undefined
   private _subscription: Subscription | null = null
+  private _refCount = 0
 
   // Rx method overrides
   _subscribe(subscriber: Subscriber<TDest>) { // tslint:disable-line function-name
     if (!this._subscription) {
-      this.__onSourceValue = (value: TSource) => this._onSourceValue(value)
-      this._subscription = this._source.subscribe(this.__onSourceValue)
+      this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
+    this._refCount++
 
-    return super._subscribe(subscriber)
+    const sub = new Subscription(() => {
+      if (--this._refCount <= 0 && this._subscription) {
+        this._subscription.unsubscribe()
+        this._subscription = null
+      }
+    })
+    sub.add(super._subscribe(subscriber))
+
+    return sub
   }
 
   unsubscribe() {
-    if (this._subscription) this._subscription.unsubscribe()
-    this.__onSourceValue = undefined
+    if (this._subscription) {
+      this._subscription.unsubscribe()
+      this._subscription = null
+    }
+    this._refCount = 0
+
     super.unsubscribe()
   }
 }
@@ -423,22 +435,34 @@ class AtomViewImpl<TSource, TDest> extends AbstractReadOnlyAtom<TDest> {
       this.next(next)
   }
 
-  private __onSourceValue: ((x: TSource) => void) | undefined = undefined
   private _subscription: Subscription | null = null
+  private _refCount = 0
 
   // Rx method overrides
   _subscribe(subscriber: Subscriber<TDest>) { // tslint:disable-line function-name
     if (!this._subscription) {
-      this.__onSourceValue = (value: TSource) => this._onSourceValue(value)
-      this._subscription = this._source.subscribe(this.__onSourceValue)
+      this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
+    this._refCount++
 
-    return super._subscribe(subscriber)
+    const sub = new Subscription(() => {
+      if (--this._refCount <= 0 && this._subscription) {
+        this._subscription.unsubscribe()
+        this._subscription = null
+      }
+    })
+    sub.add(super._subscribe(subscriber))
+
+    return sub
   }
 
   unsubscribe() {
-    if (this._subscription) this._subscription.unsubscribe()
-    this.__onSourceValue = undefined
+    if (this._subscription) {
+      this._subscription.unsubscribe()
+      this._subscription = null
+    }
+    this._refCount = 0
+
     super.unsubscribe()
   }
 }
@@ -481,24 +505,36 @@ export class CombinedAtomViewImpl<TResult> extends AbstractReadOnlyAtom<TResult>
       this.next(next)
   }
 
-  private __onSourceValues: ((xs: any[]) => void) | undefined = undefined
   private _subscription: Subscription | null = null
+  private _refCount = 0
 
   // Rx method overrides
   _subscribe(subscriber: Subscriber<TResult>) { // tslint:disable-line function-name
     if (!this._subscription) {
-      this.__onSourceValues = (values: any[]) => this._onSourceValues(values)
       this._subscription =
         Observable.combineLatest(this._sources)
-          .subscribe(this.__onSourceValues)
+          .subscribe(xs => this._onSourceValues(xs))
     }
+    this._refCount++
 
-    return super._subscribe(subscriber)
+    const sub = new Subscription(() => {
+      if (--this._refCount <= 0 && this._subscription) {
+        this._subscription.unsubscribe()
+        this._subscription = null
+      }
+    })
+    sub.add(super._subscribe(subscriber))
+
+    return sub
   }
 
   unsubscribe() {
-    if (this._subscription) this._subscription.unsubscribe()
-    this.__onSourceValues = undefined
+    if (this._subscription) {
+      this._subscription.unsubscribe()
+      this._subscription = null
+    }
+    this._refCount = 0
+
     super.unsubscribe()
   }
 }

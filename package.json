@@ -1,6 +1,6 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.6.434",
+  "version": "0.6.437",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -12,10 +12,10 @@
     "clean": "rm -rf ./dist",
     "build": "npm run clean && tsc && npm run lint",
     "test": "npm run test:unit && npm run test:examples && npm run test:todomvc && npm run test:manual",
-    "test:manual": "cd test/manual && rm -rf node_modules/@grammarly/focal && npm i --ignore-scripts && npm run build",
+    "test:manual": "cd test/manual && npm i && npm run build",
     "test:unit": "npm run build && tape ./dist/test/**/*.js | tap-spec",
-    "test:examples": "cd examples/all && rm -rf node_modules/@grammarly/focal && npm i --ignore-scripts && npm run build",
-    "test:todomvc": "cd examples/todomvc && rm -rf node_modules/@grammarly/focal && npm i --ignore-scripts && npm run build",
+    "test:examples": "cd examples/all && npm i && npm run build",
+    "test:todomvc": "cd examples/todomvc && npm i && npm run build",
     "test:watch": "watch 'npm test' src test",
     "lint": "tslint --type-check --project tsconfig.json -c tslint.json",
     "preversion": "if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then echo \"Not on the master branch.\" && exit 1; fi",
@@ -83,23 +83,23 @@
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",
     "@types/node": "^6.0.34",
+    "@types/react": "16.0.33",
+    "@types/react-dom": "16.0.3",
     "@types/tape": "^4.2.27",
+    "react": "16.2.0",
+    "react-dom": "16.2.0",
+    "rxjs": "5.5.6",
     "tap-spec": "^4.1.1",
     "tape": "^4.5.1",
     "tslint": "5.2.0",
     "typescript": "2.4.1",
-    "watch": "^0.18.0",
-    "@types/react": "15.0.38",
-    "@types/react-dom": "15.5.1",
-    "react": "15.6.1",
-    "react-dom": "15.6.1",
-    "rxjs": "5.4.2"
+    "watch": "^0.18.0"
   },
   "peerDependencies": {
-    "@types/react": "15.0.38",
-    "@types/react-dom": "15.5.1",
-    "react": "15.6.1",
-    "react-dom": "15.6.1",
-    "rxjs": "5.4.2"
+    "@types/react": ">= 16.0.33 < 17.0.0-0",
+    "@types/react-dom": ">= 16.0.3 < 17.0.0-0",
+    "react": ">= 16.2.0 < 17.0.0-0",
+    "react-dom": ">= 16.2.0 < 17.0.0-0",
+    "rxjs": ">= 5.4.2 < 6.0.0-0"
   }
 }

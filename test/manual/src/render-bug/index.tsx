@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { F, Atom } from '@grammarly/focal'
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs/Observable'
+import 'rxjs/add/observable/of'
 
 let globalCounter = 0
 
@@ -55,7 +56,6 @@ const MinimalReproduce = () => {
         const ts = mkName()
         return <El key={i} text={text.toString()} ts={ts} />
       }))}
-
   </F.div>
 }
 

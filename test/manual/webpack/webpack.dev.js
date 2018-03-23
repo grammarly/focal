@@ -34,10 +34,9 @@ module.exports = {
     failPlugin
   ],
   resolve: {
-    root: [path.resolve('../src')],
+    root: [path.resolve('../src'), path.join(APP_DIR, '..', 'node_modules')],
     alias: {
-      '@grammarly/focal': path.join(APP_DIR, '..', '..', '..', 'dist', 'src'),
-      'rxjs': path.join(APP_DIR, '..', 'node_modules', 'rxjs')
+      '@grammarly/focal': path.join(APP_DIR, '..', '..', '..', 'dist', 'src')
     },
     extensions: ['', '.tsx', '.ts', '.jsx', '.js']
   }

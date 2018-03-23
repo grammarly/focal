@@ -7,6 +7,7 @@ import { Observable, ObservableInput } from 'rxjs/Observable'
 import { Subscription as RxSubscription } from 'rxjs/Subscription'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/map'
+import 'rxjs/add/observable/of'
 import 'rxjs/add/observable/combineLatest'
 
 export interface Subscription {

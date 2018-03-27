@@ -18,7 +18,7 @@
  * @module
  */
 import * as React from 'react'
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs/Observable'
 
 export type ObservableOr<T> = Observable<T> | T
 export type AcceptObservableValues<T> = { [K in keyof T]: ObservableOr<T[K]> }

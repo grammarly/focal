@@ -1,6 +1,11 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs/Observable'
+import 'rxjs/add/observable/defer'
+import 'rxjs/add/observable/fromEvent'
+import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/startWith'
+import 'rxjs/add/operator/combineLatest'
 import { F, Atom, Lens, bind, reactiveList, classes } from '@grammarly/focal'
 import { TodoItem, AppModel } from './model'
 

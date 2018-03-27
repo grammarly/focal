@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 var APP_DIR = path.join(__dirname, '..', 'src');
 
@@ -9,13 +10,11 @@ module.exports = {
   module: {
     preLoaders: [{
       test: /\.tsx?$/,
-      loader: 'tslint',
-      include: APP_DIR
+      loader: 'tslint'
     }],
     loaders: [{
       test: /\.tsx?$/,
-      loaders: ['ts'],
-      include: APP_DIR
+      loaders: ['ts']
     }]
   },
   output: {
@@ -34,10 +33,19 @@ module.exports = {
       compressor: {
         warnings: false
       }
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      defaultSizes: 'parsed',
+      generateStatsFile: true
     })
   ],
   resolve: {
-    root: [path.resolve('../src')],
+    root: [path.resolve('../src'), path.join(APP_DIR, '..', 'node_modules')],
+    alias: {
+      '@grammarly/focal': path.join(APP_DIR, '..', '..', '..', 'dist', 'src')
+    },
     extensions: ['', '.tsx', '.ts', '.jsx', '.js']
   },
   tslint: {

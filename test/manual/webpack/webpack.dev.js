@@ -16,13 +16,11 @@ module.exports = {
   module: {
     preLoaders: [{
       test: /\.tsx?$/,
-      loader: 'tslint',
-      include: APP_DIR
+      loader: 'tslint'
     }],
     loaders: [{
       test: /\.tsx?$/,
-      loaders: ['ts'],
-      include: APP_DIR
+      loaders: ['ts']
     }]
   },
   output: {
@@ -36,7 +34,10 @@ module.exports = {
     failPlugin
   ],
   resolve: {
-    root: [path.resolve('../src')],
+    root: [path.resolve('../src'), path.join(APP_DIR, '..', 'node_modules')],
+    alias: {
+      '@grammarly/focal': path.join(APP_DIR, '..', '..', '..', 'dist', 'src')
+    },
     extensions: ['', '.tsx', '.ts', '.jsx', '.js']
   }
 };

@@ -7,13 +7,8 @@ import { Observable, ObservableInput } from 'rxjs/Observable'
 import { Subscription as RxSubscription } from 'rxjs/Subscription'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/map'
+import 'rxjs/add/observable/of'
 import 'rxjs/add/observable/combineLatest'
-
-// a hack required to support the declaration merging of the Atom type and
-// Atom namespace in atom/index.ts
-//
-// if we don't do it, we get the "cannot be named" compiler error.
-import { Atom as _Atom } from './../atom/base' // tslint:disable-line no-unused-vars
 
 export interface Subscription {
   unsubscribe(): void

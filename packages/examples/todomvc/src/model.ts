@@ -8,7 +8,9 @@ export interface TodoItem {
   completed: boolean
 }
 
-export type TodoList = { [k: string]: TodoItem }
+export interface TodoList {
+  [k: string]: TodoItem
+}
 
 export interface AppState {
   todos: TodoList

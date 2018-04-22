@@ -1,11 +1,12 @@
 import { App } from './app'
 import * as Model from './model'
 import { Atom } from '@grammarly/focal'
+import 'rxjs/add/operator/debounceTime'
 
 // hot reload support
 declare const require: (name: String) => any
 declare const module: {
-  hot?: { accept: (path?: string, callback?: () => void) => void }
+  hot?: { accept(path?: string, callback?: () => void): void }
 }
 
 const targetEl = document.getElementById('app')

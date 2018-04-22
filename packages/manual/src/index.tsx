@@ -3,7 +3,7 @@ import { App } from './app'
 // hot reload support
 declare const require: (name: String) => any
 declare const module: {
-  hot?: { accept: (path?: string, callback?: () => void) => void }
+  hot?: { accept(path?: string, callback?: () => void): void }
 }
 
 const targetEl = document.getElementById('app')

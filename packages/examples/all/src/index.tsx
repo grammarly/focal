@@ -6,7 +6,7 @@ import * as App from './app'
 // hot reload support
 declare const require: (path: string) => any
 declare const module: {
-  hot?: { accept: (path?: string, callback?: () => void) => void }
+  hot?: { accept(path?: string, callback?: () => void): void }
 }
 
 const appState = Atom.create(App.defaultState)

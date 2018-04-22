@@ -11,7 +11,6 @@
     "docs": "rm -rf ./docs && typedoc --out docs --theme minimal --ignoreCompilerErrors --tsconfig tsconfig.json",
     "clean": "rm -rf ./dist",
     "build": "npm run clean && tsc && npm run lint",
-    "test": "npm run test:unit && npm run test:examples && npm run test:todomvc && npm run test:manual",
     "test": "npm run build && tape ./dist/test/**/*.js | tap-spec",
     "test:watch": "watch 'npm test' src test",
     "lint": "tslint --type-check --project tsconfig.json -c tslint.json",

@@ -2,14 +2,17 @@
   "private": true,
   "name": "focal",
   "scripts": {
+    "build": "cd ./packages/focal && yarn build",
     "clean-all": "rm -rf ./node_modules && rm -rf ./packages/**/node_modules && yarn build-clean",
     "build-clean": "rm -rf ./packages/**/dist && rm -rf ./packages/**/build",
-    "test": "npm run test:unit; npm run test:manual; npm run test:examples; npm run test:todomvc",
-    "test:unit": "cd ./packages/focal && npm run test",
-    "test:manual": "cd ./packages/manual && npm run build",
-    "test:examples": "cd ./packages/examples/all && npm run build",
-    "test:todomvc": "cd ./packages/examples/todomvc && npm run build",
-    "postinstall": "cd ./packages/focal && npm run build"
+    "postinstall": "cd ./packages/focal && yarn build",
+    "test": "yarn test:unit; yarn test:manual; yarn test:examples; yarn test:todomvc",
+    "test:unit": "cd ./packages/focal && yarn test",
+    "test:manual": "cd ./packages/manual && yarn build",
+    "test:examples": "cd ./packages/examples/all && yarn build",
+    "test:todomvc": "cd ./packages/examples/todomvc && yarn build",
+    "package": "cd ./packages/focal && yarn pack",
+    "release": "cd ./packages/focal && yarn release"
   },
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",

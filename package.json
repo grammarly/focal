@@ -2,17 +2,13 @@
   "private": true,
   "name": "focal",
   "scripts": {
-    "build": "cd ./packages/focal && yarn build",
+    "build": "yarn workspace @grammarly/focal build",
     "clean-all": "rm -rf ./node_modules && rm -rf ./packages/**/node_modules && yarn build-clean",
     "build-clean": "rm -rf ./packages/**/dist && rm -rf ./packages/**/build",
-    "postinstall": "cd ./packages/focal && yarn build",
-    "test": "yarn test:unit; yarn test:manual; yarn test:examples; yarn test:todomvc",
-    "test:unit": "cd ./packages/focal && yarn test",
-    "test:manual": "cd ./packages/manual && yarn build",
-    "test:examples": "cd ./packages/examples/all && yarn build",
-    "test:todomvc": "cd ./packages/examples/todomvc && yarn build",
-    "package": "cd ./packages/focal && yarn pack",
-    "release": "cd ./packages/focal && yarn release"
+    "postinstall": "yarn build",
+    "test": "yarn workspace @grammarly/focal test && yarn workspace focal-manual-tests build && yarn workspace focal-examples build && yarn workspace focal-todomvc build",
+    "package": "yarn workspace @grammarly/focal pack",
+    "release": "yarn workspace @grammarly/focal release"
   },
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",

@@ -65,7 +65,7 @@ export interface ReadOnlyAtom<T> extends Observable<T> {
    * a.get()
    * // => 5
    * b.get()
-   * // => 6
+   * // => 10
    *
    * a.set(10)
    *

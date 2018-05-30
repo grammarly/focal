@@ -49,10 +49,8 @@ const App = (props: { state: Atom<{ count: number }> }) =>
         // take the app state and lens into its part where the
         // counter's state lies.
         //
-        // note that this call is not simply a generic `map` over an
-        // observable: it actually creates an atom which you can write to,
-        // and in a type safe way. how is it type safe? see below.
-        props.state.lens(x => x.count)
+        // this creates an atom which you can write to, in a type safe way.
+        props.state.lens('count')
       }
     />
   </div>

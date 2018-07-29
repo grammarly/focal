@@ -21,6 +21,10 @@
   version "6.0.106"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.106.tgz#391bc3598ab5823563f7155847212152893edcd7"
 
+"@types/node@^9.6.0":
+  version "9.6.24"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.24.tgz#c1bccb30f30871718b220b34290ccf53e7ee9317"
+
 "@types/react-dom@16.0.3":
   version "16.0.3"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.0.3.tgz#8accad7eabdab4cca3e1a56f5ccb57de2da0ff64"

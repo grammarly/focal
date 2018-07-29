@@ -6,17 +6,19 @@
     "build-clean": "rm -rf ./packages/**/dist && rm -rf ./packages/**/build",
     "clean-all": "rm -rf ./node_modules && rm -rf ./packages/**/node_modules && yarn build-clean",
     "postinstall": "yarn build",
-    "test": "yarn workspace @grammarly/focal test && yarn workspace focal-manual-tests build && yarn workspace focal-examples build && yarn workspace focal-todomvc build",
+    "test": "yarn wsrun test --stages",
     "package": "yarn workspace @grammarly/focal pack",
     "release": "yarn workspace @grammarly/focal release"
   },
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",
     "tslint": "5.2.0",
-    "typescript": "2.4.1"
+    "typescript": "2.4.1",
+    "wsrun": "2.2.1"
   },
   "workspaces": [
-    "packages/*",
+    "packages/focal",
+    "packages/manual",
     "packages/examples/*"
   ],
   "resolutions": {

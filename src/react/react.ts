@@ -116,7 +116,7 @@ export class LiftWrapper<TProps>
 // will also accept a value of Observable<T> for any prop of
 // type T.
 export type LiftedComponentProps<TProps> = Lifted<TProps> & {
-  mount?(el: HTMLElement): void
+  mount?: React.Ref<HTMLElement>
 }
 
 /**
@@ -214,6 +214,7 @@ function render<P>(
   props: P,
   observedValues: any[] = []
 ): React.DOMElement<any, any> {
+  // @TODO can we do a better type here?
   const newProps: any = {}
   let newChildren: any
   let k = -1

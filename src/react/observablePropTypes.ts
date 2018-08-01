@@ -25,11 +25,14 @@ export type AcceptObservableValues<T> = { [K in keyof T]: ObservableOr<T[K]> }
 
 export type ObservableReactCSSProperties = AcceptObservableValues<React.CSSProperties>
 
+export interface ObservableReactChildren {
+  children?: React.ReactNode | Observable<React.ReactNode>
+}
+
 // tslint:disable max-line-length
-export interface ObservableReactDOMAttributes<E> {
+export interface ObservableReactDOMAttributes<E> extends ObservableReactChildren {
   dangerouslySetInnerHTML?: { __html: string; } | Observable<{ __html: string; }>
 
-  children?: React.ReactNode | Observable<React.ReactNode>
   // Clipboard Events
   onCopy?: React.ClipboardEventHandler<E> | Observable<React.ClipboardEventHandler<E>>
   onCopyCapture?: React.ClipboardEventHandler<E> | Observable<React.ClipboardEventHandler<E>>

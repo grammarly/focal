@@ -255,6 +255,18 @@ test('react', t => {
     'classes, undefined constant'
   )
 
+  testRender(t,
+    <F.Fragment>{Atom.create('test')}</F.Fragment>,
+    'test',
+    'fragment'
+  )
+
+  testRender(t,
+    <F.Fragment>{Atom.create(null)}</F.Fragment>,
+    '',
+    'fragment with null content'
+  )
+
   t.assert((() => {
     // tslint:disable-next-line no-unused-expression
     (

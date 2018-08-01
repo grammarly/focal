@@ -8,7 +8,7 @@ import { ObservableReactHTMLProps } from './observablePropTypes'
 import { LiftWrapperProps, LiftWrapper } from './react'
 
 export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {
-  mount?(el: E): void
+  mount?: React.Ref<E>
 }
 
 export interface LiftedIntrinsic<E extends Element> {

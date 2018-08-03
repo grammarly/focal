@@ -15,7 +15,7 @@ env:
     - V_RXJS=5.*
 
 before_install:
-  - yarn && yarn wsrun add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS --dev
+  - scripts/run_each add react@$V_REACT react-dom@$V_REACT @types/react@$V_REACT_TYPES @types/react-dom@$V_REACT_DOM_TYPES rxjs@$V_RXJS --dev
 
 jobs:
   include:

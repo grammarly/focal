@@ -19,11 +19,9 @@
  */
 import * as React from 'react'
 import { Observable } from 'rxjs/Observable'
-import { Subject } from "rxjs/Subject";
 
 export type ObservableOr<T> = Observable<T> | T
 export type AcceptObservableValues<T> = { [K in keyof T]: ObservableOr<T[K]> }
-
 
 /**
  * It's a workaround to set proper type for style
@@ -32,8 +30,8 @@ export interface ObservableCSSReactProperties {
   style?: ObservableOr<React.CSSProperties> | AcceptObservableValues<React.CSSProperties>
 }
 
-export interface ObservableReactHTMLAttributes<E> extends AcceptObservableValues<React.AllHTMLAttributes<E>> {
-}
+export interface ObservableReactHTMLAttributes<E>
+  extends AcceptObservableValues<React.AllHTMLAttributes<E>> {}
 
 /**
  * It's a workaround to set proper type for style
@@ -41,14 +39,16 @@ export interface ObservableReactHTMLAttributes<E> extends AcceptObservableValues
  * TS 2.8 provides more eloquient way to do it
  *
  * type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
- * export interface ObservableReactHTMLAttributes<E> extends AcceptObservableValues<Omit<React.AllHTMLAttributes<E>>, 'style'> {
+ * export interface ObservableReactHTMLAttributes<E>
+ *  extends AcceptObservableValues<Omit<React.AllHTMLAttributes<E>>, 'style'> {
  *   style?: ObservableOr<React.CSSProperties> | AcceptObservableValues<React.CSSProperties>
  * }
  *
  */
 
-type ObservableReactDOMAttributes<E> = ObservableReactHTMLAttributes<E> & ObservableCSSReactProperties
+type ObservableReactDOMAttributes<E> = ObservableReactHTMLAttributes<E> &
+  ObservableCSSReactProperties
 
 export interface ObservableReactHTMLProps<E>
-  extends ObservableReactHTMLAttributes<E>, React.ClassAttributes<E> {
-}
+  extends ObservableReactHTMLAttributes<E>,
+    React.ClassAttributes<E> {}

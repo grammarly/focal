@@ -30,6 +30,10 @@ export interface ObservableCSSReactProperties {
   style?: ObservableOr<React.CSSProperties> | AcceptObservableValues<React.CSSProperties>
 }
 
+export interface ObservableReactChildren {
+  children?: ObservableOr<React.ReactNode>
+}
+
 export interface ObservableReactHTMLAttributes<E>
   extends AcceptObservableValues<React.AllHTMLAttributes<E>> {}
 
@@ -45,9 +49,6 @@ export interface ObservableReactHTMLAttributes<E>
  * }
  *
  */
-
-type ObservableReactDOMAttributes<E> = ObservableReactHTMLAttributes<E> &
-  ObservableCSSReactProperties
 
 export interface ObservableReactHTMLProps<E>
   extends ObservableReactHTMLAttributes<E>,

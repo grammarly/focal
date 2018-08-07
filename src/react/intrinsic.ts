@@ -4,7 +4,7 @@
  * @module
  */
 import * as React from 'react'
-import { ObservableReactHTMLProps } from './observablePropTypes'
+import { ObservableReactHTMLProps, ObservableReactChildren } from './observablePropTypes'
 import { LiftWrapperProps, LiftWrapper } from './react'
 
 export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {
@@ -26,7 +26,7 @@ export function liftIntrinsic<E extends Element>(
     )
 }
 
-export interface LiftedIntrinsics {
+export interface LiftedIntrinsicsHTML {
   readonly a: LiftedIntrinsic<HTMLAnchorElement>
   readonly abbr: LiftedIntrinsic<HTMLElement>
   readonly address: LiftedIntrinsic<HTMLElement>
@@ -142,8 +142,23 @@ export interface LiftedIntrinsics {
   readonly wbr: LiftedIntrinsic<HTMLElement>
 }
 
+export interface LiftedFragmentAttributes extends ObservableReactChildren, React.Attributes {}
+
+export interface LiftedFragment {
+  (props: LiftedFragmentAttributes):
+    React.ReactElement<LiftWrapperProps<ObservableReactHTMLProps<{}>>>
+}
+
+export const enum ExtendedIntrinsics {
+  fragment = 'Fragment'
+}
+
+export type LiftedIntrinsics = LiftedIntrinsicsHTML & {
+  [k in ExtendedIntrinsics.fragment]: LiftedFragment
+}
+
 export function createLiftedIntrinsics(): LiftedIntrinsics {
-  const html: (keyof LiftedIntrinsics)[] = [
+  const html: (keyof LiftedIntrinsicsHTML)[] = [
     'a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'big',
     'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup',
     'data', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'div', 'dl', 'dt', 'em', 'embed',
@@ -159,6 +174,12 @@ export function createLiftedIntrinsics(): LiftedIntrinsics {
 
   const r = {} as any
   html.forEach(e => r[e] = liftIntrinsic(e))
+
+  const fragmentTag: LiftedIntrinsics[ExtendedIntrinsics.fragment] =
+    (props: LiftedFragmentAttributes) =>
+      React.createElement(LiftWrapper, { component: React.Fragment, props })
+
+  r[ExtendedIntrinsics.fragment] = fragmentTag
 
   return r as LiftedIntrinsics
 }

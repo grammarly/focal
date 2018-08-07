@@ -40,16 +40,16 @@ export interface ObservableReactHTMLAttributes<E>
 /**
  * It's a workaround to set proper type for style
  *
- * TS 2.8 provides more eloquient way to do it
+ * TS 2.8 provides more eloquent way to do it
  *
  * type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
- * export interface ObservableReactHTMLAttributes<E>
+ * export interface ObservableReactHTMLProps<E>
  *  extends AcceptObservableValues<Omit<React.AllHTMLAttributes<E>>, 'style'> {
  *   style?: ObservableOr<React.CSSProperties> | AcceptObservableValues<React.CSSProperties>
  * }
  *
  */
-
+export type ObservableReactDOMAttributes<E> = ObservableReactHTMLAttributes<E> & ObservableCSSReactProperties
 export interface ObservableReactHTMLProps<E>
-  extends ObservableReactHTMLAttributes<E>,
+  extends ObservableReactDOMAttributes<E>,
     React.ClassAttributes<E> {}

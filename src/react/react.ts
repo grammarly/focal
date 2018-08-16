@@ -641,7 +641,7 @@ export function setElementProps<TElement extends Element>(
   let observable: Observable<{ [key: string]: any }> | null = null
   let subscription: RxSubscription | null = null
 
-  return (domElement: TElement) => {
+  return (domElement: TElement | null) => {
     if (subscription) {
       subscription.unsubscribe()
       subscription = null

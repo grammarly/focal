@@ -158,8 +158,9 @@ export function lift<TProps>(
 
 const PROP_CHILDREN = 'children'
 const PROP_STYLE = 'style'
-const PROP_MOUNT = 'mount'
-const PROP_REF = 'ref'
+
+export const PROP_MOUNT = 'mount'
+export const PROP_REF = 'ref'
 
 /**
  * Walk a React component props object tree, and for each observable prop found,

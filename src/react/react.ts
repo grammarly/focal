@@ -520,13 +520,11 @@ function filterClassNames(
   }) as (string | ObservableInput<ClassNameLike>)[]
 }
 
-// tslint:disable no-unused-vars
 export function classes(...cs: ClassNameLike[]): { className: string | undefined }
 
 export function classes(
   ...cs: ObservableInputLike<ClassNameLike>[]
 ): { className: ObservableLike<string | undefined> }
-// tslint:enable no-unused-vars
 
 /**
  * Declare element's classes through an array of observables.

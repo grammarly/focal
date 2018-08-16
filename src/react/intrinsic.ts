@@ -11,9 +11,10 @@ export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLPro
   mount?: React.Ref<E>
 }
 
-export interface LiftedIntrinsic<E extends Element> {
+export interface LiftedIntrinsic<
+  E extends Element, A extends React.HTMLAttributes<E> = React.AllHTMLAttributes<E>> {
   (props: LiftedIntrinsicComponentProps<E>):
-    React.ReactElement<LiftWrapperProps<ObservableReactHTMLProps<E>>>
+    React.ReactElement<LiftWrapperProps<ObservableReactHTMLProps<E, A>>>
 }
 
 export function liftIntrinsic<E extends Element>(
@@ -26,126 +27,20 @@ export function liftIntrinsic<E extends Element>(
     )
 }
 
-export interface LiftedIntrinsicsHTML {
-  readonly a: LiftedIntrinsic<HTMLAnchorElement>
-  readonly abbr: LiftedIntrinsic<HTMLElement>
-  readonly address: LiftedIntrinsic<HTMLElement>
-  readonly area: LiftedIntrinsic<HTMLAreaElement>
-  readonly article: LiftedIntrinsic<HTMLElement>
-  readonly aside: LiftedIntrinsic<HTMLElement>
-  readonly audio: LiftedIntrinsic<HTMLAudioElement>
-  readonly b: LiftedIntrinsic<HTMLElement>
-  readonly base: LiftedIntrinsic<HTMLBaseElement>
-  readonly bdi: LiftedIntrinsic<HTMLElement>
-  readonly bdo: LiftedIntrinsic<HTMLElement>
-  readonly big: LiftedIntrinsic<HTMLElement>
-  readonly blockquote: LiftedIntrinsic<HTMLElement>
-  readonly body: LiftedIntrinsic<HTMLBodyElement>
-  readonly br: LiftedIntrinsic<HTMLBRElement>
-  readonly button: LiftedIntrinsic<HTMLButtonElement>
-  readonly canvas: LiftedIntrinsic<HTMLCanvasElement>
-  readonly caption: LiftedIntrinsic<HTMLElement>
-  readonly cite: LiftedIntrinsic<HTMLElement>
-  readonly code: LiftedIntrinsic<HTMLElement>
-  readonly col: LiftedIntrinsic<HTMLTableColElement>
-  readonly colgroup: LiftedIntrinsic<HTMLTableColElement>
-  readonly data: LiftedIntrinsic<HTMLElement>
-  readonly datalist: LiftedIntrinsic<HTMLDataListElement>
-  readonly dd: LiftedIntrinsic<HTMLElement>
-  readonly del: LiftedIntrinsic<HTMLElement>
-  readonly details: LiftedIntrinsic<HTMLElement>
-  readonly dfn: LiftedIntrinsic<HTMLElement>
-  readonly dialog: LiftedIntrinsic<HTMLElement>
-  readonly div: LiftedIntrinsic<HTMLDivElement>
-  readonly dl: LiftedIntrinsic<HTMLDListElement>
-  readonly dt: LiftedIntrinsic<HTMLElement>
-  readonly em: LiftedIntrinsic<HTMLElement>
-  readonly embed: LiftedIntrinsic<HTMLEmbedElement>
-  readonly fieldset: LiftedIntrinsic<HTMLFieldSetElement>
-  readonly figcaption: LiftedIntrinsic<HTMLElement>
-  readonly figure: LiftedIntrinsic<HTMLElement>
-  readonly footer: LiftedIntrinsic<HTMLElement>
-  readonly form: LiftedIntrinsic<HTMLFormElement>
-  readonly h1: LiftedIntrinsic<HTMLHeadingElement>
-  readonly h2: LiftedIntrinsic<HTMLHeadingElement>
-  readonly h3: LiftedIntrinsic<HTMLHeadingElement>
-  readonly h4: LiftedIntrinsic<HTMLHeadingElement>
-  readonly h5: LiftedIntrinsic<HTMLHeadingElement>
-  readonly h6: LiftedIntrinsic<HTMLHeadingElement>
-  readonly head: LiftedIntrinsic<HTMLHeadElement>
-  readonly header: LiftedIntrinsic<HTMLElement>
-  readonly hgroup: LiftedIntrinsic<HTMLElement>
-  readonly hr: LiftedIntrinsic<HTMLHRElement>
-  readonly html: LiftedIntrinsic<HTMLHtmlElement>
-  readonly i: LiftedIntrinsic<HTMLElement>
-  readonly iframe: LiftedIntrinsic<HTMLIFrameElement>
-  readonly img: LiftedIntrinsic<HTMLImageElement>
-  readonly input: LiftedIntrinsic<HTMLInputElement>
-  readonly ins: LiftedIntrinsic<HTMLModElement>
-  readonly kbd: LiftedIntrinsic<HTMLElement>
-  readonly keygen: LiftedIntrinsic<HTMLElement>
-  readonly label: LiftedIntrinsic<HTMLLabelElement>
-  readonly legend: LiftedIntrinsic<HTMLLegendElement>
-  readonly li: LiftedIntrinsic<HTMLLIElement>
-  readonly link: LiftedIntrinsic<HTMLLinkElement>
-  readonly main: LiftedIntrinsic<HTMLElement>
-  readonly map: LiftedIntrinsic<HTMLMapElement>
-  readonly mark: LiftedIntrinsic<HTMLElement>
-  readonly menu: LiftedIntrinsic<HTMLElement>
-  readonly menuitem: LiftedIntrinsic<HTMLElement>
-  readonly meta: LiftedIntrinsic<HTMLMetaElement>
-  readonly meter: LiftedIntrinsic<HTMLElement>
-  readonly nav: LiftedIntrinsic<HTMLElement>
-  readonly noscript: LiftedIntrinsic<HTMLElement>
-  readonly object: LiftedIntrinsic<HTMLObjectElement>
-  readonly ol: LiftedIntrinsic<HTMLOListElement>
-  readonly optgroup: LiftedIntrinsic<HTMLOptGroupElement>
-  readonly option: LiftedIntrinsic<HTMLOptionElement>
-  readonly output: LiftedIntrinsic<HTMLElement>
-  readonly p: LiftedIntrinsic<HTMLParagraphElement>
-  readonly param: LiftedIntrinsic<HTMLParamElement>
-  readonly picture: LiftedIntrinsic<HTMLElement>
-  readonly pre: LiftedIntrinsic<HTMLPreElement>
-  readonly progress: LiftedIntrinsic<HTMLProgressElement>
-  readonly q: LiftedIntrinsic<HTMLQuoteElement>
-  readonly rp: LiftedIntrinsic<HTMLElement>
-  readonly rt: LiftedIntrinsic<HTMLElement>
-  readonly ruby: LiftedIntrinsic<HTMLElement>
-  readonly s: LiftedIntrinsic<HTMLElement>
-  readonly samp: LiftedIntrinsic<HTMLElement>
-  readonly script: LiftedIntrinsic<HTMLElement>
-  readonly section: LiftedIntrinsic<HTMLElement>
-  readonly select: LiftedIntrinsic<HTMLSelectElement>
-  readonly small: LiftedIntrinsic<HTMLElement>
-  readonly source: LiftedIntrinsic<HTMLSourceElement>
-  readonly span: LiftedIntrinsic<HTMLSpanElement>
-  readonly strong: LiftedIntrinsic<HTMLElement>
-  readonly style: LiftedIntrinsic<HTMLStyleElement>
-  readonly sub: LiftedIntrinsic<HTMLElement>
-  readonly summary: LiftedIntrinsic<HTMLElement>
-  readonly sup: LiftedIntrinsic<HTMLElement>
-  readonly table: LiftedIntrinsic<HTMLTableElement>
-  readonly tbody: LiftedIntrinsic<HTMLTableSectionElement>
-  readonly td: LiftedIntrinsic<HTMLTableDataCellElement>
-  readonly textarea: LiftedIntrinsic<HTMLTextAreaElement>
-  readonly tfoot: LiftedIntrinsic<HTMLTableSectionElement>
-  readonly th: LiftedIntrinsic<HTMLTableHeaderCellElement>
-  readonly thead: LiftedIntrinsic<HTMLTableSectionElement>
-  readonly time: LiftedIntrinsic<HTMLElement>
-  readonly title: LiftedIntrinsic<HTMLTitleElement>
-  readonly tr: LiftedIntrinsic<HTMLTableRowElement>
-  readonly track: LiftedIntrinsic<HTMLTrackElement>
-  readonly u: LiftedIntrinsic<HTMLElement>
-  readonly ul: LiftedIntrinsic<HTMLUListElement>
-  readonly var: LiftedIntrinsic<HTMLElement>
-  readonly video: LiftedIntrinsic<HTMLVideoElement>
-  readonly wbr: LiftedIntrinsic<HTMLElement>
+export type GenericLiftedIntrinsic<T> =
+  T extends React.DetailedHTMLFactory<infer A, infer B>
+    ? LiftedIntrinsic<B, A>
+    : never
+
+export type LiftedIntrinsicsHTML = {
+  [K in keyof React.ReactHTML]: GenericLiftedIntrinsic<React.ReactHTML[K]>
 }
 
 export interface LiftedFragmentAttributes extends ObservableReactChildren, React.Attributes {}
 
 export interface LiftedFragment {
   (props: LiftedFragmentAttributes):
+    // @TODO this probably isn't a correct type for it
     React.ReactElement<LiftWrapperProps<ObservableReactHTMLProps<{}>>>
 }
 

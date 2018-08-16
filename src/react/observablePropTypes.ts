@@ -22,6 +22,6 @@ export type ObservableReactHTMLAttributes<
   style?: ObservableReactCSSProperties
 }
 
-export interface ObservableReactHTMLProps<E>
-  extends ObservableReactHTMLAttributes<E>,
-    React.ClassAttributes<E> {}
+export type ObservableReactHTMLProps<
+  E, A extends React.HTMLAttributes<E> = React.AllHTMLAttributes<E>
+> = ObservableReactHTMLAttributes<E, A> & React.ClassAttributes<E>

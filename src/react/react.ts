@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { structEq } from './../utils'
 import { Atom } from './../atom'
-import { ObservableReactHTMLProps } from './observablePropTypes'
 import { warning, getReactComponentName, DEV_ENV } from './../utils'
 import { Observable, ObservableInput } from 'rxjs/Observable'
 import { Subscription as RxSubscription } from 'rxjs/Subscription'

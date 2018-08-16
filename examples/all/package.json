@@ -37,7 +37,7 @@
     "ts-loader": "^2.3.0",
     "tslint": "^4.1.1",
     "tslint-loader": "^3.3.0",
-    "typescript": "2.4.1",
+    "typescript": "2.8.4",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-fail-plugin": "2.0.0",

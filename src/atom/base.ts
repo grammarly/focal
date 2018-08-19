@@ -289,7 +289,8 @@ export abstract class AbstractAtom<T>
       ? new LensedAtom<T, U>(this, Lens.prop(arg1 as (x: T) => U), structEq)
       // lens('key') case
       : typeof arg1 === 'string'
-        ? new LensedAtom(this, Lens.compose(Lens.key(arg1), ...args.map(Lens.key)), structEq)
+        ? new LensedAtom(
+          this, Lens.compose(Lens.key(arg1), ...args.map(k => Lens.key(k))), structEq)
         // lens(lens) case
         : new LensedAtom<T, U>(this, arg1 as Lens<T, U>, structEq)
     // tslint:enable no-use-before-declare

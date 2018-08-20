@@ -1,6 +1,6 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.6.438",
+  "version": "0.7.0",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -92,7 +92,7 @@
     "tap-spec": "^4.1.1",
     "tape": "^4.5.1",
     "tslint": "5.2.0",
-    "typescript": "2.4.1",
+    "typescript": "2.8.4",
     "watch": "^0.18.0"
   },
   "peerDependencies": {

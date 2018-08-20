@@ -306,11 +306,17 @@ class FakeComponent<P> {
     public props: LiftWrapperProps<P>
   ) {}
 
-  setState(newState: LiftWrapperState) {
+  private _setState(newState: LiftWrapperState) {
     if ('subscription' in newState)
       this.state.subscription = newState.subscription
     if ('renderCache' in newState)
       this.state.renderCache = newState.renderCache
+  }
+
+  setState(newState: LiftWrapperState): void
+  setState(updateFn: (prevState: LiftWrapperState) => LiftWrapperState): void
+  setState(arg: any) {
+    this._setState(typeof arg === 'function' ? arg(this.state) : arg)
   }
 }
 
@@ -349,7 +355,7 @@ class RenderOne<P> implements Subscription {
     }
 
     this._liftedComponent =
-      new FakeComponent<P>(state, newProps) as LiftWrapper<P>
+      new FakeComponent<P>(state, newProps) as any as LiftWrapper<P>
 
     walkObservables(
       newProps.props,
@@ -384,8 +390,8 @@ class RenderOne<P> implements Subscription {
     const { component, props } = liftedComponent.props
     const renderCache = render(component, props, [value])
 
-    if (!structEq(liftedComponent.state.renderCache, renderCache))
-      liftedComponent.setState({ renderCache })
+    liftedComponent.setState(prevState =>
+      structEq(prevState.renderCache, renderCache) ? prevState : { renderCache })
   }
 
   private _handleCompleted() {
@@ -415,7 +421,7 @@ class RenderMany<P> implements Subscription {
     }
 
     this._liftedComponent =
-      new FakeComponent(state, newProps) as LiftWrapper<P>
+      new FakeComponent(state, newProps) as any as LiftWrapper<P>
 
     this._innerSubscriptions = []
     this._values = Array(N)
@@ -480,8 +486,8 @@ class RenderMany<P> implements Subscription {
     const { component, props } = liftedComponent.props
     const renderCache = render(component, props, this._values)
 
-    if (!structEq(liftedComponent.state.renderCache, renderCache))
-      liftedComponent.setState({ renderCache })
+    liftedComponent.setState(prevState =>
+      structEq(prevState.renderCache, renderCache) ? prevState : { renderCache })
   }
 
   private _handleCompleted(idx: number) {

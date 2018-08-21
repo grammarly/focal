@@ -7,6 +7,8 @@ cache:
   directories:
     - node_modules
 
+script: yarn test:ci
+
 env:
   global:
     - V_REACT=16.2.0 V_REACT_TYPES=16.0.33 V_REACT_DOM_TYPES=16.0.3

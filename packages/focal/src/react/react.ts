@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { structEq } from './../utils'
 import { Atom } from './../atom'
-import { ObservableReactHTMLProps } from './observablePropTypes'
 import { warning, getReactComponentName, DEV_ENV } from './../utils'
 import { Observable, ObservableInput } from 'rxjs/Observable'
 import { Subscription as RxSubscription } from 'rxjs/Subscription'
@@ -158,8 +157,9 @@ export function lift<TProps>(
 
 const PROP_CHILDREN = 'children'
 const PROP_STYLE = 'style'
-const PROP_MOUNT = 'mount'
-const PROP_REF = 'ref'
+
+export const PROP_MOUNT = 'mount'
+export const PROP_REF = 'ref'
 
 /**
  * Walk a React component props object tree, and for each observable prop found,
@@ -519,13 +519,11 @@ function filterClassNames(
   }) as (string | ObservableInput<ClassNameLike>)[]
 }
 
-// tslint:disable no-unused-vars
 export function classes(...cs: ClassNameLike[]): { className: string | undefined }
 
 export function classes(
   ...cs: ObservableInputLike<ClassNameLike>[]
 ): { className: ObservableLike<string | undefined> }
-// tslint:enable no-unused-vars
 
 /**
  * Declare element's classes through an array of observables.
@@ -642,7 +640,7 @@ export function setElementProps<TElement extends Element>(
   let observable: Observable<{ [key: string]: any }> | null = null
   let subscription: RxSubscription | null = null
 
-  return (domElement: TElement) => {
+  return (domElement: TElement | null) => {
     if (subscription) {
       subscription.unsubscribe()
       subscription = null

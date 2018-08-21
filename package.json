@@ -12,7 +12,7 @@
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",
     "tslint": "5.2.0",
-    "typescript": "2.4.1"
+    "typescript": "2.8.4"
   },
   "workspaces": [
     "packages/focal",

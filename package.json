@@ -3,12 +3,11 @@
   "name": "focal",
   "scripts": {
     "build": "yarn workspace @grammarly/focal build",
-    "build-clean": "rm -rf ./packages/**/dist && rm -rf ./packages/**/build",
-    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/**/node_modules && yarn build-clean",
-    "postinstall": "yarn build",
-    "test": "scripts/run_each test",
     "package": "yarn workspace @grammarly/focal pack",
-    "release": "yarn workspace @grammarly/focal release"
+    "release": "yarn workspace @grammarly/focal release",
+    "test": "yarn workspace @grammarly/focal test",
+    "postinstall": "yarn build",
+    "test:ci": "scripts/run_each test"
   },
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",

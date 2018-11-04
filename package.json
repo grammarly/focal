@@ -16,7 +16,7 @@
   },
   "workspaces": [
     "packages/focal",
-    "packages/manual",
+    "packages/test",
     "packages/examples/*"
   ],
   "resolutions": {

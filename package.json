@@ -10,11 +10,6 @@
   },
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",
-    "@types/react": "16",
-    "@types/react-dom": "16",
-    "react": "16",
-    "react-dom": "16",
-    "rxjs": "5",
     "tslint": "5.2.0",
     "typescript": "2.8.4"
   },

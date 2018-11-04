@@ -1,0 +1,105 @@
+{
+  "name": "@grammarly/focal",
+  "version": "0.7.0",
+  "description": "FRP UI with React, observables, immutable data and lenses",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
+  "files": [
+    "dist/src/"
+  ],
+  "scripts": {
+    "docs": "rm -rf ./docs && typedoc --out docs --theme minimal --ignoreCompilerErrors --tsconfig tsconfig.json",
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && tsc && npm run lint",
+    "test_": "npm run test:unit && npm run test:examples && npm run test:todomvc && npm run test:manual",
+    "test:manual": "cd test/manual && npm i && npm run build",
+    "test": "npm run build && tape ./dist/test/**/*.js | tap-spec",
+    "test:examples": "cd examples/all && npm i && npm run build",
+    "test:todomvc": "cd examples/todomvc && npm i && npm run build",
+    "test:watch": "watch 'npm test' src test",
+    "lint": "tslint --type-check --project tsconfig.json -c tslint.json",
+    "preversion": "if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then echo \"Not on the master branch.\" && exit 1; fi",
+    "postversion": "git push && git push --tags",
+    "release": "echo Publishing v${VER:?\"Usage: VER=1.2.3 npm run release\"}... && npm publish https://github.com/grammarly/focal/releases/download/v$VER/grammarly-focal-$VER.tgz --access public"
+  },
+  "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
+  "contributors": [
+    {
+      "name": "Sergey Yavnyi",
+      "email": "sergey.yavnyi@grammarly.com"
+    },
+    {
+      "name": "Valentyn Gaidylo",
+      "email": "valentyn.gaidylo@grammarly.com"
+    },
+    {
+      "name": "Igor Kononuchenko",
+      "email": "igor.kononuchenko@grammarly.com"
+    },
+    {
+      "name": "Alisa Mansurova",
+      "email": "alisa.mansurova@grammarly.com"
+    },
+    {
+      "name": "Eugene Chechuryn",
+      "email": "eugene.chechuryn@grammarly.com"
+    },
+    {
+      "name": "Yaroslav Voloshchuk",
+      "email": "yaroslav.voloshchuk@grammarly.com"
+    },
+    {
+      "name": "Sergey Rudenko",
+      "email": "sergey.rudenko@grammarly.com"
+    },
+    {
+      "name": "Gregory Shehet",
+      "email": "gregory.shehet@grammarly.com"
+    },
+    {
+      "name": "Anton Verinov",
+      "email": "anton@verinov.com"
+    },
+    {
+      "name": "Oleksii Levzhynskyi",
+      "email": "oleksii.levzhynskyi@gmail.com"
+    }
+  ],
+  "keywords": [
+    "frp",
+    "rx",
+    "rxjs",
+    "reactive",
+    "react",
+    "reactjs",
+    "lens"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grammarly/focal.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@grammarly/tslint-config": "0.5.1",
+    "@types/node": "^6.0.34",
+    "@types/react": "16.0.33",
+    "@types/react-dom": "16.0.3",
+    "@types/tape": "^4.2.27",
+    "react": "16.2.0",
+    "react-dom": "16.2.0",
+    "rxjs": "5.5.6",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.5.1",
+    "tslint": "5.2.0",
+    "typescript": "2.8.4",
+    "watch": "^0.18.0"
+  },
+  "peerDependencies": {
+    "@types/react": ">= 16.0.33 < 17.0.0-0",
+    "@types/react-dom": ">= 16.0.3 < 17.0.0-0",
+    "react": ">= 16.2.0 < 17.0.0-0",
+    "react-dom": ">= 16.2.0 < 17.0.0-0",
+    "rxjs": ">= 5.4.2 < 6.0.0-0"
+  }
+}

@@ -72,7 +72,7 @@ ReactDOM.render(
 
 You can play with this example online [on CodeSandbox](https://codesandbox.io/s/52l109yowl).
 
-There's also a more elaborate version of [this example](examples/all/src/counter/index.tsx), as well as some other examples, in the [examples directory](examples).
+There's also a more elaborate version of [this example](packages/examples/all/src/counter/index.tsx), as well as some other examples, in the [examples directory](packages/examples).
 
 # Installation
 
@@ -474,7 +474,7 @@ const App = (props: { state: Atom<{ count: number }> }) =>
 
 And this concludes our tutorial on Focal basics!
 
-Hopefully, it is now more clear how all of this comes together. Please also make sure to check out some of the [other examples](examples) – build them and play around to get a better feel for what you can do.
+Hopefully, it is now more clear how all of this comes together. Please also make sure to check out some of the [other examples](packages/examples) – build them and play around to get a better feel for what you can do.
 
 # Framework?
 

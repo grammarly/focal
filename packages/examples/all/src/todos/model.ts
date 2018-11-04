@@ -3,7 +3,7 @@ export interface TodoState {
   completed: boolean
 }
 
-export type TodoListState = {
+export interface TodoListState {
   [k: string]: TodoState
 }
 

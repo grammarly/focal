@@ -2,8 +2,6 @@ var path = require('path');
 var webpack = require('webpack');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
-var APP_DIR = path.join(__dirname, '..', 'src');
-
 module.exports = {
   devtool: 'source-map',
   entry: './src/index.tsx',
@@ -42,10 +40,6 @@ module.exports = {
     })
   ],
   resolve: {
-    root: [path.resolve('../src'), path.join(APP_DIR, '..', 'node_modules')],
-    alias: {
-      '@grammarly/focal': path.join(APP_DIR, '..', '..', '..', 'dist', 'src')
-    },
     extensions: ['', '.tsx', '.ts', '.jsx', '.js']
   },
   tslint: {

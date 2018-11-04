@@ -12,7 +12,7 @@ const Counter = (props: { value: Atom<number> }) =>
     <F.input type='submit' value='-' onClick={() => props.value.modify(x => x - 1)} />
   </div>
 
-const Node = (props: { state: Atom<NodeState>, removeNode?: () => void }): JSX.Element => {
+const Node = (props: { state: Atom<NodeState>, removeNode?(): void }): JSX.Element => {
   const children = props.state.lens('children')
   return (
     <div>

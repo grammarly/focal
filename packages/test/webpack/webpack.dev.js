@@ -2,8 +2,6 @@ var webpack = require('webpack');
 var path = require('path');
 var failPlugin = require('webpack-fail-plugin');
 
-var APP_DIR = path.join(__dirname, '..', 'src');
-
 module.exports = {
   debug: true,
   devtool: 'eval-source-map',
@@ -34,10 +32,6 @@ module.exports = {
     failPlugin
   ],
   resolve: {
-    root: [path.resolve('../src'), path.join(APP_DIR, '..', 'node_modules')],
-    alias: {
-      '@grammarly/focal': path.join(APP_DIR, '..', '..', '..', 'dist', 'src')
-    },
     extensions: ['', '.tsx', '.ts', '.jsx', '.js']
   }
 };

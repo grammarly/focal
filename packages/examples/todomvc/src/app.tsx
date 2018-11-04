@@ -106,7 +106,7 @@ const Todo = ({ todo, editing, remove }: TodoProps) =>
     })}
   </F.li>
 
-const NewTodo = ({ onEntry }: { onEntry: (title: string) => void }) => {
+const NewTodo = ({ onEntry }: { onEntry(title: string): void }) => {
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const title = (e.target as HTMLInputElement).value.trim()
     if (e.which === 13 && title !== '') {

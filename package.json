@@ -5,9 +5,8 @@
     "build": "yarn workspace @grammarly/focal build",
     "package": "yarn workspace @grammarly/focal pack",
     "release": "yarn workspace @grammarly/focal release",
-    "test": "yarn workspace @grammarly/focal test",
-    "postinstall": "yarn build",
-    "test:ci": "scripts/run_each test"
+    "test": "yarn workspace @grammarly/focal test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",
+    "postinstall": "yarn build"
   },
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",

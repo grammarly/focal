@@ -2744,9 +2744,10 @@ type-is@~1.6.15, type-is@~1.6.16:
     media-typer "0.3.0"
     mime-types "~2.1.18"
 
-typescript@2.8.4:
-  version "2.8.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.8.4.tgz#0b1db68e6bdfb0b767fa2ab642136a35b059b199"
+typescript@3.1.6:
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.6.tgz#b6543a83cfc8c2befb3f4c8fba6896f5b0c9be68"
+  integrity sha512-tDMYfVtvpb96msS1lDX9MEdHrW4yOuZ4Kdc4Him9oU796XldPYF/t2+uKoX0BBa0hXXwDlqYQbXY5Rzjzc5hBA==
 
 ua-parser-js@^0.7.9:
   version "0.7.17"

@@ -1,0 +1,1 @@
+export { equals } from './equals'

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable'
 import { Subscriber } from 'rxjs/Subscriber'
 import { Subscription } from 'rxjs/Subscription'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import 'rxjs/add/observable/combineLatest'
 
 /**
  * Read-only atom.

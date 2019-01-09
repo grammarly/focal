@@ -2,7 +2,7 @@
   "private": true,
   "name": "focal",
   "scripts": {
-    "build": "yarn workspace @grammarly/focal-state build && yarn workspace @grammarly/focal build ",
+    "build": "yarn workspace @grammarly/focal-utils build && yarn workspace @grammarly/focal-state build && yarn workspace @grammarly/focal build",
     "package": "yarn workspace @grammarly/focal-state pack && yarn workspace @grammarly/focal pack",
     "release": "yarn workspace @grammarly/focal-state release && yarn workspace @grammarly/focal release",
     "test": "yarn workspace @grammarly/focal-state test && yarn workspace @grammarly/focal test && yarn workspace @grammarly/focal-utils test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",

@@ -2,12 +2,14 @@ import * as React from 'react'
 import { structEq } from './../utils'
 import { Atom } from './../atom'
 import { warning, getReactComponentName, DEV_ENV } from './../utils'
-import { Observable, ObservableInput } from 'rxjs/Observable'
-import { Subscription as RxSubscription } from 'rxjs/Subscription'
-import 'rxjs/add/operator/scan'
-import 'rxjs/add/operator/map'
-import 'rxjs/add/observable/of'
-import 'rxjs/add/observable/combineLatest'
+import {
+  Observable,
+  ObservableInput,
+  Subscription as RxSubscription,
+  combineLatest,
+  of
+} from 'rxjs'
+import { scan, map } from 'rxjs/operators'
 
 export interface Subscription {
   unsubscribe(): void
@@ -591,11 +593,12 @@ export function classes(
   // case with observables
   } else {
     return {
-      className: Observable.combineLatest(
+      className: combineLatest(
         filterClassNames(cs || []).map(x =>
           // @TODO optimize: unnecessary Observable.of
           // can we actually already just remove this?
-          !(x instanceof Observable) ? Observable.of(x) : x),
+          !(x instanceof Observable) ? of(x) : x
+        ),
         (...cs: ClassNameLike[]) => {
           const filtered = filterClassNames(cs || [])
 
@@ -620,7 +623,7 @@ function combineTemplate(
     values.push(template[k])
   }
 
-  return Observable.combineLatest(values, (...vs: any[]) => {
+  return combineLatest(values, (...vs: any[]) => {
     const r: { [key: string]: any } = {}
     for (let i = 0; i < keys.length; i++) {
       r[keys[i]] = vs[i]
@@ -739,32 +742,35 @@ export function reactiveList<TValue>(
  * - a list item factory – a function that will create a list item based on item id.
  */
 export function reactiveList<TValue>(
-  ids: Observable<string[]> | Observable<number[]>,
+  ids: Observable<string[] | number[]>,
   createListItem: ((x: string) => TValue) | ((x: number) => TValue)
 ): Observable<TValue[]> {
-  return ids.scan(
-    ([oldIds, _]: [any, TValue[]], ids: string[] | number[]) => {
-      // @NOTE actual type of oldIds and newIds is either { [k: string]: TValue }
-      // or { [k: number]: TValue }, but the type system doesn't allow us to
-      // express this.
-      const newIds: any = {}
-      const newValues: TValue[] = Array(ids.length)
-      const n = ids.length
+  return ids.pipe(
+    scan(
+      ([oldIds, _]: [any, TValue[]], ids: string[] | number[]) => {
+        // @NOTE actual type of oldIds and newIds is either { [k: string]: TValue }
+        // or { [k: number]: TValue }, but the type system doesn't allow us to
+        // express this.
+        const newIds: any = {}
+        const newValues: TValue[] = Array(ids.length)
+        const n = ids.length
 
-      for (let i = 0; i < n; ++i) {
-        const id = ids[i]
-        const k = id.toString()
-        if (k in newIds) {
-          newValues[i] = newIds[k]
-        } else {
-          newIds[k] = newValues[i] =
-            k in oldIds
-              ? oldIds[k]
-              : (createListItem as (_: string | number) => TValue)(id)
+        for (let i = 0; i < n; ++i) {
+          const id = ids[i]
+          const k = id.toString()
+          if (k in newIds) {
+            newValues[i] = newIds[k]
+          } else {
+            newIds[k] = newValues[i] =
+              k in oldIds
+                ? oldIds[k]
+                : (createListItem as (_: string | number) => TValue)(id)
+          }
         }
-      }
-      return [newIds, newValues] as [any, TValue[]]
-    },
-    [{}, []])
-    .map(([_, values]) => values)
+        return [newIds, newValues] as [any, TValue[]]
+      },
+      [{}, []]
+    ),
+    map(([, values]) => values)
+  )
 }

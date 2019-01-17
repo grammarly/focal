@@ -1,10 +1,7 @@
 import { Lens, Prism, PropExpr } from './../lens'
 import { structEq, Option } from './../utils'
 
-import { Observable } from 'rxjs/Observable'
-import { Subscriber } from 'rxjs/Subscriber'
-import { Subscription } from 'rxjs/Subscription'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { Observable, Subscriber, Subscription, BehaviorSubject, combineLatest } from 'rxjs'
 
 /**
  * Read-only atom.
@@ -514,9 +511,8 @@ export class CombinedAtomViewImpl<TResult> extends AbstractReadOnlyAtom<TResult>
   // Rx method overrides
   _subscribe(subscriber: Subscriber<TResult>) { // tslint:disable-line function-name
     if (!this._subscription) {
-      this._subscription =
-        Observable.combineLatest(this._sources)
-          .subscribe(xs => this._onSourceValues(xs))
+      this._subscription = combineLatest(this._sources)
+        .subscribe(xs => this._onSourceValues(xs))
     }
     this._refCount++
 

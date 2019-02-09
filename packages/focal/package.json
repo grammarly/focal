@@ -86,7 +86,7 @@
     "react": "16.2.0",
     "react-dom": "16.2.0",
     "tslint": "5.2.0",
-    "typescript": "3.1.6",
+    "typescript": "3.3.3",
     "rxjs": "5.5.6",
     "@types/tape": "^4.2.27",
     "tap-spec": "^4.1.1",

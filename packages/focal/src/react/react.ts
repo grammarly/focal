@@ -211,7 +211,7 @@ function walkObservables<T>(
 function render<P>(
   class_: React.Component<P, any> | React.StatelessComponent<P>
     | React.ComponentClass<P> | keyof React.ReactHTML,
-  props: P,
+  props: Lifted<P>,
   observedValues: any[] = []
 ): React.DOMElement<any, any> {
   // @TODO can we do a better type here?

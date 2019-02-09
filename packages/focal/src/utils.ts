@@ -67,13 +67,3 @@ export function getReactComponentName(
 }
 
 export type Option<T> = T | undefined
-
-export namespace Option {
-  export function isNone<T>(x: Option<T>): x is undefined {
-    return x === undefined
-  }
-
-  export function isSome<T>(x: Option<T>): x is T {
-    return x !== undefined
-  }
-}

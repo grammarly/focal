@@ -68,13 +68,13 @@ export namespace Prism {
         return create(
           (s: TSource) => {
             const x = getter(s)
-            return Option.isSome(x)
+            return x !== undefined
               ? next.get(x)
               : undefined
           },
           (v: U, s: TSource) => {
             const x = getter(s)
-            return Option.isSome(x)
+            return x !== undefined
               ? setter(next.set(v, x), s)
               : s
           }

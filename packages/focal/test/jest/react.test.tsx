@@ -63,28 +63,23 @@ describe('react', () => {
   describe('show warning for empty observable', () => {
     function testWarning(name: string, render: () => JSX.Element) {
       describe(name, () => {
-        let consoleErrorWasCalled = false
-        let consoleErrorMessage: string | null = null
-        const origConsoleError = console.error
-        // tslint:disable-next-line no-function-expression
-        console.error = function (message: any) {
-          origConsoleError(message)
-          consoleErrorMessage = message
-          consoleErrorWasCalled = true
-        }
-
         testRender(render(), '', 'no render')
 
-        it('console.error() called', () => expect(consoleErrorWasCalled).toBeTruthy())
+        it('console.error() called', () => {
+          const consoleError = jest.spyOn(global.console, 'error')
+            .mockImplementation(() => void 0)
 
-        it('warning displayed', () => expect(consoleErrorMessage).toEqual(
-          `[Focal]: The component <span> has received an observable that doesn\'t immediately ` +
-          `emit a value in one of its props. Since this observable hasn\'t yet called its ` +
-          `subscription handler, the component can not be rendered at the time. Check the ` +
-          `props of <span>.`
-        ))
+          ReactDOM.renderToStaticMarkup(render())
 
-        console.error = origConsoleError
+          expect(consoleError).toBeCalledWith(
+            `[Focal]: The component <span> has received an observable that doesn\'t immediately ` +
+            `emit a value in one of its props. Since this observable hasn\'t yet called its ` +
+            `subscription handler, the component can not be rendered at the time. Check the ` +
+            `props of <span>.`
+          )
+
+          consoleError.mockRestore()
+        })
       })
     }
 

@@ -1,24 +1,26 @@
 // tslint:disable no-unnecessary-local-variable
-import * as test from 'tape'
 import 'rxjs/add/operator/merge'
-import { Atom, Lens, ReadOnlyAtom } from '../src'
-import { structEq } from '../src/utils'
+import 'rxjs/add/operator/toArray'
+import 'rxjs/add/operator/take'
+import { Atom, Lens, ReadOnlyAtom } from '../../src'
+import { structEq } from '../../src/utils'
 
-function testAtom(t: test.Test, newAtom: (x: number) => Atom<number>) {
-  t.test('basic', t => {
-    t.plan(7)
-
+function testAtom(newAtom: (x: number) => Atom<number>) {
+  it('atom/basic', async () => {
     const a = newAtom(1)
     let expected = 1
 
     const cb = (x: number) => {
-      t.is(x, expected, 'expected new value')
-      t.is(a.get(), expected, 'expected current value')
+      //it('expected new value', () =>
+      expect(x).toEqual(expected)
+      //it('expected current value', () =>
+      expect(a.get()).toEqual(expected)
     }
 
     const subscription = a.subscribe(cb)
 
-    t.is(a.get(), 1, 'get initial value')
+    //it('get initial value', () =>
+    expect(a.get()).toEqual(1)
 
     expected = 2
     a.modify(x => x + 1)
@@ -29,7 +31,7 @@ function testAtom(t: test.Test, newAtom: (x: number) => Atom<number>) {
     subscription.unsubscribe()
   })
 
-  t.test('observable semantics: distinct values', t => {
+  it('atom/observable: distinct values', () => {
     const a = newAtom(1)
     const observations: number[] = []
     const cb = (x: number) => observations.push(x)
@@ -37,15 +39,13 @@ function testAtom(t: test.Test, newAtom: (x: number) => Atom<number>) {
 
     ; [2, 3, 3, 3, 1].forEach(x => a.set(x))
 
-    t.assert(structEq(observations, [1, 2, 3, 1]))
+    expect(structEq(observations, [1, 2, 3, 1])).toBeTruthy()
 
     subscription.unsubscribe()
-    t.end()
   })
 }
 
 function testDerivedAtom(
-  t: test.Test,
   createDerived: (
     a: Atom<number>,
     f: (x: number) => number,
@@ -53,7 +53,7 @@ function testDerivedAtom(
   ) => ReadOnlyAtom<number>,
   create: (x: number) => Atom<number> = Atom.create
 ) {
-  t.test('unsub in modify', t => {
+  describe('unsub in modify', () => {
     const a = create(5)
 
     const viewFnCalls: number[] = []
@@ -61,30 +61,28 @@ function testDerivedAtom(
 
     const v = createDerived(a, x => x + 1, x => viewFnCalls.push(x))
 
-    t.deepEqual(viewFnCalls, [])
-    t.deepEqual(os, [])
+    expect(viewFnCalls).toEqual([])
+    expect(os).toEqual([])
 
     const sub = v.subscribe(x => {
       os.push(x)
     })
-    t.deepEqual(viewFnCalls, [5])
-    t.deepEqual(os, [6])
+    expect(viewFnCalls).toEqual([5])
+    expect(os).toEqual([6])
 
     a.modify(x => x + 1)
-    t.deepEqual(viewFnCalls, [5, 6])
-    t.deepEqual(os, [6, 7])
+    expect(viewFnCalls).toEqual([5, 6])
+    expect(os).toEqual([6, 7])
 
     a.modify(x => {
       sub.unsubscribe()
       return 0
     })
-    t.deepEqual(viewFnCalls, [5, 6])
-    t.deepEqual(os, [6, 7])
-
-    t.end()
+    expect(viewFnCalls).toEqual([5, 6])
+    expect(os).toEqual([6, 7])
   })
 
-  t.test('two atoms subscriptions', t => {
+  describe('two atoms subscriptions', () => {
     const a = create(5)
 
     const viewFnCalls1: number[] = []
@@ -98,66 +96,62 @@ function testDerivedAtom(
       return x + 5
     })
 
-    t.deepEqual(viewFnCalls1, [])
-    t.deepEqual(viewFnCalls2, [])
+    expect(viewFnCalls1).toEqual([])
+    expect(viewFnCalls2).toEqual([])
 
     const sub1 = v1.subscribe(x => os1.push(x))
 
     v2.subscribe(x => os2.push(x))
 
-    t.deepEqual(viewFnCalls1, [5])
-    t.deepEqual(viewFnCalls2, [6])
-    t.deepEqual(os2, [11])
+    expect(viewFnCalls1).toEqual([5])
+    expect(viewFnCalls2).toEqual([6])
+    expect(os2).toEqual([11])
 
     a.modify(x => x + 1)
-    t.deepEqual(viewFnCalls1, [5, 6])
-    t.deepEqual(viewFnCalls2, [6, 7])
-    t.deepEqual(os2, [11, 12])
+    expect(viewFnCalls1).toEqual([5, 6])
+    expect(viewFnCalls2).toEqual([6, 7])
+    expect(os2).toEqual([11, 12])
 
     a.modify(x => {
       sub1.unsubscribe()
       return 0
     })
 
-    t.deepEqual(viewFnCalls1, [5, 6, 0])
-    t.deepEqual(viewFnCalls2, [6, 7, 1])
-    t.deepEqual(os1, [6, 7])
-    t.deepEqual(os2, [11, 12, 6])
-
-    t.end()
+    expect(viewFnCalls1).toEqual([5, 6, 0])
+    expect(viewFnCalls2).toEqual([6, 7, 1])
+    expect(os1).toEqual([6, 7])
+    expect(os2).toEqual([11, 12, 6])
   })
 
-  t.test('resubscribe', t => {
+  describe('resubscribe', () => {
     const a = create(5)
     const v = createDerived(a, x => x + 1, () => { /* no-op */ })
 
     const os: number[] = []
     const sub1 = v.subscribe(x => os.push(x))
-    t.deepEqual(os, [6], 'immediate observation on subscription')
+    expect(os).toEqual([6]) //, 'immediate observation on subscription')
 
     a.modify(x => x + 1)
-    t.deepEqual(os, [6, 7], 'observation on modify')
+    expect(os).toEqual([6, 7]) //, 'observation on modify')
 
     sub1.unsubscribe()
 
     a.modify(x => x + 1)
-    t.deepEqual(os, [6, 7], 'no observation after unsubscription')
+    expect(os).toEqual([6, 7]) //, 'no observation after unsubscription')
 
     const sub2 = v.subscribe(x => os.push(x))
-    t.deepEqual(os, [6, 7, 8], 'immediate observation on subscription 2')
+    expect(os).toEqual([6, 7, 8]) //, 'immediate observation on subscription 2')
 
     a.modify(x => x + 1)
-    t.deepEqual(os, [6, 7, 8, 9], 'observation on modify 2')
+    expect(os).toEqual([6, 7, 8, 9]) //, 'observation on modify 2')
 
     sub2.unsubscribe()
 
     a.modify(x => x + 1)
-    t.deepEqual(os, [6, 7, 8, 9], 'no observation after unsubscription 2')
-
-    t.end()
+    expect(os).toEqual([6, 7, 8, 9]) //, 'no observation after unsubscription 2')
   })
 
-  t.test('multiple subscriptions', t => {
+  describe('multiple subscriptions', () => {
     const a = create(5)
     const v = createDerived(a, x => x + 1, () => { /* no-op */ })
 
@@ -167,72 +161,70 @@ function testDerivedAtom(
     const os2: number[] = []
     const sub2 = v.subscribe(x => os2.push(x))
 
-    t.deepEqual(os1, os2, 'same initial observations upon subscription')
+    expect(os1).toEqual(os2) //, 'same initial observations upon subscription')
 
     a.set(6)
-    t.deepEqual(os1, os2, 'same observations on modify')
+    expect(os1).toEqual(os2) //, 'same observations on modify')
 
     sub1.unsubscribe()
     a.set(7)
-    t.deepEqual(os1, [6, 7], 'no modify observation after unsub 1')
-    t.deepEqual(os2, [6, 7, 8], 'observation on 2 after unsub on 1')
+    expect(os1).toEqual([6, 7]) //, 'no modify observation after unsub 1')
+    expect(os2).toEqual([6, 7, 8]) //, 'observation on 2 after unsub on 1')
 
     sub2.unsubscribe()
     a.set(8)
-    t.deepEqual(os1, [6, 7], 'no more observations')
-    t.deepEqual(os2, [6, 7, 8], 'no more observations on 2')
-
-    t.end()
+    expect(os1).toEqual([6, 7]) //, 'no more observations')
+    expect(os2).toEqual([6, 7, 8]) //, 'no more observations on 2')
   })
 }
 
-test('atom', t => {
-  t.test('plain', t => {
-    testAtom(t, x => Atom.create(x))
+describe('atom', () => {
+  describe('plain', () => {
+    testAtom(x => Atom.create(x))
   })
 
-  t.test('lens', t => {
-    t.test('lensed, property expression', t => {
-      testAtom(t, x => {
+  describe('lens', () => {
+    describe('lensed, property expression', () => {
+      testAtom(x => {
         const source = Atom.create({ a: x })
         const lensed = source.lens(x => x.a)
         return lensed
       })
     })
 
-    t.test('lensed, nested property expression', t => {
-      testAtom(t, x => {
+    describe('lensed, nested property expression', () => {
+      testAtom(x => {
         const source = Atom.create({ a: { b: { c: x } } })
         const lensed = source.lens(x => x.a.b.c)
         return lensed
       })
     })
 
-    t.test('lensed, chained lenses', t => {
-      testAtom(t, x => {
+    describe('lensed, chained lenses', () => {
+      testAtom(x => {
         const source = Atom.create({ a: { b: { c: x } } })
         const lensed = source.lens(x => x.a).lens(x => x.b).lens(x => x.c)
         return lensed
       })
     })
 
-    t.test('lensed, nested safe key', t => {
-      testAtom(t, x => {
+    describe('lensed, nested safe key', () => {
+      testAtom(x => {
         const source = Atom.create({ a: { b: { c: x } } })
         const lensed = source.lens('a', 'b', 'c')
         return lensed
       })
     })
 
-    t.test('lensed, safe key, chained lenses', t => {
-      testAtom(t, x => {
+    describe('lensed, safe key, chained lenses', () => {
+      testAtom(x => {
         const source = Atom.create({ a: { b: { c: x } } })
         const lensed = source.lens('a').lens('b').lens('c')
         return lensed
       })
     })
 
-    t.test('lensed, chained + complex', t => {
+    describe('lensed, chained + complex', () => {
       const source = Atom.create({ a: { b: { c: 5 } } })
       const lensed =
         source
@@ -244,16 +236,14 @@ test('atom', t => {
               (x: number) => x + 1,
               (v: number, _: number) => v - 1))
 
-      t.isEqual(lensed.get(), 6)
+      expect(lensed.get()).toEqual(6)
 
       lensed.set(6)
 
-      t.isEqual(lensed.get(), 6)
-
-      t.end()
+      expect(lensed.get()).toEqual(6)
     })
 
-    t.test('lensed, safe key, chained + complex', t => {
+    describe('lensed, safe key, chained + complex', () => {
       const source = Atom.create({ a: { b: { c: 5 } } })
       const lensed =
         source
@@ -263,35 +253,31 @@ test('atom', t => {
               (x: number) => x + 1,
               (v: number, _: number) => v - 1))
 
-      t.isEqual(lensed.get(), 6)
+      expect(lensed.get()).toEqual(6)
 
       lensed.set(6)
 
-      t.isEqual(lensed.get(), 6)
-
-      t.end()
+      expect(lensed.get()).toEqual(6)
     })
 
-    t.test('lens then view', t => {
+    describe('lens then view', () => {
       const x1 = Atom.create({ a: { b: 5 } })
       const x2 = x1.lens(x => x.a).view(x => x.b).view(x => x + 1)
       const x3 = x1.lens(x => x.a).lens(x => x.b)
 
-      t.isEqual(x3.get(), 5)
-      t.isEqual(x2.get(), 6)
+      expect(x3.get()).toEqual(5)
+      expect(x2.get()).toEqual(6)
 
       x3.set(6)
 
-      t.isEqual(x3.get(), 6)
-      t.isEqual(x2.get(), 7)
-      t.assert(structEq({ a: { b: 6 } }, x1.get()))
-
-      t.end()
+      expect(x3.get()).toEqual(6)
+      expect(x2.get()).toEqual(7)
+      expect(structEq({ a: { b: 6 } }, x1.get())).toBeTruthy()
     })
 
-    t.test('index lens', t => {
-      t.test('generic', t => {
-        testAtom(t, x => {
+    describe('index lens', () => {
+      describe('generic', () => {
+        testAtom(x => {
           const source = Atom.create([x, 2, 3])
           const first = source.lens(
             Lens.index<number>(0)
@@ -305,29 +291,28 @@ test('atom', t => {
         })
       })
 
-      t.test('atom interface', t => {
+      describe('atom interface', () => {
         const source = Atom.create([1, 2, 3])
         const first = source.lens(Lens.index<number>(0))
 
-        t.isEqual(first.get(), 1, 'initial value')
+        // it('initial value', () =>
+        expect(first.get()).toEqual(1) //)
 
         first.set(10)
 
-        t.isEqual(first.get(), 10, 'set through lens')
-        t.assert(structEq(source.get(), [10, 2, 3]), 'propagates to source')
+        expect(first.get()).toEqual(10) // , 'set through lens')
+        expect(structEq(source.get(), [10, 2, 3])).toBeTruthy() //, 'propagates to source')
 
         source.set([100, 2, 3])
 
-        t.isEqual(first.get(), 100, 'set through source')
+        expect(first.get()).toEqual(100) //, 'set through source')
 
         source.set([2, 3])
 
-        t.isEqual(first.get(), 2, 'get after element removed')
-
-        t.end()
+        expect(first.get()).toEqual(2) //, 'get after element removed')
       })
 
-      t.test('observing lensed', t => {
+      describe('observing lensed', () => {
         const source = Atom.create([1, 2, 3])
         const first = source.lens(Lens.index<number>(0))
 
@@ -343,19 +328,13 @@ test('atom', t => {
         source.set([2, 3])
         source.set([1000, 2, 3])
 
-        t.isEquivalent(
-          observations,
-          [1, 10, 100, 2, 1000])
+        expect(observations).toEqual([1, 10, 100, 2, 1000])
 
         subscription.unsubscribe()
-        t.end()
       })
-
-      t.end()
     })
 
     testDerivedAtom(
-      t,
       (a, f, onCalled) => a.lens(
         Lens.create(
           (x: number) => {
@@ -366,53 +345,45 @@ test('atom', t => {
         )
       )
     )
-
-    t.end()
   })
 
-  t.test('view', t => {
-    t.test('readonly, getter, simple', t => {
+  describe('view', () => {
+    describe('readonly, getter, simple', () => {
       const source = Atom.create(5)
       const view = source.view(x => x + 1)
 
-      t.isEqual(source.get(), 5)
-      t.isEqual(view.get(), 6)
+      expect(source.get()).toEqual(5)
+      expect(view.get()).toEqual(6)
 
       source.modify(x => x + 1)
 
-      t.isEqual(source.get(), 6)
-      t.isEqual(view.get(), 7)
-
-      t.end()
+      expect(source.get()).toEqual(6)
+      expect(view.get()).toEqual(7)
     })
 
-    t.test('readonly, safe key, simple', t => {
+    describe('readonly, safe key, simple', () => {
       const source = Atom.create({ a: 5 })
       const view = source.view('a')
 
-      t.isEqual(view.get(), 5)
+      expect(view.get()).toEqual(5)
 
       source.modify(x => ({ a: x.a + 1 }))
 
-      t.isEqual(view.get(), 6)
-
-      t.end()
+      expect(view.get()).toEqual(6)
     })
 
-    t.test('readonly, safe key, complex', t => {
+    describe('readonly, safe key, complex', () => {
       const source = Atom.create({ a: { b: { c: 5 } } })
       const view = source.view('a', 'b', 'c')
 
-      t.isEqual(view.get(), 5)
+      expect(view.get()).toEqual(5)
 
       source.modify(x => ({ a: { b: { c: x.a.b.c + 1 } } }))
 
-      t.isEqual(view.get(), 6)
-
-      t.end()
+      expect(view.get()).toEqual(6)
     })
 
-    t.test('observable semantics: distinct values', t => {
+    describe('observable semantics: distinct values', () => {
       const source = Atom.create(1)
       const view = source.view(x => x + 1)
 
@@ -424,40 +395,35 @@ test('atom', t => {
 
       ; [2, 2, 2, 3, 3, 3, 1, 1, 1].forEach(x => source.set(x))
 
-      t.deepEqual(viewOs, [2, 3, 4, 2])
-      t.deepEqual(sourceOs, [1, 2, 3, 1])
+      expect(viewOs).toEqual([2, 3, 4, 2])
+      expect(sourceOs).toEqual([1, 2, 3, 1])
 
       sourceSub.unsubscribe()
       viewSub.unsubscribe()
-      t.end()
     })
 
-    testDerivedAtom(t, (a, f, onCalled) => a.view(x => {
+    testDerivedAtom((a, f, onCalled) => a.view(x => {
       onCalled(x)
       return f(x)
     }))
 
-    t.test('complex expression', t => {
+    describe('complex expression', () => {
       const source = Atom.create({ a: { b: { c: 5 } } })
       const lensed = source.lens(x => x.a.b.c)
       const view = lensed.view(x => x + 5 > 0)
 
-      t.isEqual(view.get(), true)
+      expect(view.get()).toEqual(true)
 
       lensed.set(6)
-      t.isEqual(view.get(), true)
+      expect(view.get()).toEqual(true)
 
       lensed.set(-5)
-      t.isEqual(view.get(), false)
-
-      t.end()
+      expect(view.get()).toEqual(false)
     })
-
-    t.end()
   })
 
-  t.test('atom value caching', t => {
-    t.test('static', t => {
+  describe('atom value caching', () => {
+    describe('static', () => {
       const source = Atom.create(-1)
 
       let called1 = 0
@@ -485,25 +451,23 @@ test('atom', t => {
       })
 
       function testCalls(a: number, b: number, c: number, d: number) {
-        t.deepEqual([called1, called2, called3, called4], [a, b, c, d])
+        expect([called1, called2, called3, called4]).toEqual([a, b, c, d])
       }
 
       source.set(0)
       testCalls(0, 0, 0, 0)
 
-      t.isEqual(a3.get(), 'Hi -1')
+      expect(a3.get()).toEqual('Hi -1')
       testCalls(1, 1, 1, 0)
 
-      t.isEqual(a4.get(), 'Ho -1')
+      expect(a4.get()).toEqual('Ho -1')
       testCalls(2, 2, 1, 1)
 
       source.set(1)
       testCalls(2, 2, 1, 1)
-
-      t.end()
     })
 
-    t.test('subscribed', t => {
+    describe('subscribed', () => {
       const source = Atom.create(0)
 
       let called1 = 0
@@ -552,11 +516,12 @@ test('atom', t => {
         a: number, b: number, c: number, d: number, e: number, f: number,
         msg: string
       ) {
-        t.deepEqual(
-          [called1, called2, called3, called4, called5, called5],
-          [a, b, c, d, e, f],
-          msg
-        )
+        expect(
+          [called1, called2, called3, called4, called5, called5]).toEqual(
+          [a, b, c, d, e, f])
+        //   ,
+        //   msg
+        // )
       }
 
       const test = a4.merge(a5, a6)
@@ -572,8 +537,9 @@ test('atom', t => {
       source.set(2)
       testCalls(3, 3, 3, 3, 3, 3, '3 calls each after subscribe + 2 sets')
 
-      t.deepEqual(
-        observations,
+      expect(
+        observations
+      ).toEqual(
         [
           'Hi -2', 'Ho -2', 'HU -2',
           'Hi -4', 'Ho -4', 'HU -4',
@@ -582,10 +548,9 @@ test('atom', t => {
       )
 
       sub.unsubscribe()
-      t.end()
     })
 
-    t.test('with Atom.combine/static', t => {
+    describe('with Atom.combine/static', () => {
       const source = Atom.create(0)
 
       let called1 = 0
@@ -634,11 +599,12 @@ test('atom', t => {
         a: number, b: number, c: number, d: number, e: number, f: number,
         msg: string
       ) {
-        t.deepEqual(
-          [called1, called2, called3, called4, called5, called5],
-          [a, b, c, d, e, f],
-          msg
-        )
+        expect(
+          [called1, called2, called3, called4, called5, called5]).toEqual(
+          [a, b, c, d, e, f])
+        // ,
+        //   msg
+        // )
       }
 
       testCalls(0, 0, 0, 0, 0, 0, 'no calls initially')
@@ -646,7 +612,7 @@ test('atom', t => {
       const combined = Atom.combine(a4, a5, a6, (x, y, z) => [x, y, z])
       testCalls(0, 0, 0, 0, 0, 0, 'no calls after creating Atom.combined')
 
-      t.deepEqual(combined.get(), ['Hi -2', 'Ho -2', 'HU -2'])
+      expect(combined.get()).toEqual(['Hi -2', 'Ho -2', 'HU -2'])
 
       // it's ok to have 3 calls here each as until we are subscribed to this
       // atom it doesn't track its sources
@@ -655,26 +621,22 @@ test('atom', t => {
       source.set(1)
       testCalls(3, 3, 3, 1, 1, 1, 'no new calls after source .set()')
 
-      t.deepEqual(a4.get(), 'Hi -4')
+      expect(a4.get()).toEqual('Hi -4')
       testCalls(4, 4, 4, 2, 1, 1, 'calls after .get() on intermediate node')
-
-      t.end()
     })
   })
 
-  t.test('combine', t => {
-    t.test('constant', t => {
+  describe('combine', () => {
+    describe('constant', () => {
       const combined = Atom.combine(
         Atom.create(1), Atom.create(false), Atom.create('test'),
         (x, y, z) => y && x < 0 ? z.toUpperCase() : 'NO'
       )
 
-      t.isEqual(combined.get(), 'NO')
-
-      t.end()
+      expect(combined.get()).toEqual('NO')
     })
 
-    t.test('dynamic, unsubscribed', t => {
+    describe('dynamic, unsubscribed', () => {
       const s1 = Atom.create(1)
       const s2 = Atom.create(false)
       const s3 = Atom.create('test')
@@ -684,24 +646,22 @@ test('atom', t => {
         (x, y, z) => y && x < 0 ? z.toUpperCase() : 'NO'
       )
 
-      t.isEqual(combined.get(), 'NO')
+      expect(combined.get()).toEqual('NO')
 
       s1.set(-1)
-      t.isEqual(combined.get(), 'NO')
+      expect(combined.get()).toEqual('NO')
 
       s2.set(true)
-      t.isEqual(combined.get(), 'TEST')
+      expect(combined.get()).toEqual('TEST')
 
       s3.set('heLLo')
-      t.isEqual(combined.get(), 'HELLO')
+      expect(combined.get()).toEqual('HELLO')
 
       s1.set(100)
-      t.isEqual(combined.get(), 'NO')
-
-      t.end()
+      expect(combined.get()).toEqual('NO')
     })
 
-    t.test('dynamic, subscribed', t => {
+    describe('dynamic, subscribed', () => {
       const s1 = Atom.create(1)
       const s2 = Atom.create(false)
       const s3 = Atom.create('test')
@@ -714,33 +674,32 @@ test('atom', t => {
 
       const sub = combined.subscribe(x => observations.push(x))
 
-      t.isEqual(combined.get(), 'NO')
+      expect(combined.get()).toEqual('NO')
 
       s1.set(-1)
-      t.isEqual(combined.get(), 'NO')
+      expect(combined.get()).toEqual('NO')
 
       s2.set(true)
-      t.isEqual(combined.get(), 'TEST')
+      expect(combined.get()).toEqual('TEST')
 
       s3.set('heLLo')
-      t.isEqual(combined.get(), 'HELLO')
+      expect(combined.get()).toEqual('HELLO')
 
       s1.set(100)
-      t.isEqual(combined.get(), 'NO')
+      expect(combined.get()).toEqual('NO')
 
-      t.deepEqual(observations, ['NO', 'TEST', 'HELLO', 'NO'])
+      expect(observations).toEqual(['NO', 'TEST', 'HELLO', 'NO'])
 
       sub.unsubscribe()
-      t.end()
     })
 
-    testDerivedAtom(t, (a, f, onCalled) => Atom.combine(a, Atom.create(0), (a, b) => {
+    testDerivedAtom((a, f, onCalled) => Atom.combine(a, Atom.create(0), (a, b) => {
       onCalled(a)
       return f(a)
     }))
   })
 
-  t.test('logger', t => {
+  describe('logger', () => {
     let consoleLogFireTime = 0
 
     const atom = Atom.create('bar')
@@ -751,9 +710,7 @@ test('atom', t => {
     })
     logAtom.set('foo')
 
-    t.equal(consoleLogFireTime, 2)
-    t.deepEqual(consoleLogArguments, [['bar', 'bar'], ['bar', 'foo']])
-
-    t.end()
+    expect(consoleLogFireTime).toEqual(2)
+    expect(consoleLogArguments).toEqual([['bar', 'bar'], ['bar', 'foo']])
   })
 })

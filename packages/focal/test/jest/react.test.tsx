@@ -1,4 +1,3 @@
-import * as test from 'tape'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/of'
 import 'rxjs/add/observable/empty'
@@ -14,7 +13,7 @@ import {
   reactiveList,
   classes,
   bindElementProps
-} from '../src'
+} from '../../src'
 
 class Comp extends React.Component<{ test: string }, {}> {
   render() {
@@ -22,48 +21,48 @@ class Comp extends React.Component<{ test: string }, {}> {
   }
 }
 
-function testRender(t: test.Test, actual: JSX.Element | null, expected: string, desc: string) {
-  t.is(actual && ReactDOM.renderToStaticMarkup(actual), expected, desc)
+function testRender(actual: JSX.Element | null, expected: string, desc: string) {
+  it(desc, () => expect(actual && ReactDOM.renderToStaticMarkup(actual)).toEqual(expected))
 }
 
 function fromConst<T>(value: T) {
   return Observable.of(value)
 }
 
-test('react', t => {
-  testRender(t,
+describe('react', () => {
+  testRender(
     <F.span>test</F.span>,
     '<span>test</span>',
     'Render F element'
   )
 
-  testRender(t,
+  testRender(
     <F.span>{fromConst('test1')}</F.span>,
     '<span>test1</span>',
     'Render F element with oservable'
   )
 
-  testRender(t,
+  testRender(
     <F.span style={fromConst({ color: 'red' })}></F.span>,
     '<span style="color:red"></span>',
     'Render F element with observable in style'
   )
 
-  testRender(t,
+  testRender(
     <F.span style={fromConst({ color: 'red' })}>{fromConst('test')}</F.span>,
     '<span style="color:red">test</span>',
     'Render F element with 2 observables'
   )
 
-  testRender(t,
+  testRender(
     <F.span>{Observable.of(0)}</F.span>,
     '<span>0</span>',
     'render single Observable.of(0)'
   )
 
-  t.test('show warning for empty observable', t => {
+  describe('show warning for empty observable', () => {
     function testWarning(name: string, render: () => JSX.Element) {
-      t.test(name, t => {
+      describe(name, () => {
         let consoleErrorWasCalled = false
         let consoleErrorMessage: string | null = null
         const origConsoleError = console.error
@@ -74,19 +73,18 @@ test('react', t => {
           consoleErrorWasCalled = true
         }
 
-        testRender(t, render(), '', 'no render')
-        t.ok(consoleErrorWasCalled, 'console.error() called')
-        t.is(
-          consoleErrorMessage,
+        testRender(render(), '', 'no render')
+
+        it('console.error() called', () => expect(consoleErrorWasCalled).toBeTruthy())
+
+        it('warning displayed', () => expect(consoleErrorMessage).toEqual(
           `[Focal]: The component <span> has received an observable that doesn\'t immediately ` +
           `emit a value in one of its props. Since this observable hasn\'t yet called its ` +
           `subscription handler, the component can not be rendered at the time. Check the ` +
-          `props of <span>.`,
-          'warning displayed'
-        )
+          `props of <span>.`
+        ))
 
         console.error = origConsoleError
-        t.end()
       })
     }
 
@@ -119,11 +117,9 @@ test('react', t => {
       'mixed never and empty',
       () => <F.span className={Observable.empty()} style={Observable.never()}></F.span>
     )
-
-    t.end()
   })
 
-  testRender(t,
+  testRender(
     <F.div onClick={() => { /* no-op */ }} style={{ display: 'block', color: fromConst('red') }}>
       <F.span>Hello</F.span>
     </F.div>,
@@ -133,43 +129,43 @@ test('react', t => {
 
   const LiftedComp = lift(Comp)
 
-  testRender(t,
+  testRender(
     <LiftedComp test={'hi'} />,
     '<div>hi</div>',
     'lift(Comp) with plain value'
   )
 
-  testRender(t,
+  testRender(
     <LiftedComp test={fromConst('hi')} />,
     '<div>hi</div>',
     'lift(Comp) with observable constant'
   )
 
-  testRender(t,
+  testRender(
     <LiftedComp test={fromConst('hi')} />,
     '<div>hi</div>',
     'lifted component with observable constant'
   )
 
-  testRender(t,
+  testRender(
     <F.a {...bind({})}></F.a>,
     '<a></a>',
     'bind, empty'
   )
 
-  testRender(t,
+  testRender(
     <F.a {...bind({ href: Atom.create('test') })} />,
     '<a href="test"></a>',
     'bind, one, constant, one-way'
   )
 
-  testRender(t,
+  testRender(
     <F.a {...bind({ href: Atom.create('test'), data: Atom.create('ok') })} />,
     '<a href="test" data="ok"></a>',
     'bind, many, constant, one-way'
   )
 
-  testRender(t,
+  testRender(
     <F.ul>
       {reactiveList(
         Atom.create([] as number[]),
@@ -180,7 +176,7 @@ test('react', t => {
     'reactive list, empty'
   )
 
-  testRender(t,
+  testRender(
     <F.ul>
       {reactiveList(
         Atom.create([1, 2, 3]),
@@ -191,7 +187,7 @@ test('react', t => {
     'reactive list, three items'
   )
 
-  testRender(t,
+  testRender(
     <F.tbody>
       {reactiveList(
         Atom.create([1, 2, 3]),
@@ -209,7 +205,7 @@ test('react', t => {
     'reactive list, table'
   )
 
-  testRender(t,
+  testRender(
     <F.a {...classes(Atom.create('test'))}></F.a>,
     '<a class="test"></a>',
     'classes, one, constant'
@@ -217,13 +213,13 @@ test('react', t => {
 
   const [n, m] = [2, 3]
 
-  testRender(t,
+  testRender(
     <F.a {...classes(n > m && 'a', Atom.create('b'), 'c', m > n && 'd')}></F.a>,
     '<a class="b c d"></a>',
     'classes, mixed types'
   )
 
-  testRender(t,
+  testRender(
     <F.a
       {...classes(
         null,
@@ -237,50 +233,48 @@ test('react', t => {
     'classes, more mixed types'
   )
 
-  testRender(t,
+  testRender(
     <a {...classes(n > m && 'a', 'b', m > n && 'c')}></a>,
     '<a class="b c"></a>',
     'classes, non-lifted component'
   )
 
-  testRender(t,
+  testRender(
     <a {...classes(undefined)}></a>,
     '<a></a>',
     'classes, one undefined constant'
   )
 
-  testRender(t,
+  testRender(
     <a {...classes(undefined && 'a', 'b')}></a>,
     '<a class="b"></a>',
     'classes, undefined constant'
   )
 
-  testRender(t,
+  testRender(
     <F.Fragment>{Atom.create('test')}</F.Fragment>,
     'test',
     'fragment'
   )
 
-  testRender(t,
+  testRender(
     <F.Fragment>{Atom.create(null)}</F.Fragment>,
     '',
     'fragment with null content'
   )
 
-  testRender(t,
+  testRender(
     <F.Fragment><p>left</p>|{Atom.create('right')}</F.Fragment>,
     '<p>left</p>|right',
     'fragment mixed content'
   )
 
-  t.assert((() => {
+  it('bindElementProps compiles', () => expect((() => {
     // tslint:disable-next-line no-unused-expression
     (
       <F.div {...bindElementProps({ ref: 'onScroll', scrollTop: Atom.create(0) })}></F.div>
     )
 
     return true
-  })(), 'bindElementProps compiles')
-
-  t.end()
+  })()).toBeTruthy())
 })

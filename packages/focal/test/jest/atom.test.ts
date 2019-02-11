@@ -11,15 +11,16 @@ function testAtom(newAtom: (x: number) => Atom<number>) {
     let expected = 1
 
     const cb = (x: number) => {
-      //it('expected new value', () =>
+      // expected new value
       expect(x).toEqual(expected)
-      //it('expected current value', () =>
+
+      // expected current value
       expect(a.get()).toEqual(expected)
     }
 
     const subscription = a.subscribe(cb)
 
-    //it('get initial value', () =>
+    // get initial value
     expect(a.get()).toEqual(1)
 
     expected = 2
@@ -129,26 +130,38 @@ function testDerivedAtom(
 
     const os: number[] = []
     const sub1 = v.subscribe(x => os.push(x))
-    expect(os).toEqual([6]) //, 'immediate observation on subscription')
+
+    // immediate observation on subscription
+    expect(os).toEqual([6])
 
     a.modify(x => x + 1)
-    expect(os).toEqual([6, 7]) //, 'observation on modify')
+
+    // observation on modify
+    expect(os).toEqual([6, 7])
 
     sub1.unsubscribe()
 
     a.modify(x => x + 1)
-    expect(os).toEqual([6, 7]) //, 'no observation after unsubscription')
+
+    // no observation after unsubscription
+    expect(os).toEqual([6, 7])
 
     const sub2 = v.subscribe(x => os.push(x))
-    expect(os).toEqual([6, 7, 8]) //, 'immediate observation on subscription 2')
+
+    // immediate observation on subscription 2
+    expect(os).toEqual([6, 7, 8])
 
     a.modify(x => x + 1)
-    expect(os).toEqual([6, 7, 8, 9]) //, 'observation on modify 2')
+
+    // observation on modify 2
+    expect(os).toEqual([6, 7, 8, 9])
 
     sub2.unsubscribe()
 
     a.modify(x => x + 1)
-    expect(os).toEqual([6, 7, 8, 9]) //, 'no observation after unsubscription 2')
+
+    // no observation after unsubscription 2
+    expect(os).toEqual([6, 7, 8, 9])
   })
 
   describe('multiple subscriptions', () => {
@@ -161,20 +174,31 @@ function testDerivedAtom(
     const os2: number[] = []
     const sub2 = v.subscribe(x => os2.push(x))
 
-    expect(os1).toEqual(os2) //, 'same initial observations upon subscription')
+    // same initial observations upon subscription
+    expect(os1).toEqual(os2)
 
     a.set(6)
-    expect(os1).toEqual(os2) //, 'same observations on modify')
+
+    // same observations on modify
+    expect(os1).toEqual(os2)
 
     sub1.unsubscribe()
     a.set(7)
-    expect(os1).toEqual([6, 7]) //, 'no modify observation after unsub 1')
-    expect(os2).toEqual([6, 7, 8]) //, 'observation on 2 after unsub on 1')
+
+    // no modify observation after unsub 1
+    expect(os1).toEqual([6, 7])
+
+    // observation on 2 after unsub on 1
+    expect(os2).toEqual([6, 7, 8])
 
     sub2.unsubscribe()
     a.set(8)
-    expect(os1).toEqual([6, 7]) //, 'no more observations')
-    expect(os2).toEqual([6, 7, 8]) //, 'no more observations on 2')
+
+    // no more observations
+    expect(os1).toEqual([6, 7])
+
+    // no more observations on 2
+    expect(os2).toEqual([6, 7, 8])
   })
 }
 
@@ -295,21 +319,26 @@ describe('atom', () => {
         const source = Atom.create([1, 2, 3])
         const first = source.lens(Lens.index<number>(0))
 
-        // it('initial value', () =>
-        expect(first.get()).toEqual(1) //)
+        // initial value
+        expect(first.get()).toEqual(1)
 
         first.set(10)
 
-        expect(first.get()).toEqual(10) // , 'set through lens')
-        expect(structEq(source.get(), [10, 2, 3])).toBeTruthy() //, 'propagates to source')
+        // set through lens
+        expect(first.get()).toEqual(10)
+
+        // propagates to source
+        expect(structEq(source.get(), [10, 2, 3])).toBeTruthy()
 
         source.set([100, 2, 3])
 
-        expect(first.get()).toEqual(100) //, 'set through source')
+        // set through source
+        expect(first.get()).toEqual(100)
 
         source.set([2, 3])
 
-        expect(first.get()).toEqual(2) //, 'get after element removed')
+        // get after element removed
+        expect(first.get()).toEqual(2)
       })
 
       describe('observing lensed', () => {
@@ -597,14 +626,14 @@ describe('atom', () => {
 
       function testCalls(
         a: number, b: number, c: number, d: number, e: number, f: number,
-        msg: string
+        // @TODO jest doesn't have messages for expects
+        _msg: string
       ) {
         expect(
-          [called1, called2, called3, called4, called5, called5]).toEqual(
-          [a, b, c, d, e, f])
-        // ,
-        //   msg
-        // )
+          [called1, called2, called3, called4, called5, called5]
+        ).toEqual(
+          [a, b, c, d, e, f]
+        )
       }
 
       testCalls(0, 0, 0, 0, 0, 0, 'no calls initially')

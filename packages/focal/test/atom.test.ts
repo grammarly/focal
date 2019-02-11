@@ -2,8 +2,8 @@
 import 'rxjs/add/operator/merge'
 import 'rxjs/add/operator/toArray'
 import 'rxjs/add/operator/take'
-import { Atom, Lens, ReadOnlyAtom } from '../../src'
-import { structEq } from '../../src/utils'
+import { Atom, Lens, ReadOnlyAtom } from '../src'
+import { structEq } from '../src/utils'
 
 function testAtom(newAtom: (x: number) => Atom<number>) {
   it('atom/basic', async () => {

@@ -13,7 +13,7 @@ import {
   reactiveList,
   classes,
   bindElementProps
-} from '../../src'
+} from '../src'
 
 class Comp extends React.Component<{ test: string }, {}> {
   render() {

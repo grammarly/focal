@@ -1,6 +1,6 @@
-import { Lens } from '../../src'
-import { structEq } from '../../src/utils'
-import { extractPropertyPath, parsePropertyPath } from '../../src/lens/json'
+import { Lens } from '../src'
+import { structEq } from '../src/utils'
+import { extractPropertyPath, parsePropertyPath } from '../src/lens/json'
 
 function roundtrip<T, U>(
   name: string,

@@ -18,7 +18,7 @@
     "postpack": "rm README.md && rm LICENSE",
     "preversion": "if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then echo \"Not on the master branch.\" && exit 1; fi",
     "postversion": "git push && git push --tags",
-    "release": "echo Publishing v${VER:?\"Usage: VER=1.2.3 npm run release\"}... && npm publish https://github.com/grammarly/focal/releases/download/v$VER/grammarly-focal-$VER.tgz --access public"
+    "release": "echo Publishing v${VER:?\"Usage: VER=1.2.3 npm run release\"}... && npm publish https://github.com/grammarly/focal/releases/download/v$VER/grammarly-focal-v$VER.tgz --access public"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "contributors": [

@@ -44,13 +44,11 @@ export interface LiftedFragment {
     React.ReactElement<LiftWrapperProps<ObservableReactHTMLProps<{}>>>
 }
 
-export const enum ExtendedIntrinsics {
-  fragment = 'Fragment'
+interface ExtraLiftedIntrinsics {
+  readonly Fragment: LiftedFragment
 }
 
-export type LiftedIntrinsics = LiftedIntrinsicsHTML & {
-  [k in ExtendedIntrinsics.fragment]: LiftedFragment
-}
+export type LiftedIntrinsics = LiftedIntrinsicsHTML & ExtraLiftedIntrinsics
 
 export function createLiftedIntrinsics(): LiftedIntrinsics {
   const html: (keyof LiftedIntrinsicsHTML)[] = [
@@ -67,14 +65,14 @@ export function createLiftedIntrinsics(): LiftedIntrinsics {
     'var', 'video', 'wbr'
   ]
 
-  const r = {} as any
+  const r: {
+    -readonly [P in keyof LiftedIntrinsics]?: LiftedIntrinsics[P];
+  } = {}
+
   html.forEach(e => r[e] = liftIntrinsic(e))
 
-  const fragmentTag: LiftedIntrinsics[ExtendedIntrinsics.fragment] =
-    (props: LiftedFragmentAttributes) =>
-      React.createElement(LiftWrapper, { component: React.Fragment, props })
-
-  r[ExtendedIntrinsics.fragment] = fragmentTag
+  r.Fragment = (props: LiftedFragmentAttributes) =>
+    React.createElement(LiftWrapper, { component: React.Fragment, props })
 
   return r as LiftedIntrinsics
 }

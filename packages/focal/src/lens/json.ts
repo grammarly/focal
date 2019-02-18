@@ -239,6 +239,8 @@ declare module './base' {
     export let key: typeof keyImpl
 
     /**
+     * DEPRECATED: please use Lens.key instead!
+     *
      * Create a lens to an object's property. The argument is a property expression, which
      * is a limited form of a getter, with following restrictions:
      * - should be a pure function

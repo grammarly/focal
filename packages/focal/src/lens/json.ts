@@ -157,7 +157,7 @@ let propExprDeprecatedWarnings = 0
 
 function warnPropExprDeprecated(path: string[]) {
   // don't warn more than a few times
-  if (propExprDeprecatedWarnings < 5) {
+  if (propExprDeprecatedWarnings < 10) {
     propExprDeprecatedWarnings++
 
     const propExpr = `x.${path.join('.')}`

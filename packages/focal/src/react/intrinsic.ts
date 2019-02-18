@@ -33,7 +33,7 @@ export type GenericLiftedIntrinsic<T> =
     : never
 
 export type LiftedIntrinsicsHTML = {
-  [K in keyof React.ReactHTML]: GenericLiftedIntrinsic<React.ReactHTML[K]>
+  readonly [K in keyof React.ReactHTML]: GenericLiftedIntrinsic<React.ReactHTML[K]>
 }
 
 export interface LiftedFragmentAttributes extends ObservableReactChildren, React.Attributes {}

@@ -9,7 +9,9 @@ import {
   setKey,
   conservatively,
   findIndex,
-  Option
+  Option,
+  DEV_ENV,
+  warning
 } from './../utils'
 
 import { Lens, Prism } from './base'
@@ -151,13 +153,35 @@ export function keyImpl<TObject>(k?: string) {
     )
 }
 
+let propExprDeprecatedWarnings = 0
+
+function warnPropExprDeprecated(path: string[]) {
+  // don't warn more than a few times
+  if (propExprDeprecatedWarnings < 10) {
+    propExprDeprecatedWarnings++
+
+    const propExpr = `x.${path.join('.')}`
+    const keys = `'${path.join("', '")}'`
+
+    warning(
+      `The property expression overload of Atom.lens and Lens.prop are deprecated and ` +
+      `will be removed in next versions of Focal. Please use the key name overload for ` +
+      `Atom.lens and Lens.key instead. ` +
+      `You can convert your code by changing the calls:
+  a.lens(x => ${propExpr}) to a.lens(${keys}),
+  Lens.prop((x: T) => ${propExpr}) to Lens.key<T>()(${keys}).`
+    )
+  }
+}
+
 export function propImpl<TObject, TProperty>(
   getter: PropExpr<TObject, TProperty>
 ): Lens<TObject, TProperty> {
+  const path = extractPropertyPath(getter as PropExpr<TObject, TProperty>)
+  if (DEV_ENV) warnPropExprDeprecated(path)
+
   // @TODO can we optimize this?
-  return Lens.compose<TObject, TProperty>(
-    ...extractPropertyPath(getter as PropExpr<TObject, TProperty>)
-      .map(keyImpl()))
+  return Lens.compose<TObject, TProperty>(...path.map(keyImpl()))
 }
 
 export function indexImpl<TItem>(i: number): Prism<TItem[], TItem> {
@@ -216,6 +240,8 @@ declare module './base' {
     export let key: typeof keyImpl
 
     /**
+     * DEPRECATED: please use Lens.key instead!
+     *
      * Create a lens to an object's property. The argument is a property expression, which
      * is a limited form of a getter, with following restrictions:
      * - should be a pure function

@@ -164,6 +164,8 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
   set(newValue: T): void
 
   /**
+   * DEPRECATED: please use other overloads instead!
+   *
    * Create a lensed atom using a property expression, which specifies
    * a path inside the atom value's data structure.
    *

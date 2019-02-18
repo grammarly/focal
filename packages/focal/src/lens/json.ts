@@ -160,15 +160,15 @@ function warnPropExprDeprecated(path: string[]) {
   if (propExprDeprecatedWarnings < 5) {
     propExprDeprecatedWarnings++
 
-    const propExpr = `x => x.${path.join('.')}`
+    const propExpr = `x.${path.join('.')}`
     const keys = `'${path.join("', '")}'`
 
     warning(
       `The property expression overload of Atom.lens and Lens.prop are deprecated! ` +
       `Please use the key name overload for Atom.lens and Lens.key instead. ` +
       `You can convert your code by changing the call:
-  a.lens(${propExpr}) to a.lens(${keys}),
-  Lens.prop(${propExpr}) to Lens.key(${keys}).`
+  a.lens(x => ${propExpr}) to a.lens(${keys}),
+  Lens.prop((x: T) => ${propExpr}) to Lens.key<T>()(${keys}).`
     )
   }
 }

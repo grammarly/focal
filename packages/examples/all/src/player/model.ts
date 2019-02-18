@@ -36,7 +36,7 @@ export class AudioModel {
     this.durationSubscription = Observable
       .fromEvent(this.audio, 'canplaythrough')
       .subscribe(() =>
-        atom.lens(x => x.maxDuration).set(this.audio.duration)
+        atom.lens('maxDuration').set(this.audio.duration)
       )
 
     this.timeSubscription = atom
@@ -71,11 +71,11 @@ export class AudioModel {
       )
 
     this.volumeSubscription = atom
-      .lens(x => x.volume)
+      .lens('volume')
       .subscribe(x => this.audio.volume = x / 10)
 
     this.currentTimeSubscription = atom
-      .lens(x => x.currentTime)
+      .lens('currentTime')
       .subscribe(x => this.audio.currentTime = parseInt(x, 10))
   }
 

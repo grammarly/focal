@@ -65,11 +65,11 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
     return (
       <div>
         <TimeLine
-          currentTime={state.lens(x => x.currentTime)}
-          maxDuration={state.view(x => x.maxDuration)}
+          currentTime={state.lens('currentTime')}
+          maxDuration={state.view('maxDuration')}
         />
-        <Volume volume={state.lens(x => x.volume)} />
-        <Play status={state.lens(x => x.status)} />
+        <Volume volume={state.lens('volume')} />
+        <Play status={state.lens('status')} />
       </div>
     )
   }

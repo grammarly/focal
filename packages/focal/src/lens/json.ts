@@ -164,9 +164,10 @@ function warnPropExprDeprecated(path: string[]) {
     const keys = `'${path.join("', '")}'`
 
     warning(
-      `The property expression overload of Atom.lens and Lens.prop are deprecated! ` +
-      `Please use the key name overload for Atom.lens and Lens.key instead. ` +
-      `You can convert your code by changing the call:
+      `The property expression overload of Atom.lens and Lens.prop are deprecated and ` +
+      `will be removed in next versions of Focal. Please use the key name overload for ` +
+      `Atom.lens and Lens.key instead. ` +
+      `You can convert your code by changing the calls:
   a.lens(x => ${propExpr}) to a.lens(${keys}),
   Lens.prop((x: T) => ${propExpr}) to Lens.key<T>()(${keys}).`
     )

@@ -9,7 +9,9 @@ import {
   setKey,
   conservatively,
   findIndex,
-  Option
+  Option,
+  DEV_ENV,
+  warning
 } from './../utils'
 
 import { Lens, Prism } from './base'
@@ -151,13 +153,34 @@ export function keyImpl<TObject>(k?: string) {
     )
 }
 
+let propExprDeprecatedWarnings = 0
+
+function warnPropExprDeprecated(path: string[]) {
+  // don't warn more than a few times
+  if (propExprDeprecatedWarnings < 5) {
+    propExprDeprecatedWarnings++
+
+    const propExpr = `x => x.${path.join('.')}`
+    const keys = `'${path.join("', '")}'`
+
+    warning(
+      `The property expression overload of Atom.lens and Lens.prop are deprecated! ` +
+      `Please use the key name overload for Atom.lens and Lens.key instead. ` +
+      `You can convert your code by changing the call:
+  a.lens(${propExpr}) to a.lens(${keys}),
+  Lens.prop(${propExpr}) to Lens.key(${keys}).`
+    )
+  }
+}
+
 export function propImpl<TObject, TProperty>(
   getter: PropExpr<TObject, TProperty>
 ): Lens<TObject, TProperty> {
+  const path = extractPropertyPath(getter as PropExpr<TObject, TProperty>)
+  if (DEV_ENV) warnPropExprDeprecated(path)
+
   // @TODO can we optimize this?
-  return Lens.compose<TObject, TProperty>(
-    ...extractPropertyPath(getter as PropExpr<TObject, TProperty>)
-      .map(keyImpl()))
+  return Lens.compose<TObject, TProperty>(...path.map(keyImpl()))
 }
 
 export function indexImpl<TItem>(i: number): Prism<TItem[], TItem> {

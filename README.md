@@ -358,16 +358,22 @@ console.log(oneC.set(7, bigobj))
 Focal also gives you the ability to define these lenses quite conveniently:
 
 ```typescript
-// create the above lenses by ONLY providing a getter function¹
-const abc = Lens.prop((obj: typeof bigobj.one) => obj.a.b.c)
+// create the above lenses by providing key names
+const abc = Lens.key<typeof bigobj.one>()('a', 'b', 'c')
 
-const one = Lens.prop((obj: typeof bigobj) => obj.one)
+const one = Lens.key<typeof bigobj>()('one')
 
-const two = Lens.prop((obj: typeof bigobj) => obj.two)
+const two = Lens.key<typeof bigobj>()('two')
 
-// ¹ RESTRICTIONS APPLY! the getter function in this case can only be a simple
-// property path access function which consists of a single property access expression
-// and has no side effects.
+// Note the extra nullary call. It is there for better type inference. To create a type safe
+// lens we need to tell the compiler both the type of source and the type of destination property.
+// Unlike with Atom.lens, the compiler doesn't yet know the type of the source data, so we have to
+// explicitly state it. The compiler then can easily infer the type of the destination property by
+// its name.
+//
+// We need the nullary call because we have two generic type parameters, and want one of them
+// explicit and another inferred. So the nullary call is there only to supply the type argument
+// for the source data type.
 ```
 
 The best part about this is that it is completely type safe, and all of the IDE tools (like auto-completion, refactoring, etc.) will just work.
@@ -405,8 +411,8 @@ const obj = Atom.create({
   a: 5
 })
 
-// create a lens to look at an `a` property of the object
-const a = Lens.prop((x: typeof obj) => x.a)
+// create a lens to look at the `a` property of the object
+const a = Lens.key<typeof obj>()('a')
 
 // create a lensed atom that will hold a value of the `a` property of our object
 const lensed = obj.lens(a)
@@ -427,11 +433,7 @@ console.log(obj.get())
 Note how the source atom's value has changed when we set a new value to the lensed atom – that's it. There's also a neat shortcut to create lensed atoms:
 
 ```typescript
-const lensed = obj.lens(x => x.a) // ¹
-
-// ¹ SAME RESTRICTIONS APPLY! just like with Lens.prop, the getter function argument
-// to the atom's `lens` method can only be a simple property path access function which
-// consists of a single property access expression and has no side effects.
+const lensed = obj.lens('a')
 ```
 
 We don't need to explicitly create a `Lens` – atom's `lens` method already has a couple of overloads to create lensed atoms on the spot. Also note that we didn't need to add the `typeof obj` type annotation here: the compiler already knows the type of data we're operating on (from the type of `obj`, which in this case is `Atom<{ a: number }`) and can infer the type of `x` for us.
@@ -468,7 +470,7 @@ const App = (props: { state: Atom<{ count: number }> }) =>
       this is where we take apart the app state and give only a part of it
       to the counter component:
     */}
-    <Counter count={props.state.lens(x => x.count)} />
+    <Counter count={props.state.lens('count')} />
   </div>
 ```
 

@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs'
+import { fromEvent } from 'rxjs'
+import { startWith, distinctUntilChanged, map } from 'rxjs/operators'
 import {
   F, Atom, ReadOnlyAtom, bindElementProps, reactiveList
 } from '@grammarly/focal'
@@ -6,10 +7,10 @@ import * as React from 'react'
 
 const Window = {
   innerWidth:
-    Observable.fromEvent(window, 'resize')
-      .map(() => window.innerWidth)
-      .distinctUntilChanged()
-      .startWith(0)
+    fromEvent(window, 'resize').pipe(
+      map(() => window.innerWidth),
+      distinctUntilChanged(),
+      startWith(0))
 }
 
 const defaultState = {
@@ -24,8 +25,8 @@ function getRowContent(id: number) {
 }
 
 function cellWidthStyle(columns: string[]) {
-  return Window.innerWidth.map(innerWidth =>
-    ({ width: innerWidth / columns.length + 'px' }))
+  return Window.innerWidth.pipe(map(innerWidth =>
+    ({ width: innerWidth / columns.length + 'px' })))
 }
 
 function getVisibleRows(
@@ -52,7 +53,7 @@ const TBody = (props: {
 }) =>
   <F.tbody>
     {reactiveList(
-      props.visibleRows.map(({ begin, end }) =>
+      props.visibleRows.view(({ begin, end }) =>
         Array.from(Array(end - begin), (_, i) => i + begin)),
       i =>
         <F.tr

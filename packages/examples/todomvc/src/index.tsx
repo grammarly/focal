@@ -1,7 +1,7 @@
 import { App } from './app'
 import * as Model from './model'
 import { Atom } from '@grammarly/focal'
-import 'rxjs/add/operator/debounceTime'
+import { debounceTime } from 'rxjs/operators'
 
 // hot reload support
 declare const require: (name: String) => any
@@ -29,7 +29,7 @@ let app = new App(
   model
 )
 
-model.state.debounceTime(1000).subscribe(s => {
+model.state.pipe(debounceTime(1000)).subscribe(s => {
   console.log('App state changed: ' + JSON.stringify(s))
   localStorage.setItem(LOCALSTORAGE_NAME, JSON.stringify(s))
 })

@@ -29,7 +29,7 @@ const AnimatedDiv = ({
   const displayState = counterState.lens('display')
   const count = counterState.view('count')
 
-  const animDiv = displayState.map(displayState => {
+  const animDiv = displayState.view(displayState => {
     if (displayState) {
       return (
         <F.div

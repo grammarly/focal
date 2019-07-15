@@ -1,5 +1,15 @@
+import { timer } from 'rxjs'
+import {
+  takeWhile,
+  scan,
+  startWith,
+  mapTo,
+  switchMap,
+  bufferCount,
+  merge,
+  first
+} from 'rxjs/operators'
 import * as React from 'react'
-import { Observable } from 'rxjs'
 import { Atom, F, bind } from '@grammarly/focal'
 
 interface AppState {
@@ -28,12 +38,12 @@ function positiveOrNegative(endRange: number, currentNumber: number) {
 
 function getUpdateNumberObservable(buffer: number[]) {
   const [prev, curr] = buffer
-  return Observable
-    .timer(0, 20)
-    .mapTo(positiveOrNegative(curr, prev))
-    .startWith(prev)
-    .scan((acc, val) => acc + val)
-    .takeWhile(takeUntilFunc(curr, prev))
+  return timer(0, 20).pipe(
+    mapTo(positiveOrNegative(curr, prev)),
+    startWith(prev),
+    scan((acc, val) => acc + val),
+    takeWhile(takeUntilFunc(curr, prev))
+  )
 }
 
 const App = (props: { state: Atom<AppState> }) => {
@@ -50,9 +60,10 @@ const App = (props: { state: Atom<AppState> }) => {
         <h3>Observable.scan</h3>
         <F.span>
           {
-            value
-              .scan(([_, curr], val) => [curr, val], [0, value.get()])
-              .switchMap(getUpdateNumberObservable)
+            value.pipe(
+              scan(([_, curr], val) => [curr, val], [0, value.get()]),
+              switchMap(getUpdateNumberObservable)
+            )
           }
         </F.span>
       </div>
@@ -60,10 +71,11 @@ const App = (props: { state: Atom<AppState> }) => {
         <h3>Observable.bufferCount</h3>
         <F.span>
           {
-            value
-              .bufferCount(2, 1)
-              .switchMap(getUpdateNumberObservable)
-              .merge(value.first())
+            value.pipe(
+              bufferCount(2, 1),
+              switchMap(getUpdateNumberObservable),
+              merge(value.pipe(first()))
+            )
           }
         </F.span>
       </div>

@@ -6,7 +6,7 @@ Type safe, expressive and composable state management for [React](https://facebo
 
 - Represent the whole application state as an immutable and [observable](http://reactivex.io/) single source of truth.
 - Seamlessly embed observables into React components' layout.
-- Leverage the power of [Rx.JS](http://reactivex.io/) (and observables in general) to enrich and combine parts of application state, explicitly controlling the data flow.
+- Leverage the power of [Rx.JS](https://rxjs.dev) (and observables in general) to enrich and combine parts of application state, explicitly controlling the data flow.
 - Use [lenses](https://en.wikibooks.org/wiki/Haskell/Lenses_and_functional_references) to decompose the application state into smaller parts, so you can isolate UI components in a clean way and manipulate application state effortlessly.
 - Write less code that is easier to understand.
 
@@ -242,7 +242,7 @@ const Counter = (props: { count: Atom<number> }) =>
 
 We've added this `That's an odd number!` line (which will also say `even` for even numbers) by creating a _view_ of our state atom.
 
-To create a view means to create an atom which shows its state in a modified way that is defined by the view function. It's not a lot different than `map`ping over an [array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) or an [observable](http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-map), actually. The main difference is that just like the source atom, the derived atom (a view) will only emit a new value if it is not equal to the current value.
+To create a view means to create an atom which shows its state in a modified way that is defined by the view function. It's not a lot different than `map`ping over an [array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) or an [observable](https://rxjs.dev/api/operators/map), actually. The main difference is that just like the source atom, the derived atom (a view) will only emit a new value if it is not equal to the current value.
 
 Let's try one more thing:
 
@@ -513,7 +513,7 @@ From the start, we focused more on immediate developer productivity and type saf
 
 # License
 
-Copyright 2017 Grammarly, Inc.
+Copyright 2019 Grammarly, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

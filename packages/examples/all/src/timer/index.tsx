@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Observable, Subscription } from 'rxjs'
+import { of, interval, combineLatest, Subscription } from 'rxjs'
+import { mapTo, scan, switchMap } from 'rxjs/operators'
 import { Atom, ReadOnlyAtom, F, reactiveList } from '@grammarly/focal'
 
 enum Status {
@@ -78,16 +79,15 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
   componentDidMount() {
     const status = this.props.state.view('status')
 
-    this._subscription = Observable
-      .combineLatest(
-        status.switchMap(x =>
-          x === Status.STARTED ? Observable.interval(1).mapTo(1) : Observable.of(0)
-        ),
+    this._subscription = combineLatest(
+        status.pipe(switchMap(x => x === Status.STARTED ? interval(1).pipe(mapTo(1)) : of(0))),
         status
-      )
-      .scan((time, [val, status]) =>
-        status === Status.RESET ? defaultTimeState : updateTime(time, val),
-        defaultTimeState
+      ).pipe(
+        scan<[number, Status], Time>(
+          (time, [val, status]) =>
+            status === Status.RESET ? defaultTimeState : updateTime(time, val),
+          defaultTimeState
+        )
       )
       .subscribe(x => this.props.state.lens('time').set(x))
   }

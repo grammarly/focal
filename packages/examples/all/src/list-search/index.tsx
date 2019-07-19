@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Observable, Subscription } from 'rxjs'
+import { interval,  Subscription } from 'rxjs'
 import { Atom, F, bind } from '@grammarly/focal'
 
 const defaultSearchList = Object.keys(window)
@@ -31,8 +31,7 @@ class App extends  React.Component<{ state: Atom<AppState> }, {}> {
     const { state } = this.props
     const timer = state.lens('timer')
 
-    this._subscription = Observable
-      .interval(1000)
+    this._subscription = interval(1000)
       .subscribe(_ => {
         state.lens('timer').modify(x => x === 0 ? 5 : x - 1)
 

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { F, Atom } from '@grammarly/focal'
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/observable/of'
+import { of } from 'rxjs'
 
 let globalCounter = 0
 
@@ -12,7 +11,7 @@ function mkName() {
 const El = ({ text = '', ts = '' }) => {
   return <F.div>
     El #{text} (render #{ts})
-    {Observable.of(undefined)}
+    {of(undefined)}
   </F.div>
 }
 

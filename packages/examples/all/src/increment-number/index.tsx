@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Observable } from 'rxjs'
+import { of, interval, combineLatest } from 'rxjs'
+import { mapTo, scan, switchMap, startWith } from 'rxjs/operators'
 import { Atom, F } from '@grammarly/focal'
 
 interface AppState {
@@ -28,31 +29,33 @@ const App = (props: { state: Atom<AppState> }) =>
     <h4>with Observable.combineLatest</h4>
     <F.div>
       {
-        Observable
-          .combineLatest(
-            Observable.interval(1000).startWith(0).mapTo(1),
-            props.state.view('isRunning')
+        combineLatest(
+          interval(1000).pipe(startWith(0), mapTo(1)),
+          props.state.view('isRunning')
+        ).pipe(
+          scan<[number, boolean], number>(
+            (acc, [val, shouldIncrement]) => shouldIncrement ? acc + val : acc, 0
           )
-          .scan((acc, [val, shouldIncrement]) => shouldIncrement ? acc + val : acc, 0)
+        )
       }
 
       <br />
       <h4>with Observable.switchMap</h4>
       {
-        Observable
-          .interval(1000)
-          .startWith(0)
-          .switchMap(() => props.state.view(x => x.isRunning ? 1 : 0))
-          .scan((acc, val) => acc + val, 0)
+        interval(1000).pipe(
+          startWith(0),
+          switchMap(() => props.state.view(x => x.isRunning ? 1 : 0)),
+          scan((acc, val) => acc + val, 0)
+        )
       }
     </F.div>
     <h4>Atom.switchMap Observable</h4>
     <F.div>
       {
-        props.state.switchMap(x =>
-          x.isRunning ? Observable.interval(1000).startWith(0).mapTo(1) : Observable.of(0)
+        props.state.pipe(
+          switchMap(x => x.isRunning ? interval(1000).pipe(startWith(0), mapTo(1)) : of(0)),
+          scan((acc, val) => acc + val, 0)
         )
-        .scan((acc, val) => acc + val, 0)
       }
     </F.div>
   </div>

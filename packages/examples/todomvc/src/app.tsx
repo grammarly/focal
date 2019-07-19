@@ -1,20 +1,16 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/observable/defer'
-import 'rxjs/add/observable/fromEvent'
-import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/startWith'
-import 'rxjs/add/operator/combineLatest'
+import { fromEvent, defer } from 'rxjs'
+import { combineLatest, map, startWith } from 'rxjs/operators'
 import { F, Atom, Lens, bind, reactiveList, classes } from '@grammarly/focal'
 import { TodoItem, AppModel } from './model'
 
-const locationHash =
-  Observable.defer(() =>
-    Observable.fromEvent(window, 'hashchange')
-      .map(() => window.location.hash)
-      .startWith(window.location.hash)
+const locationHash = defer(() =>
+  fromEvent(window, 'hashchange').pipe(
+    map(() => window.location.hash),
+    startWith(window.location.hash)
   )
+)
 
 // @TODO would be cool to use existing property lenses in place of filters,
 // as they do in Calmm. Needs research.
@@ -24,7 +20,7 @@ const routes = [
   { hash: '#/completed', filter: (x: TodoItem) => x.completed, title: 'Completed' }
 ]
 
-const route = locationHash.map(h => routes.find(r => r.hash === h) || routes[0])
+const route = locationHash.pipe(map(h => routes.find(r => r.hash === h) || routes[0]))
 
 interface TodoProps {
   readonly todo: Atom<TodoItem | undefined>
@@ -129,7 +125,7 @@ const Filters = () =>
     {routes.map(r =>
       <li key={r.title}>
         <F.a
-          {...classes(route.map(c => c.hash === r.hash && 'selected'))}
+          {...classes(route.pipe(map(c => c.hash === r.hash && 'selected')))}
           href={r.hash}
         >
           {r.title}
@@ -156,10 +152,10 @@ const AppComponent = ({ model }: { model: AppModel }) => {
           />
           <F.ul className='todo-list'>
             {reactiveList(
-              route.combineLatest(
+              route.pipe(combineLatest(
                 model.todos,
                 (r, xs) => Object.keys(xs).filter(k => r.filter(xs[k]))
-              ),
+              )),
               id => <Todo
                 key={id}
                 todo={model.todos.lens(Lens.key<TodoItem>(id))}
@@ -172,7 +168,7 @@ const AppComponent = ({ model }: { model: AppModel }) => {
 
         <F.footer
           className='footer'
-          hidden={model.todos.map(x => !x || Object.keys(x).length === 0)}
+          hidden={model.todos.view(x => !x || Object.keys(x).length === 0)}
         >
           <F.span className='todo-count'>
             {model.todos.view(xs => {

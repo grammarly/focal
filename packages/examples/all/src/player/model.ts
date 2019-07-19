@@ -1,5 +1,6 @@
 import { Atom } from '@grammarly/focal'
-import { Observable, Subscription } from 'rxjs'
+import { of, interval, fromEvent, Subscription } from 'rxjs'
+import { mapTo, switchMap } from 'rxjs/operators'
 
 export enum Status {
   playing,
@@ -33,19 +34,19 @@ export class AudioModel {
   constructor(atom: Atom<AppState>, audioSrc: string) {
     this.audio = new Audio(audioSrc)
 
-    this.durationSubscription = Observable
-      .fromEvent(this.audio, 'canplaythrough')
+    this.durationSubscription = fromEvent(this.audio, 'canplaythrough')
       .subscribe(() =>
         atom.lens('maxDuration').set(this.audio.duration)
       )
 
     this.timeSubscription = atom
       .view(x => x.status)
-      .switchMap(
-        x =>
+      .pipe(
+        switchMap(x =>
           x === Status.playing
-            ? Observable.interval(1000).mapTo(1)
-            : Observable.of(0)
+            ? interval(1000).pipe(mapTo(1))
+            : of(0)
+        )
       )
       .subscribe(x =>
         atom.modify(y => {

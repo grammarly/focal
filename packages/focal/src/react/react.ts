@@ -741,17 +741,14 @@ export function reactiveList<TValue>(
  * - an observable of list item ids
  * - a list item factory – a function that will create a list item based on item id.
  */
-export function reactiveList<TValue>(
-  ids: Observable<string[] | number[]>,
-  createListItem: ((x: string) => TValue) | ((x: number) => TValue)
+export function reactiveList<TValue, TKey extends string | number>(
+  ids: Observable<TKey[]>,
+  createListItem: ((x: TKey) => TValue)
 ): Observable<TValue[]> {
   return ids.pipe(
-    scan(
-      ([oldIds, _]: [any, TValue[]], ids: string[] | number[]) => {
-        // @NOTE actual type of oldIds and newIds is either { [k: string]: TValue }
-        // or { [k: number]: TValue }, but the type system doesn't allow us to
-        // express this.
-        const newIds: any = {}
+    scan<TKey[], [{ [k: string]: TValue }, TValue[]]>(
+      ([oldIds, _], ids) => {
+        const newIds: { [k: string]: TValue } = {}
         const newValues: TValue[] = Array(ids.length)
         const n = ids.length
 
@@ -767,7 +764,7 @@ export function reactiveList<TValue>(
                 : (createListItem as (_: string | number) => TValue)(id)
           }
         }
-        return [newIds, newValues] as [any, TValue[]]
+        return [newIds, newValues]
       },
       [{}, []]
     ),

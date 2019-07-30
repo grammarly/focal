@@ -680,12 +680,23 @@ export function getElementProps(template: { [key: string]: Atom<any> }) {
   }
 }
 
+type BindElementPropsReturnType =
+  | {
+      [x: string]: ((e: React.SyntheticEvent<any>) => void) | ((domElement: Element | null) => void)
+      [PROP_REF](domElement: Element | null): void
+    }
+  | {
+      [x: string]: ((e: React.SyntheticEvent<any>) => void) | ((domElement: Element | null) => void)
+      [PROP_MOUNT](domElement: Element | null): void
+    }
+  | {}
+
 export function bindElementProps(
   // @TODO need to fix the type of { [k: string]: string | Atom<any> }.
   // this function already compiles without the 'string | ...', but it's
   // calls do not.
   template: { ref?: string; mount?: string } & { [k: string]: string | Atom<any> }
-) {
+): BindElementPropsReturnType {
   const { [PROP_REF]: ref, [PROP_MOUNT]: mount, ...tpl } = template
 
   return ref

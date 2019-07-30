@@ -10,7 +10,7 @@ cache:
 jobs:
   include:
     - stage: github release
-      script: yarn build && yarn package
+      script: yarn build && yarn test && yarn package
       deploy:
         provider: releases
         api_key:

@@ -1,34 +1,37 @@
-var webpack = require('webpack');
-var path = require('path');
-var failPlugin = require('webpack-fail-plugin');
-
-var APP_DIR = path.join(__dirname, '..', 'src');
+var webpack = require('webpack')
+var path = require('path')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = {
-  debug: true,
   devtool: 'eval-source-map',
-  devtoolModuleFilenameTemplate: '[absolute-resource-path]',
-  devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]',
   entry: [
     'webpack-hot-middleware/client',
     './src/index.tsx'
   ],
+  mode: 'development',
   module: {
-    preLoaders: [{
-      test: /\.tsx?$/,
-      loader: 'tslint',
-      include: APP_DIR
-    }],
-    loaders: [
+    rules: [
       {
         test: /\.tsx?$/,
-        loaders: ['ts'],
-        include: APP_DIR
+        loader: 'tslint-loader',
+        enforce: "pre"
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader'
       },
       {
         test: /\.css$/,
-        loader: 'style!css-loader?modules&importLoaders=1' ,
-        include: APP_DIR
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+              importLoaders: 1
+            }
+          }
+        ]
       }
     ]
   },
@@ -39,11 +42,16 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
-    failPlugin
+    new BundleAnalyzerPlugin()
   ],
   resolve: {
-    root: [path.resolve('../src')],
-    extensions: ['', '.tsx', '.ts', '.jsx', '.js']
+    modules: [
+      path.join(__dirname, '../src'),
+      'node_modules'
+    ],
+    extensions: ['.tsx', '.ts', '.jsx', '.js']
+  },
+  optimization: {
+    usedExports: true
   }
 };

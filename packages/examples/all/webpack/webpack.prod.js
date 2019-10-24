@@ -1,28 +1,36 @@
 var path = require('path');
 var webpack = require('webpack');
-var failPlugin = require('webpack-fail-plugin');
-
-var APP_DIR = path.join(__dirname, '..', 'src');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = {
+  mode: 'production',
   devtool: 'source-map',
   entry: './src/index.tsx',
+  mode: 'production',
   module: {
-    preLoaders: [{
-      test: /\.tsx?$/,
-      loader: 'tslint',
-      include: APP_DIR
-    }],
-    loaders: [
+    rules: [
       {
         test: /\.tsx?$/,
-        loaders: ['ts'],
-        include: APP_DIR
+        loader: 'tslint-loader',
+        enforce: "pre"
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader'
       },
       {
         test: /\.css$/,
-        loader: 'style!css-loader?modules&importLoaders=1' ,
-        include: APP_DIR
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+              importLoaders: 1
+            }
+          }
+        ]
       }
     ]
   },
@@ -31,6 +39,11 @@ module.exports = {
     filename: 'app.js',
     publicPath: '/js/'
   },
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin(),
+    ],
+  },
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.DefinePlugin({
@@ -38,19 +51,19 @@ module.exports = {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      }
-    }),
-    failPlugin
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: './report.html'
+    })
   ],
   resolve: {
-    root: [path.resolve('../src')],
-    extensions: ['', '.tsx', '.ts', '.jsx', '.js']
+    modules: [
+      path.join(__dirname, '../src'),
+      'node_modules'
+    ],
+    extensions: ['.tsx', '.ts', '.jsx', '.js']
   },
-  tslint: {
-    emitErrors: true,
-    failOnHint: true
+  optimization: {
+    usedExports: true
   }
 }

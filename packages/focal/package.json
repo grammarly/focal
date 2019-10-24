@@ -83,6 +83,7 @@
     "type": "git",
     "url": "https://github.com/grammarly/focal.git"
   },
+  "dependencies": {},
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",
     "@types/jest": "^24.0.0",

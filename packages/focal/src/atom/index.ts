@@ -150,33 +150,32 @@ export namespace Atom {
    */
   // @TODO should the returned observable complete after the initial value?
   export function fromObservable<T>(src: Observable<T>) {
-      const atomSubj = new BehaviorSubject<Atom<T> | null>(null)
+    const atomSubj = new BehaviorSubject<Atom<T> | null>(null)
 
-      const initAndUpdateAtom = src.pipe(
-        tap(x => {
-          const atom = atomSubj.value
+    const initAndUpdateAtom = src.pipe(
+      tap(x => {
+        const atom = atomSubj.value
 
-          if (atom === null) {
-            atomSubj.next(Atom.create(x))
-          } else atom.set(x)
-        }),
-        // prevent updating atom multiple times to the same value
-        share()
+        if (atom === null) {
+          atomSubj.next(Atom.create(x))
+        } else atom.set(x)
+      }),
+      // prevent updating atom multiple times to the same value
+      share()
+    )
+
+    return new Observable<ReadOnlyAtom<T>>(o => {
+      const sub = new Subscription()
+
+      sub.add(initAndUpdateAtom.subscribe())
+
+      sub.add(
+        atomSubj
+          .pipe(filter((x): x is Atom<T> => !!x))
+          .subscribe(o)
       )
 
-      return new Observable<ReadOnlyAtom<T>>(o => {
-        const sub = new Subscription()
-
-        sub.add(initAndUpdateAtom.subscribe())
-
-        sub.add(
-          atomSubj
-            .pipe(filter((x): x is Atom<T> => !!x))
-            .subscribe(o)
-        )
-
-        return sub
-      })
-    }
-
+      return sub
+    })
+  }
 }

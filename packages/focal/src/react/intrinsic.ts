@@ -69,7 +69,7 @@ export function createLiftedIntrinsics(): LiftedIntrinsics {
     -readonly [P in keyof LiftedIntrinsics]?: LiftedIntrinsics[P];
   } = {}
 
-  html.forEach(e => (r as any)[e] = liftIntrinsic(e))
+  html.forEach(e => r[e] = liftIntrinsic(e))
 
   r.Fragment = (props: LiftedFragmentAttributes) =>
     React.createElement(LiftWrapper, { component: React.Fragment, props })

@@ -89,12 +89,12 @@ export class LiftWrapper<TProps>
       subscription.unsubscribe()
   }
 
-  componentWillReceiveProps(newProps: LiftWrapperProps<TProps>) {
+  componentDidReceiveProps(newProps: LiftWrapperProps<TProps>) {
     this._unsubscribe()
     this._subscribe(newProps)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this._unsubscribe()
     this._subscribe(this.props)
   }

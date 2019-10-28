@@ -1,6 +1,6 @@
 // tslint:disable no-unnecessary-local-variable
-import { merge, Observable, from } from 'rxjs'
-import { take, map, toArray } from 'rxjs/operators'
+import { merge, Observable, from, Subject, never } from 'rxjs'
+import { take, toArray, tap } from 'rxjs/operators'
 import { Atom, Lens, ReadOnlyAtom } from '../src'
 import { structEq } from '../src/utils'
 
@@ -742,7 +742,7 @@ describe('atom', () => {
     expect(consoleLogArguments).toEqual([['bar', 'bar'], ['bar', 'foo']])
   })
 
-  describe.only('fromObservable', () => {
+  describe('fromObservable', () => {
     test('emits atom', async () => {
       const a = await Atom.fromObservable(from([1])).pipe(take(1)).toPromise()
       expect(a.get()).toEqual(1)
@@ -791,14 +791,35 @@ describe('atom', () => {
       expect(subCount).toEqual(0)
     })
 
-    test.skip('1', async () => {
-      const vals = [1]
+    test('does not return atom if source has no value', async () => {
+      const r = await merge(
+        Atom.fromObservable(never()),
+        from(['hello'])
+      ).pipe(take(1), toArray()).toPromise()
 
-      const r = await Atom.fromObservable(
-        from(vals)).pipe(map(a => a.pipe(take(vals.length), toArray()), take(1))
+      expect(r).toEqual(['hello'])
+    })
+
+    test('atom values correspond to source', async () => {
+      const src = new Subject<number>()
+
+      const r = Atom.fromObservable(src).pipe(
+        tap(async a => {
+          const srcValues = Array.from(new Array(10), _ => Math.random())
+          const atomValues = a.pipe(toArray()).toPromise()
+
+          srcValues.forEach(x => {
+            src.next(x)
+            expect(a.get()).toEqual(x)
+          })
+
+          expect(await atomValues).toEqual(srcValues)
+        }),
+        take(1)
       ).toPromise()
 
-      expect(r).toEqual(vals)
+      src.next(0)
+      await r
     })
   })
 })

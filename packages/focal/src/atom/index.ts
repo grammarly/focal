@@ -1,3 +1,6 @@
+import { Observable, BehaviorSubject, Subscription } from 'rxjs'
+import { tap, share, filter } from 'rxjs/operators'
+
 import {
   Atom as _Atom,
   ReadOnlyAtom,
@@ -132,4 +135,35 @@ export namespace Atom {
       xs => (args[args.length - 1] as ((...xs: any[]) => TResult))(...xs)
     )
   }
+
+  export function fromObservable<T>(src: Observable<T>) {
+      const atomSubj = new BehaviorSubject<Atom<T> | null>(null)
+
+      const initAndUpdateAtom = src.pipe(
+        tap(x => {
+          const atom = atomSubj.value
+
+          if (atom === null) {
+            atomSubj.next(Atom.create(x))
+          } else atom.set(x)
+        }),
+        // prevent updating atom multiple times to the same value
+        share()
+      )
+
+      return new Observable<ReadOnlyAtom<T>>(o => {
+        const sub = new Subscription()
+
+        sub.add(initAndUpdateAtom.subscribe())
+
+        sub.add(
+          atomSubj
+            .pipe(filter((x): x is Atom<T> => !!x))
+            .subscribe(o)
+        )
+
+        return sub
+      })
+    }
+
 }

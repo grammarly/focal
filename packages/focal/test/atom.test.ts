@@ -1,5 +1,6 @@
 // tslint:disable no-unnecessary-local-variable
-import { merge } from 'rxjs'
+import { merge, Observable, from } from 'rxjs'
+import { take, map, toArray } from 'rxjs/operators'
 import { Atom, Lens, ReadOnlyAtom } from '../src'
 import { structEq } from '../src/utils'
 
@@ -739,5 +740,65 @@ describe('atom', () => {
 
     expect(consoleLogFireTime).toEqual(2)
     expect(consoleLogArguments).toEqual([['bar', 'bar'], ['bar', 'foo']])
+  })
+
+  describe.only('fromObservable', () => {
+    test('emits atom', async () => {
+      const a = await Atom.fromObservable(from([1])).pipe(take(1)).toPromise()
+      expect(a.get()).toEqual(1)
+    })
+
+    test('does not subscribe to source immediately', () => {
+      let subscribed = false
+
+      const src = new Observable(o => {
+        subscribed = true
+        o.complete()
+
+        return () => { subscribed = false }
+      })
+
+      const _ = Atom.fromObservable(src)
+
+      expect(subscribed).toEqual(false)
+    })
+
+    test('one sub max, unsub when not in use', async () => {
+      let subCount = 0
+
+      const src = new Observable<number>(o => {
+        subCount++
+        o.next(1)
+
+        return () => { subCount-- }
+      })
+
+      const a = Atom.fromObservable(src)
+
+      // no subs until we have subscribed to use the atom
+      expect(subCount).toEqual(0)
+
+      const subs = Array.from(new Array(5)).map(_ => a.subscribe(a => {
+        expect(a.get()).toEqual(1)
+      }))
+
+      // exactly one sub, no matter how many times the atom observable was subbed to
+      expect(subCount).toEqual(1)
+
+      subs.forEach(s => s.unsubscribe())
+
+      // no subs to source when unused
+      expect(subCount).toEqual(0)
+    })
+
+    test.skip('1', async () => {
+      const vals = [1]
+
+      const r = await Atom.fromObservable(
+        from(vals)).pipe(map(a => a.pipe(take(vals.length), toArray()), take(1))
+      ).toPromise()
+
+      expect(r).toEqual(vals)
+    })
   })
 })

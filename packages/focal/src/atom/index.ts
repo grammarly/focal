@@ -136,6 +136,19 @@ export namespace Atom {
     )
   }
 
+  /**
+   * Converts an observable to a read-only atom.
+   *
+   * The returned atom is wrapped into an observable, which will only emit a single value.
+   * The source observable will only be subscribed to for as long as there is at least one
+   * subscription to the returned observable.
+   *
+   * @export
+   * @template T type of atom values
+   * @param src the source observable
+   * @returns an observable that emits a read-only atom
+   */
+  // @TODO should the returned observable complete after the initial value?
   export function fromObservable<T>(src: Observable<T>) {
       const atomSubj = new BehaviorSubject<Atom<T> | null>(null)
 

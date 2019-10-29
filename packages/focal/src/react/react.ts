@@ -89,9 +89,11 @@ export class LiftWrapper<TProps>
       subscription.unsubscribe()
   }
 
-  componentDidUpdate(_newProps: LiftWrapperProps<TProps>) {
-    this._unsubscribe()
-    this._subscribe(this.props)
+  componentDidUpdate(_prevProps: LiftWrapperProps<TProps>, prevState: LiftWrapperState) {
+    if (!this.state || !prevState || prevState.renderCache === this.state.renderCache) {
+      this._unsubscribe()
+      this._subscribe(this.props)
+    }
   }
 
   componentDidMount() {

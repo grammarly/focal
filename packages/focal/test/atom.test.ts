@@ -748,6 +748,17 @@ describe('atom', () => {
       expect(a.get()).toEqual(1)
     })
 
+    test('emits atom once', async () => {
+      const a = await merge(
+        Atom.fromObservable(
+          from(Array.from(new Array(15)).map(_ => Math.random()))
+        ),
+        from(['hello'])
+      ).pipe(take(2), toArray()).toPromise()
+
+      expect(a[1]).toEqual('hello')
+    })
+
     test('does not subscribe to source immediately', () => {
       let subscribed = false
 

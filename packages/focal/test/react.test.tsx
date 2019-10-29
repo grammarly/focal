@@ -1,4 +1,5 @@
 import { of, EMPTY, NEVER } from 'rxjs'
+import { map, throttleTime } from 'rxjs/operators'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/server'
 
@@ -265,4 +266,30 @@ describe('react', () => {
 
     return true
   })()).toBeTruthy())
+
+  describe('Atom.fromObservable', () => {
+    testRender(
+      <F.Fragment>
+        {Atom.fromObservable(of({ hello: 'world' })).pipe(map(a =>
+          <F.Fragment>{a.view('hello')}</F.Fragment>
+        ))}
+      </F.Fragment>,
+      'world',
+      'basic'
+    )
+
+    testRender(
+      <F.Fragment>
+        {
+          Atom.fromObservable(
+            Atom.create({ hello: 'world' }).pipe(throttleTime(1000))
+          ).pipe(map(a =>
+            <F.Fragment>{a.view('hello')}</F.Fragment>
+          ))
+        }
+      </F.Fragment>,
+      'world',
+      'atom -> observable -> atom'
+    )
+  })
 })

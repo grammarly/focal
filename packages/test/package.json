@@ -33,7 +33,7 @@
     "tslint-loader": "^3.3.0",
     "typescript": "3.3.3",
     "webpack": "^1.13.2",
-    "webpack-bundle-analyzer": "^2.11.1",
+    "webpack-bundle-analyzer": "^3.3.2",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-fail-plugin": "2.0.0",
     "webpack-hot-middleware": "^2.12.2"

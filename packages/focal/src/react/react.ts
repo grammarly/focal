@@ -52,7 +52,7 @@ export class LiftWrapper<TProps>
   }
 
   render() {
-    return this.state.renderCache || null
+    return this.state && this.state.renderCache || null
   }
 
   private _subscribe(newProps: LiftWrapperProps<TProps>) {
@@ -89,9 +89,9 @@ export class LiftWrapper<TProps>
       subscription.unsubscribe()
   }
 
-  componentDidReceiveProps(newProps: LiftWrapperProps<TProps>) {
+  componentDidUpdate(_newProps: LiftWrapperProps<TProps>) {
     this._unsubscribe()
-    this._subscribe(newProps)
+    this._subscribe(this.props)
   }
 
   componentDidMount() {
@@ -109,7 +109,7 @@ export class LiftWrapper<TProps>
     newState: Readonly<LiftWrapperState>,
     _newContext: any
   ) {
-    return newState.renderCache !== this.state.renderCache
+    return !this.state || newState.renderCache !== this.state.renderCache
   }
 }
 
@@ -170,7 +170,7 @@ export const PROP_REF = 'ref'
  * @param props React component props
  * @param action action to run for each observable prop
  */
-function walkObservables<T>(
+export function walkObservables<T>(
   props: Lifted<T>,
   action: (obs: Observable<any>) => void
 ) {
@@ -210,7 +210,7 @@ function walkObservables<T>(
  * @param values observable props values, ordered by appearance in flattened tree
  * @returns rendered element
  */
-function render<P>(
+export function render<P>(
   class_: React.Component<P, any> | React.StatelessComponent<P>
     | React.ComponentClass<P> | keyof React.ReactHTML,
   props: Lifted<P>,
@@ -318,7 +318,7 @@ class FakeComponent<P> {
 }
 
 // could make sense to make this configurable
-const handleError = (e: any) => {
+export const handleError = (e: any) => {
   throw e
 }
 

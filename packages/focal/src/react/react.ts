@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { structEq } from './../utils'
+import { equals } from '../equals'
 import { Atom } from './../atom'
 import { warning, getReactComponentName, DEV_ENV } from './../utils'
 import {
@@ -89,8 +90,8 @@ export class LiftWrapper<TProps>
       subscription.unsubscribe()
   }
 
-  componentDidUpdate(_prevProps: LiftWrapperProps<TProps>, prevState: LiftWrapperState) {
-    if (!this.state || !prevState || prevState.renderCache === this.state.renderCache) {
+  componentDidUpdate(prevProps: LiftWrapperProps<TProps>) {
+    if (!equals(this.props, prevProps)) {
       this._unsubscribe()
       this._subscribe(this.props)
     }

@@ -39,9 +39,7 @@ export interface LiftWrapperState {
  */
 export class LiftWrapper<TProps>
     extends React.Component<LiftWrapperProps<TProps>, LiftWrapperState> {
-  constructor(props: LiftWrapperProps<TProps>) {
-    super(props, LiftWrapper._initState)
-  }
+  state = LiftWrapper._initState
 
   static _initState: LiftWrapperState = {
     renderCache: null,
@@ -53,7 +51,7 @@ export class LiftWrapper<TProps>
   }
 
   render() {
-    return this.state && this.state.renderCache || null
+    return this.state.renderCache || null
   }
 
   private _subscribe(newProps: LiftWrapperProps<TProps>) {
@@ -112,7 +110,7 @@ export class LiftWrapper<TProps>
     newState: Readonly<LiftWrapperState>,
     _newContext: any
   ) {
-    return !this.state || newState.renderCache !== this.state.renderCache
+    return newState.renderCache !== this.state.renderCache
   }
 }
 

@@ -9,6 +9,7 @@ import { LiftWrapperProps, LiftWrapper } from './react'
 
 export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {
   mount?: React.Ref<E>
+  forwardRef?: React.Ref<E>
 }
 
 export interface LiftedIntrinsic<

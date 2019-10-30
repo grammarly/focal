@@ -260,7 +260,7 @@ describe('react', () => {
   it('bindElementProps compiles', () => expect((() => {
     // tslint:disable-next-line no-unused-expression
     (
-      <F.div {...bindElementProps({ ref: 'onScroll', scrollTop: Atom.create(0) })}></F.div>
+      <F.div {...bindElementProps({ forwardRef: 'onScroll', scrollTop: Atom.create(0) })}></F.div>
     )
 
     return true

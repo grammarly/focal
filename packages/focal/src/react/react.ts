@@ -158,8 +158,9 @@ export function lift<TProps>(
 const PROP_CHILDREN = 'children'
 const PROP_STYLE = 'style'
 
-export const PROP_MOUNT = 'mount'
-export const PROP_REF = 'ref'
+const PROP_MOUNT = 'mount'
+const PROP_FORWARD_REF = 'forwardRef'
+const PROP_REF = 'ref'
 
 /**
  * Walk a React component props object tree, and for each observable prop found,
@@ -228,7 +229,7 @@ export function render<P>(
   for (const key in props) {
     const propValue = (props as any)[key]
     const isChildren = key === PROP_CHILDREN
-    const isMount = key === PROP_MOUNT
+    const isForwardRef = key === PROP_FORWARD_REF || key === PROP_MOUNT
     const isStyle = key === PROP_STYLE
 
     // prop is an observable
@@ -236,7 +237,7 @@ export function render<P>(
       const observedValue = observedValues[++k]
       if (isChildren) {
         newChildren = observedValue
-      } else if (isMount) {
+      } else if (isForwardRef) {
         newProps.ref = observedValue
       } else {
         newProps[key] = observedValue
@@ -262,7 +263,7 @@ export function render<P>(
       }
       newChildren = newChildren || propValue
     // 'mount' prop
-    } else if (isMount) {
+    } else if (isForwardRef) {
       newProps.ref = propValue
     // 'style' prop
     } else if (isStyle) {
@@ -687,25 +688,45 @@ type BindElementPropsReturnType =
       [x: string]: ((e: React.SyntheticEvent<any>) => void) | ((domElement: Element | null) => void)
       [PROP_MOUNT](domElement: Element | null): void
     }
+    | {
+      [x: string]: ((e: React.SyntheticEvent<any>) => void) | ((domElement: Element | null) => void)
+      [PROP_FORWARD_REF](domElement: Element | null): void
+    }
   | {}
 
 export function bindElementProps(
   // @TODO need to fix the type of { [k: string]: string | Atom<any> }.
   // this function already compiles without the 'string | ...', but it's
   // calls do not.
-  template: { ref?: string; mount?: string } & { [k: string]: string | Atom<any> }
+  template: Partial<{
+    ref: string;
+    mount: string;
+    forwardRef: string
+  }> & { [k: string]: string | Atom<any> }
 ): BindElementPropsReturnType {
-  const { [PROP_REF]: ref, [PROP_MOUNT]: mount, ...tpl } = template
+  const {
+    [PROP_REF]: ref,
+    [PROP_MOUNT]: mount,
+    [PROP_FORWARD_REF]: forwardRef,
+    ...tpl
+  } = template
+
+  const elementRef = setElementProps(tpl)
+  const elementPropsHandler = getElementProps(tpl as { [k: string]: Atom<any> })
 
   return ref
     ? ({
-      [PROP_REF]: setElementProps(tpl),
-      [ref]: getElementProps(tpl as { [k: string]: Atom<any> })
+      [PROP_REF]: elementRef,
+      [ref]: elementPropsHandler
+    })
+    : forwardRef ?  ({
+      [PROP_FORWARD_REF]: elementRef,
+      [forwardRef]: elementPropsHandler
     })
     : mount
       ? ({
-        [PROP_MOUNT]: setElementProps(tpl),
-        [mount]: getElementProps(tpl as { [k: string]: Atom<any> })
+        [PROP_MOUNT]: elementRef,
+        [mount]: elementPropsHandler
       })
       : {}
 }

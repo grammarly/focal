@@ -1,23 +1,23 @@
 var path = require('path');
 var webpack = require('webpack');
-var failPlugin = require('webpack-fail-plugin');
-
-var APP_DIR = path.join(__dirname, '..', 'src');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = {
   devtool: 'source-map',
   entry: './src/index.tsx',
+  mode: 'production',
   module: {
-    preLoaders: [{
-      test: /\.tsx?$/,
-      loader: 'tslint',
-      include: APP_DIR
-    }],
-    loaders: [{
-      test: /\.tsx?$/,
-      loaders: ['ts'],
-      include: APP_DIR
-    }]
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: 'tslint-loader',
+        enforce: "pre"
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader'
+      }
+    ]
   },
   output: {
     path: path.join(__dirname, '..', 'build', 'js'),
@@ -31,19 +31,21 @@ module.exports = {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      }
-    }),
-    failPlugin
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      defaultSizes: 'parsed',
+      generateStatsFile: true
+    })
   ],
   resolve: {
-    root: [path.resolve('../src')],
-    extensions: ['', '.tsx', '.ts', '.jsx', '.js']
+    modules: [
+      path.join(__dirname, '../src'),
+      'node_modules'
+    ],
+    extensions: ['.tsx', '.ts', '.jsx', '.js']
   },
-  tslint: {
-    emitErrors: true,
-    failOnHint: true
+  optimization: {
+    usedExports: true
   }
 }

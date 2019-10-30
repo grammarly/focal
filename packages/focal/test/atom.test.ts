@@ -1,5 +1,5 @@
 // tslint:disable no-unnecessary-local-variable
-import { merge, Observable, from, Subject, never } from 'rxjs'
+import { merge, Observable, from, Subject, never, throwError } from 'rxjs'
 import { take, toArray, tap } from 'rxjs/operators'
 import { Atom, Lens, ReadOnlyAtom } from '../src'
 import { structEq } from '../src/utils'
@@ -831,6 +831,36 @@ describe('atom', () => {
 
       src.next(0)
       await r
+    })
+
+    test('atom values not updated after unsubscribed from result', async () => {
+      const src = new Subject<number>()
+      let atom!: ReadOnlyAtom<number>
+
+      const sub = Atom.fromObservable(src).pipe(
+        tap(a => {
+          atom = a
+        })
+      ).subscribe()
+
+      src.next(1)
+      expect(atom.get()).toEqual(1)
+      src.next(2)
+      expect(atom.get()).toEqual(2)
+
+      sub.unsubscribe()
+
+      src.next(5)
+      expect(atom.get()).toEqual(2)
+    })
+
+    test('source error is propagated', async () => {
+      try {
+        await (Atom.fromObservable(throwError('hello')).toPromise())
+        fail()
+      } catch (e) {
+        expect(e).toEqual('hello')
+      }
     })
   })
 })

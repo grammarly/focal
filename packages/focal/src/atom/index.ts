@@ -143,12 +143,15 @@ export namespace Atom {
    * The source observable will only be subscribed to for as long as there is at least one
    * subscription to the returned observable.
    *
+   * The returned observable never completes and controls the lifecycle of the emitted atom:
+   * as long as it's subscribed to, the returned atom will have its value updated from the
+   * source observable.
+   *
    * @export
    * @template T type of atom values
    * @param src the source observable
    * @returns an observable that emits a read-only atom
    */
-  // @TODO should the returned observable complete after the initial value?
   export function fromObservable<T>(src: Observable<T>) {
     const atomSubj = new BehaviorSubject<Atom<T> | null>(null)
 

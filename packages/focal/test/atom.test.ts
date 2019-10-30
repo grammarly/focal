@@ -1,6 +1,6 @@
 // tslint:disable no-unnecessary-local-variable
-import { merge, Observable, from, Subject, never, throwError } from 'rxjs'
-import { take, toArray, tap } from 'rxjs/operators'
+import { merge, Observable, from, Subject, never, throwError, empty } from 'rxjs'
+import { take, toArray, tap, materialize, map } from 'rxjs/operators'
 import { Atom, Lens, ReadOnlyAtom } from '../src'
 import { structEq } from '../src/utils'
 
@@ -861,6 +861,14 @@ describe('atom', () => {
       } catch (e) {
         expect(e).toEqual('hello')
       }
+    })
+
+    test('source completion is propagated 1', async () => {
+      expect(
+        await Atom.fromObservable(empty()).pipe(
+          materialize(), map(x => x.kind), toArray()
+        ).toPromise()
+      ).toEqual(['C'])
     })
   })
 })

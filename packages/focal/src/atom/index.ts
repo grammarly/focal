@@ -172,8 +172,10 @@ export namespace Atom {
 
       sub.add(initAndUpdateAtom.subscribe(
         undefined,
-        // propagate source errors
-        e => o.error(e)
+        // propagate errors
+        e => o.error(e),
+        // propagate completion
+        () => o.complete()
       ))
 
       sub.add(

@@ -29,7 +29,12 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new BundleAnalyzerPlugin()
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      defaultSizes: 'parsed',
+      generateStatsFile: true
+    })
   ],
   resolve: {
     modules: [

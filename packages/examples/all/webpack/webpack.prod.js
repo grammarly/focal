@@ -1,10 +1,8 @@
 var path = require('path');
 var webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = {
-  mode: 'production',
   devtool: 'source-map',
   entry: './src/index.tsx',
   mode: 'production',
@@ -39,11 +37,6 @@ module.exports = {
     filename: 'app.js',
     publicPath: '/js/'
   },
-  optimization: {
-    minimizer: [
-      new UglifyJsPlugin(),
-    ],
-  },
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.DefinePlugin({
@@ -53,7 +46,9 @@ module.exports = {
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
-      reportFilename: './report.html'
+      openAnalyzer: false,
+      defaultSizes: 'parsed',
+      generateStatsFile: true
     })
   ],
   resolve: {

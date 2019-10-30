@@ -1,19 +1,23 @@
 var path = require('path');
 var webpack = require('webpack');
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = {
   devtool: 'source-map',
   entry: './src/index.tsx',
+  mode: 'production',
   module: {
-    preLoaders: [{
-      test: /\.tsx?$/,
-      loader: 'tslint'
-    }],
-    loaders: [{
-      test: /\.tsx?$/,
-      loaders: ['ts']
-    }]
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: 'tslint-loader',
+        enforce: "pre"
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader'
+      }
+    ]
   },
   output: {
     path: path.join(__dirname, '..', 'build', 'js'),
@@ -27,11 +31,6 @@ module.exports = {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      }
-    }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
       openAnalyzer: false,
@@ -40,10 +39,13 @@ module.exports = {
     })
   ],
   resolve: {
-    extensions: ['', '.tsx', '.ts', '.jsx', '.js']
+    modules: [
+      path.join(__dirname, '../src'),
+      'node_modules'
+    ],
+    extensions: ['.tsx', '.ts', '.jsx', '.js']
   },
-  tslint: {
-    emitErrors: true,
-    failOnHint: true
+  optimization: {
+    usedExports: true
   }
 }

@@ -87,12 +87,12 @@ export class LiftWrapper<TProps>
       subscription.unsubscribe()
   }
 
-  componentWillReceiveProps(newProps: LiftWrapperProps<TProps>) {
+  UNSAFE_componentWillReceiveProps(newProps: LiftWrapperProps<TProps>) { // tslint:disable-line
     this._unsubscribe()
     this._subscribe(newProps)
   }
 
-  componentDidMount() {
+  UNSAFE_componentWillMount() { // tslint:disable-line
     this._unsubscribe()
     this._subscribe(this.props)
   }
@@ -169,7 +169,7 @@ const PROP_REF = 'ref'
  * @param props React component props
  * @param action action to run for each observable prop
  */
-export function walkObservables<T>(
+function walkObservables<T>(
   props: Lifted<T>,
   action: (obs: Observable<any>) => void
 ) {
@@ -209,7 +209,7 @@ export function walkObservables<T>(
  * @param values observable props values, ordered by appearance in flattened tree
  * @returns rendered element
  */
-export function render<P>(
+function render<P>(
   class_: React.Component<P, any> | React.StatelessComponent<P>
     | React.ComponentClass<P> | keyof React.ReactHTML,
   props: Lifted<P>,
@@ -317,7 +317,7 @@ class FakeComponent<P> {
 }
 
 // could make sense to make this configurable
-export const handleError = (e: any) => {
+const handleError = (e: any) => {
   throw e
 }
 

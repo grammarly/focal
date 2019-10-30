@@ -255,7 +255,10 @@ function render<P>(
               for (let j = 0; j < i; ++j)
                 newChildren[j] = propValue[j]
             }
-            newChildren[i] = observedValues[++k]
+            const childValue = observedValues[++k]
+            newChildren[i] = !childValue || childValue.key
+              ? childValue
+              : React.createElement(React.Fragment, { key: i }, childValue)
           } else if (newChildren) {
             newChildren[i] = propValue[i]
           }

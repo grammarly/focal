@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "declaration": false,
-    "target": "es5",
+    "target": "es2015",
     "jsx": "react",
     "sourceMap": true,
     "emitDecoratorMetadata": true,

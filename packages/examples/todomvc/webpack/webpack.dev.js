@@ -1,29 +1,26 @@
-var webpack = require('webpack');
-var path = require('path');
-var failPlugin = require('webpack-fail-plugin');
-
-var APP_DIR = path.join(__dirname, '..', 'src');
+var webpack = require('webpack')
+var path = require('path')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = {
-  debug: true,
   devtool: 'eval-source-map',
-  devtoolModuleFilenameTemplate: '[absolute-resource-path]',
-  devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]',
   entry: [
     'webpack-hot-middleware/client',
     './src/index.tsx'
   ],
+  mode: 'development',
   module: {
-    preLoaders: [{
-      test: /\.tsx?$/,
-      loader: 'tslint',
-      include: APP_DIR
-    }],
-    loaders: [{
-      test: /\.tsx?$/,
-      loaders: ['ts'],
-      include: APP_DIR
-    }]
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: 'tslint-loader',
+        enforce: "pre"
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader'
+      }
+    ]
   },
   output: {
     filename: 'app.js',
@@ -32,11 +29,21 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
-    failPlugin
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      defaultSizes: 'parsed',
+      generateStatsFile: true
+    })
   ],
   resolve: {
-    root: [path.resolve('../src')],
-    extensions: ['', '.tsx', '.ts', '.jsx', '.js']
+    modules: [
+      path.join(__dirname, '../src'),
+      'node_modules'
+    ],
+    extensions: ['.tsx', '.ts', '.jsx', '.js']
+  },
+  optimization: {
+    usedExports: true
   }
 };

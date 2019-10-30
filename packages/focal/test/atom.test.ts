@@ -870,5 +870,13 @@ describe('atom', () => {
         ).toPromise()
       ).toEqual(['C'])
     })
+
+    test('source completion is propagated 2', async () => {
+      expect(
+        await Atom.fromObservable(from([1, 2, 3])).pipe(
+          materialize(), map(x => x.kind), toArray()
+        ).toPromise()
+      ).toEqual(['N', 'C'])
+    })
   })
 })

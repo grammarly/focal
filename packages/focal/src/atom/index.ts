@@ -170,7 +170,11 @@ export namespace Atom {
     return new Observable<ReadOnlyAtom<T>>(o => {
       const sub = new Subscription()
 
-      sub.add(initAndUpdateAtom.subscribe())
+      sub.add(initAndUpdateAtom.subscribe(
+        undefined,
+        // propagate source errors
+        e => o.error(e)
+      ))
 
       sub.add(
         atomSubj

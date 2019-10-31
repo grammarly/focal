@@ -740,20 +740,4 @@ describe('atom', () => {
     expect(consoleLogFireTime).toEqual(2)
     expect(consoleLogArguments).toEqual([['bar', 'bar'], ['bar', 'foo']])
   })
-
-  test('subsequent synchronous atom updates', done => {
-    const trigger = new Subject<void>()
-    const list = Atom.create(['a', 'b', 'c', 'd'])
-
-    trigger.subscribe(() => {
-      list.set(['a', 'b'])
-      list.set(['a', 'b', 'c'])
-
-      expect(list.get()).toEqual(['a', 'b', 'c'])
-
-      done()
-    })
-
-    trigger.next()
-  })
 })

@@ -211,8 +211,11 @@ function walkObservables<T>(
  * @returns rendered element
  */
 function render<P>(
-  class_: React.Component<P, any> | React.StatelessComponent<P>
-    | React.ComponentClass<P> | keyof React.ReactHTML,
+  class_: React.Component<P, any>
+    | React.StatelessComponent<P>
+    | React.ComponentClass<P>
+    | React.ComponentType
+    | keyof React.ReactHTML,
   props: Lifted<P>,
   observedValues: any[] = []
 ): React.DOMElement<any, any> {

@@ -2,5 +2,18 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
-  "tslint.nodePath": "./node_modules"
+  "tslint.nodePath": "./node_modules",
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true
+  },
+  "prettier.printWidth": 100,
+  "prettier.semi": false,
+  "prettier.singleQuote": true,
+  "prettier.typescriptEnable": [
+    "typescript",
+    "typescriptreact"
+  ],
 }

@@ -5,14 +5,14 @@ import { Status, AudioModel, AppState, audioSrc, defaultState } from './model'
 const Volume = ({ volume }: { volume: Atom<number> }) => (
   <div>
     <F.input
-      type='submit'
-      value='+'
+      type="submit"
+      value="+"
       disabled={volume.view(x => x >= 10)}
       onClick={() => volume.modify(x => x + 1)}
     />
     <F.input
-      type='submit'
-      value='-'
+      type="submit"
+      value="-"
       disabled={volume.view(x => x <= 0)}
       onClick={() => volume.modify(x => x - 1)}
     />
@@ -22,12 +22,9 @@ const Volume = ({ volume }: { volume: Atom<number> }) => (
 
 const Play = ({ status }: { status: Atom<Status> }) => (
   <F.input
-    type='submit'
+    type="submit"
     value={status.view(x => (x === Status.playing ? 'Stop' : 'Play'))}
-    onClick={() =>
-      status.modify(
-        x => (x === Status.playing ? Status.pause : Status.playing)
-      )}
+    onClick={() => status.modify(x => (x === Status.playing ? Status.pause : Status.playing))}
   />
 )
 
@@ -35,16 +32,11 @@ const TimeLine = ({
   currentTime,
   maxDuration
 }: {
-  currentTime: Atom<string>,
+  currentTime: Atom<string>
   maxDuration: ReadOnlyAtom<number>
 }) => (
   <div>
-    <F.input
-      type='range'
-      {...bind({ value: currentTime })}
-      min={0}
-      max={maxDuration}
-    />
+    <F.input type="range" {...bind({ value: currentTime })} min={0} max={maxDuration} />
     <F.span>{currentTime}s</F.span>
   </div>
 )
@@ -64,10 +56,7 @@ class App extends React.Component<{ state: Atom<AppState> }, {}> {
     const { state } = this.props
     return (
       <div>
-        <TimeLine
-          currentTime={state.lens('currentTime')}
-          maxDuration={state.view('maxDuration')}
-        />
+        <TimeLine currentTime={state.lens('currentTime')} maxDuration={state.view('maxDuration')} />
         <Volume volume={state.lens('volume')} />
         <Play status={state.lens('status')} />
       </div>

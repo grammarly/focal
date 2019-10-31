@@ -2,11 +2,7 @@ import { Lens } from '../src'
 import { structEq } from '../src/utils'
 import { extractPropertyPath, parsePropertyPath } from '../src/lens/json'
 
-function roundtrip<T, U>(
-  name: string,
-  l: Lens<T, U>,
-  obj: T, oldVal: U, newVal: U
-) {
+function roundtrip<T, U>(name: string, l: Lens<T, U>, obj: T, oldVal: U, newVal: U) {
   describe(`lens roundtrip: ${name}`, () => {
     it('get', () => expect(l.get(obj)).toEqual(oldVal))
     it('set', () => expect(l.get(l.set(newVal, obj))).toEqual(newVal))
@@ -15,11 +11,7 @@ function roundtrip<T, U>(
 
 // tslint:disable-next-line
 // see https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial#the-lens-laws-
-function testLaws<T, U>(
-  l: Lens<T, U>,
-  object: T, value1: U, value2: U,
-  name: string
-) {
+function testLaws<T, U>(l: Lens<T, U>, object: T, value1: U, value2: U, name: string) {
   describe(`lens laws: ${name}`, () => {
     it('get-put', () => expect(structEq(object, l.set(l.get(object), object))).toBeTruthy())
     it('put-get', () => expect(structEq(value1, l.get(l.set(value1, object)))).toBeTruthy())
@@ -31,21 +23,19 @@ function testLaws<T, U>(
 function testLens<O, P>(
   name: string,
   l: Lens<O, P>,
-  obj: O, currentValue: P,
-  newValue1: P, newValue2: P
+  obj: O,
+  currentValue: P,
+  newValue1: P,
+  newValue2: P
 ) {
   testLaws(l, obj, newValue1, newValue2, name)
   roundtrip(name, l, obj, currentValue, newValue1)
 }
 
 describe('identity', () => {
-  testLens('basic',
-    Lens.identity<any>(),
-    'any', 'any', 'other', 'another')
+  testLens('basic', Lens.identity<any>(), 'any', 'any', 'other', 'another')
 
-  testLens('composed',
-    Lens.identity<any>(),
-    'any', 'any', 'other', 'another')
+  testLens('composed', Lens.identity<any>(), 'any', 'any', 'other', 'another')
 })
 
 describe('json', () => {
@@ -56,34 +46,58 @@ describe('json', () => {
     const i0 = Lens.index(0)
     const i1 = Lens.index(1)
 
-    testLens('keys',
-      a,
-      { a: 'one' }, 'one', 'two', 'three')
+    testLens('keys', a, { a: 'one' }, 'one', 'two', 'three')
 
-    testLens('indices',
-      i0,
-      ['one'], 'one', 'two', 'three')
+    testLens('indices', i0, ['one'], 'one', 'two', 'three')
 
-    testLens('composed',
-      a.compose(i0).compose(b).compose(i1).compose(c),
+    testLens(
+      'composed',
+      a
+        .compose(i0)
+        .compose(b)
+        .compose(i1)
+        .compose(c),
       { a: [{ b: ['boo', { c: 'one' }] }] },
-      'one', 'two', 'three')
+      'one',
+      'two',
+      'three'
+    )
 
-    testLens('composed, right associative',
+    testLens(
+      'composed, right associative',
       a.compose(i0.compose(b.compose(i1.compose(c)))),
       { a: [{ b: ['boo', { c: 'one' }] }] },
-      'one', 'two', 'three')
+      'one',
+      'two',
+      'three'
+    )
 
-    testLens('composed with Lens.compose',
-      Lens.compose(a, i0, b, i1, c),
+    testLens(
+      'composed with Lens.compose',
+      Lens.compose(
+        a,
+        i0,
+        b,
+        i1,
+        c
+      ),
       { a: [{ b: ['boo', { c: 'one' }] }] },
-      'one', 'two', 'three')
+      'one',
+      'two',
+      'three'
+    )
   })
 
   describe('typed', () => {
-    interface Leg { length: string }
-    interface Raccoon { legs: Leg[] }
-    interface Forest { raccoons: Raccoon[] }
+    interface Leg {
+      length: string
+    }
+    interface Raccoon {
+      legs: Leg[]
+    }
+    interface Forest {
+      raccoons: Raccoon[]
+    }
 
     const forest: Forest = {
       raccoons: [
@@ -96,28 +110,46 @@ describe('json', () => {
     const legs = Lens.prop((x: Raccoon) => x.legs)
     const length = Lens.prop((x: Leg) => x.length)
 
-    testLens('case 1',
+    testLens(
+      'case 1',
       raccoons
         .compose(Lens.index<Raccoon>(0))
         .compose(legs)
         .compose(Lens.index<Leg>(0))
         .compose(length),
       forest,
-      'short', 'bold', 'cursive')
+      'short',
+      'bold',
+      'cursive'
+    )
 
-    testLens('case 2',
+    testLens(
+      'case 2',
       raccoons
         .compose(Lens.index<Raccoon>(1))
         .compose(legs)
         .compose(Lens.index<Leg>(1))
         .compose(length),
       forest,
-      'thick', 'broken', 'beautiful')
+      'thick',
+      'broken',
+      'beautiful'
+    )
 
-    testLens('compose',
-      Lens.compose(raccoons, Lens.index(0), legs, Lens.index(1), length),
+    testLens(
+      'compose',
+      Lens.compose(
+        raccoons,
+        Lens.index(0),
+        legs,
+        Lens.index(1),
+        length
+      ),
       forest,
-      'long', 'metal', 'deus ex')
+      'long',
+      'metal',
+      'deus ex'
+    )
   })
 
   describe('find', () => {
@@ -155,14 +187,15 @@ describe('json', () => {
   describe('type safe key', () => {
     const s = { a: 5, b: '6' }
 
-    testLens<typeof s, (typeof s)['a']>(
-      'type safe key 1',
-      Lens.key<typeof s>()('a'), s, 5, 6, 7
-    )
+    testLens<typeof s, (typeof s)['a']>('type safe key 1', Lens.key<typeof s>()('a'), s, 5, 6, 7)
 
     testLens<typeof s, (typeof s)['b']>(
       'type safe key 2',
-      Lens.key<typeof s>()('b'), s, '6', '7', 'hello'
+      Lens.key<typeof s>()('b'),
+      s,
+      '6',
+      '7',
+      'hello'
     )
   })
 })
@@ -182,22 +215,23 @@ describe('property expressions', () => {
   })
 
   describe('cross-browser', () => {
-    it('chrome', () => expect(parsePropertyPath(
-      'function (x) { return x.a; }')).toEqual(['a']))
+    it('chrome', () => expect(parsePropertyPath('function (x) { return x.a; }')).toEqual(['a']))
 
-    it('firefox', () => expect(parsePropertyPath(
-      'function (x) { "use strict"; return x.a; }')).toEqual(['a']))
+    it('firefox', () =>
+      expect(parsePropertyPath('function (x) { "use strict"; return x.a; }')).toEqual(['a']))
   })
 
   describe('wallaby.js', () => {
     const originalNodeEnv = process.env.NODE_ENV
     process.env.NODE_ENV = 'wallaby'
 
-    expect(parsePropertyPath(
-      'function (x) { $_$wf(21); return $_$w(124, 53), x.a; }')).toEqual(['a'])
+    expect(parsePropertyPath('function (x) { $_$wf(21); return $_$w(124, 53), x.a; }')).toEqual([
+      'a'
+    ])
 
-    expect(() => parsePropertyPath(
-      'function (x) { $_$wf(21); return x.a, $_$w(124, 53); }')).toThrow()
+    expect(() =>
+      parsePropertyPath('function (x) { $_$wf(21); return x.a, $_$w(124, 53); }')
+    ).toThrow()
 
     process.env.NODE_ENV = originalNodeEnv
   })

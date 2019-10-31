@@ -15,20 +15,19 @@ namespace AppState {
   }
 }
 
-const Counter = (props: { count: Atom<number> }) =>
+const Counter = (props: { count: Atom<number> }) => (
   <F.div>
     You have clicked this button {props.count} time(s).
-
-    <button onClick={() => props.count.modify(x => x + 1)}>
-      Click again?
-    </button>
+    <button onClick={() => props.count.modify(x => x + 1)}>Click again?</button>
   </F.div>
+)
 
-const App = (props: { state: Atom<AppState> }) =>
+const App = (props: { state: Atom<AppState> }) => (
   <div>
     Hello, world!
     <Counter count={props.state.lens('counter', 'count')} />
   </div>
+)
 
 export default {
   Component: App,

@@ -34,20 +34,13 @@ export class AudioModel {
   constructor(atom: Atom<AppState>, audioSrc: string) {
     this.audio = new Audio(audioSrc)
 
-    this.durationSubscription = fromEvent(this.audio, 'canplaythrough')
-      .subscribe(() =>
-        atom.lens('maxDuration').set(this.audio.duration)
-      )
+    this.durationSubscription = fromEvent(this.audio, 'canplaythrough').subscribe(() =>
+      atom.lens('maxDuration').set(this.audio.duration)
+    )
 
     this.timeSubscription = atom
       .view(x => x.status)
-      .pipe(
-        switchMap(x =>
-          x === Status.playing
-            ? interval(1000).pipe(mapTo(1))
-            : of(0)
-        )
-      )
+      .pipe(switchMap(x => (x === Status.playing ? interval(1000).pipe(mapTo(1)) : of(0))))
       .subscribe(x =>
         atom.modify(y => {
           const newCurTime = parseInt(y.currentTime, 10) + x
@@ -67,17 +60,13 @@ export class AudioModel {
 
     this.statusSubscription = atom
       .view(x => x.status)
-      .subscribe(
-        x => x === Status.playing ? this.audio.play() : this.audio.pause()
-      )
+      .subscribe(x => (x === Status.playing ? this.audio.play() : this.audio.pause()))
 
-    this.volumeSubscription = atom
-      .lens('volume')
-      .subscribe(x => this.audio.volume = x / 10)
+    this.volumeSubscription = atom.lens('volume').subscribe(x => (this.audio.volume = x / 10))
 
     this.currentTimeSubscription = atom
       .lens('currentTime')
-      .subscribe(x => this.audio.currentTime = parseInt(x, 10))
+      .subscribe(x => (this.audio.currentTime = parseInt(x, 10)))
   }
 
   unsubscribe() {

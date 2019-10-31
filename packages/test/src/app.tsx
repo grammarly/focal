@@ -9,22 +9,18 @@ interface TestComponent<S> {
 
 declare var require: (path: string) => any
 
-const tests: { name: string, test: TestComponent<any> }[] = [
-  'lifted-bug',
-  'render-bug'
-].map(name => {
-  return { name, test: require(`./${name}/index.tsx`).default as TestComponent<any> }
-})
+const tests: { name: string; test: TestComponent<any> }[] = ['lifted-bug', 'render-bug'].map(
+  name => {
+    return { name, test: require(`./${name}/index.tsx`).default as TestComponent<any> }
+  }
+)
 
 export const defaultState = {} as any
 tests.forEach(ex => {
   defaultState[ex.name] = ex.test.defaultState
 })
 
-export const AppComponent = ({
-  state = Atom.create(defaultState)
-}) => {
-
+export const AppComponent = ({ state = Atom.create(defaultState) }) => {
   return (
     <main>
       <h1>Tests</h1>
@@ -52,9 +48,6 @@ export class App {
   }
 
   start() {
-    ReactDOM.render(
-      <AppComponent state={this.state}/>,
-      this.targetElement
-    )
+    ReactDOM.render(<AppComponent state={this.state} />, this.targetElement)
   }
 }

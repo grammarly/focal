@@ -34,8 +34,7 @@ export function shouldHideCounter(count: number) {
 
 export function hideAfterFadeOut(counter: Atom<CounterState>) {
   // check if we still should hide
-  if (shouldHideCounter(counter.get().count))
-    counter.lens('display').set(false)
+  if (shouldHideCounter(counter.get().count)) counter.lens('display').set(false)
 }
 
 export function resetCounter(counter: Atom<CounterState>) {

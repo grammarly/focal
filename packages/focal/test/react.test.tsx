@@ -2,19 +2,11 @@ import { of, EMPTY, NEVER } from 'rxjs'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/server'
 
-import {
-  F,
-  lift,
-  bind,
-  Atom,
-  reactiveList,
-  classes,
-  bindElementProps
-} from '../src'
+import { F, lift, bind, Atom, reactiveList, classes, bindElementProps } from '../src'
 
 class Comp extends React.Component<{ test: string }, {}> {
   render() {
-    return (<div>{this.props.test}</div>)
+    return <div>{this.props.test}</div>
   }
 }
 
@@ -23,11 +15,7 @@ function testRender(actual: JSX.Element | null, expected: string, desc: string) 
 }
 
 describe('react', () => {
-  testRender(
-    <F.span>test</F.span>,
-    '<span>test</span>',
-    'Render F element'
-  )
+  testRender(<F.span>test</F.span>, '<span>test</span>', 'Render F element')
 
   testRender(
     <F.span>{of('test1')}</F.span>,
@@ -47,11 +35,7 @@ describe('react', () => {
     'Render F element with 2 observables'
   )
 
-  testRender(
-    <F.span>{of(0)}</F.span>,
-    '<span>0</span>',
-    'render single Observable.of(0)'
-  )
+  testRender(<F.span>{of(0)}</F.span>, '<span>0</span>', 'render single Observable.of(0)')
 
   describe('show warning for empty observable', () => {
     function testWarning(name: string, render: () => JSX.Element) {
@@ -59,16 +43,15 @@ describe('react', () => {
         testRender(render(), '', 'no render')
 
         it('console.error() called', () => {
-          const consoleError = jest.spyOn(global.console, 'error')
-            .mockImplementation(() => void 0)
+          const consoleError = jest.spyOn(global.console, 'error').mockImplementation(() => void 0)
 
           ReactDOM.renderToStaticMarkup(render())
 
           expect(consoleError).toBeCalledWith(
             `[Focal]: The component <span> has received an observable that doesn\'t immediately ` +
-            `emit a value in one of its props. Since this observable hasn\'t yet called its ` +
-            `subscription handler, the component can not be rendered at the time. Check the ` +
-            `props of <span>.`
+              `emit a value in one of its props. Since this observable hasn\'t yet called its ` +
+              `subscription handler, the component can not be rendered at the time. Check the ` +
+              `props of <span>.`
           )
 
           consoleError.mockRestore()
@@ -76,39 +59,26 @@ describe('react', () => {
       })
     }
 
-    testWarning(
-      'single empty',
-      () => <F.span>{EMPTY}</F.span>
-    )
+    testWarning('single empty', () => <F.span>{EMPTY}</F.span>)
 
-    testWarning(
-      'multiple empty',
-      () => <F.span className={NEVER}>{EMPTY}</F.span>
-    )
+    testWarning('multiple empty', () => <F.span className={NEVER}>{EMPTY}</F.span>)
 
-    testWarning(
-      'empty and non-empty',
-      () => <F.span style={of({ color: 'red' })}>{EMPTY}</F.span>
-    )
+    testWarning('empty and non-empty', () => <F.span style={of({ color: 'red' })}>{EMPTY}</F.span>)
 
-    testWarning(
-      'single never',
-      () => <F.span className={NEVER}></F.span>
-    )
+    testWarning('single never', () => <F.span className={NEVER}></F.span>)
 
-    testWarning(
-      'multiple never',
-      () => <F.span className={NEVER} style={NEVER}></F.span>
-    )
+    testWarning('multiple never', () => <F.span className={NEVER} style={NEVER}></F.span>)
 
-    testWarning(
-      'mixed never and empty',
-      () => <F.span className={EMPTY} style={NEVER}></F.span>
-    )
+    testWarning('mixed never and empty', () => <F.span className={EMPTY} style={NEVER}></F.span>)
   })
 
   testRender(
-    <F.div onClick={() => { /* no-op */ }} style={{ display: 'block', color: of('red') }}>
+    <F.div
+      onClick={() => {
+        /* no-op */
+      }}
+      style={{ display: 'block', color: of('red') }}
+    >
       <F.span>Hello</F.span>
     </F.div>,
     '<div style="display:block;color:red"><span>Hello</span></div>',
@@ -117,17 +87,9 @@ describe('react', () => {
 
   const LiftedComp = lift(Comp)
 
-  testRender(
-    <LiftedComp test={'hi'} />,
-    '<div>hi</div>',
-    'lift(Comp) with plain value'
-  )
+  testRender(<LiftedComp test={'hi'} />, '<div>hi</div>', 'lift(Comp) with plain value')
 
-  testRender(
-    <LiftedComp test={of('hi')} />,
-    '<div>hi</div>',
-    'lift(Comp) with observable constant'
-  )
+  testRender(<LiftedComp test={of('hi')} />, '<div>hi</div>', 'lift(Comp) with observable constant')
 
   testRender(
     <LiftedComp test={of('hi')} />,
@@ -135,11 +97,7 @@ describe('react', () => {
     'lifted component with observable constant'
   )
 
-  testRender(
-    <F.a {...bind({})}></F.a>,
-    '<a></a>',
-    'bind, empty'
-  )
+  testRender(<F.a {...bind({})}></F.a>, '<a></a>', 'bind, empty')
 
   testRender(
     <F.a {...bind({ href: Atom.create('test') })} />,
@@ -155,10 +113,9 @@ describe('react', () => {
 
   testRender(
     <F.ul>
-      {reactiveList(
-        Atom.create([] as number[]),
-        id => <li>{id.toString()}</li>
-      )}
+      {reactiveList(Atom.create([] as number[]), id => (
+        <li>{id.toString()}</li>
+      ))}
     </F.ul>,
     '<ul></ul>',
     'reactive list, empty'
@@ -166,10 +123,9 @@ describe('react', () => {
 
   testRender(
     <F.ul>
-      {reactiveList(
-        Atom.create([1, 2, 3]),
-        id => <li key={id}>{id.toString()}</li>
-      )}
+      {reactiveList(Atom.create([1, 2, 3]), id => (
+        <li key={id}>{id.toString()}</li>
+      ))}
     </F.ul>,
     '<ul><li>1</li><li>2</li><li>3</li></ul>',
     'reactive list, three items'
@@ -177,19 +133,18 @@ describe('react', () => {
 
   testRender(
     <F.tbody>
-      {reactiveList(
-        Atom.create([1, 2, 3]),
-        id =>
-          <F.tr key={id}>
-            {[1, 2, 3].map(j =>
-              <F.td key={j}>
-                {id.toString()},{j.toString()}
-              </F.td>)}
-          </F.tr>
-      )}
+      {reactiveList(Atom.create([1, 2, 3]), id => (
+        <F.tr key={id}>
+          {[1, 2, 3].map(j => (
+            <F.td key={j}>
+              {id.toString()},{j.toString()}
+            </F.td>
+          ))}
+        </F.tr>
+      ))}
     </F.tbody>,
     '<tbody><tr><td>1,1</td><td>1,2</td><td>1,3</td></tr><tr><td>2,1</td><td>2,2</td>' +
-    '<td>2,3</td></tr><tr><td>3,1</td><td>3,2</td><td>3,3</td></tr></tbody>',
+      '<td>2,3</td></tr><tr><td>3,1</td><td>3,2</td><td>3,3</td></tr></tbody>',
     'reactive list, table'
   )
 
@@ -208,15 +163,7 @@ describe('react', () => {
   )
 
   testRender(
-    <F.a
-      {...classes(
-        null,
-        n > m && 'a',
-        Atom.create(undefined),
-        'c',
-        m > n && 'd'
-      )}
-    />,
+    <F.a {...classes(null, n > m && 'a', Atom.create(undefined), 'c', m > n && 'd')} />,
     '<a class="c d"></a>',
     'classes, more mixed types'
   )
@@ -227,11 +174,7 @@ describe('react', () => {
     'classes, non-lifted component'
   )
 
-  testRender(
-    <a {...classes(undefined)}></a>,
-    '<a></a>',
-    'classes, one undefined constant'
-  )
+  testRender(<a {...classes(undefined)}></a>, '<a></a>', 'classes, one undefined constant')
 
   testRender(
     <a {...classes(undefined && 'a', 'b')}></a>,
@@ -239,30 +182,27 @@ describe('react', () => {
     'classes, undefined constant'
   )
 
-  testRender(
-    <F.Fragment>{Atom.create('test')}</F.Fragment>,
-    'test',
-    'fragment'
-  )
+  testRender(<F.Fragment>{Atom.create('test')}</F.Fragment>, 'test', 'fragment')
+
+  testRender(<F.Fragment>{Atom.create(null)}</F.Fragment>, '', 'fragment with null content')
 
   testRender(
-    <F.Fragment>{Atom.create(null)}</F.Fragment>,
-    '',
-    'fragment with null content'
-  )
-
-  testRender(
-    <F.Fragment><p>left</p>|{Atom.create('right')}</F.Fragment>,
+    <F.Fragment>
+      <p>left</p>|{Atom.create('right')}
+    </F.Fragment>,
     '<p>left</p>|right',
     'fragment mixed content'
   )
 
-  it('bindElementProps compiles', () => expect((() => {
-    // tslint:disable-next-line no-unused-expression
-    (
-      <F.div {...bindElementProps({ ref: 'onScroll', scrollTop: Atom.create(0) })}></F.div>
-    )
+  it('bindElementProps compiles', () =>
+    expect(
+      (() => {
+        // prettier-ignore
+        ;( // tslint:disable-line
+          <F.div {...bindElementProps({ ref: 'onScroll', scrollTop: Atom.create(0) })}></F.div>
+        )
 
-    return true
-  })()).toBeTruthy())
+        return true
+      })()
+    ).toBeTruthy())
 })

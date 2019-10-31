@@ -1,5 +1,5 @@
 export interface TodoState {
-  value: string,
+  value: string
   completed: boolean
 }
 
@@ -11,14 +11,13 @@ export const SHOW_ALL = 'SHOW_ALL'
 export const SHOW_ACTIVE = 'SHOW_ACTIVE'
 export const SHOW_COMPLETED = 'SHOW_COMPLETED'
 
-export type ShowMode =
-  typeof SHOW_ALL | typeof SHOW_ACTIVE | typeof SHOW_COMPLETED
+export type ShowMode = typeof SHOW_ALL | typeof SHOW_ACTIVE | typeof SHOW_COMPLETED
 
 export interface AppState {
- todos: TodoListState,
- value: string,
- filter: ShowMode,
- nextTodoId: number
+  todos: TodoListState
+  value: string
+  filter: ShowMode
+  nextTodoId: number
 }
 
 export const defaultAppState: AppState = {

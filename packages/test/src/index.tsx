@@ -13,7 +13,7 @@ if (module.hot) {
   module.hot.accept('./app', () => {
     const newAppModule = require('./app')
 
-    const newApp = (new newAppModule.App(targetEl , app.state))
+    const newApp = new newAppModule.App(targetEl, app.state)
     app = newApp
     app.start()
   })

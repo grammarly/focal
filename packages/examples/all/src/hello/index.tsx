@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Atom, F, bind } from '@grammarly/focal'
 
 interface AppState {
-  firstName: string,
+  firstName: string
   lastName: string
 }
 
@@ -18,18 +18,16 @@ const App = (props: { state: Atom<AppState> }) => {
   const lastName = props.state.lens('lastName')
   return (
     <div>
-      First Name: <F.input {...bind({ value: firstName })} type='text' />
+      First Name: <F.input {...bind({ value: firstName })} type="text" />
       <br />
-      Last Name: <F.input {...bind({ value: lastName })} type='text' />
+      Last Name: <F.input {...bind({ value: lastName })} type="text" />
       <br />
       <F.h3>
-      {
-        Atom.combine(
+        {Atom.combine(
           firstName,
           lastName,
           (x, y) => x.length > 0 && y.length > 0 && `Hello, ${x} ${y}`
-        )
-      }
+        )}
       </F.h3>
     </div>
   )

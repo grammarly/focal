@@ -1,13 +1,6 @@
-import {
-  Atom as _Atom,
-  ReadOnlyAtom,
-  JsonAtom,
-  CombinedAtomViewImpl
-} from './base'
+import { Atom as _Atom, ReadOnlyAtom, JsonAtom, CombinedAtomViewImpl } from './base'
 
-export {
-  ReadOnlyAtom
-} from './base'
+export { ReadOnlyAtom } from './base'
 
 // a hack we need to do so we can merge the Atom type with
 // the namespace below and then export it.
@@ -27,20 +20,11 @@ export namespace Atom {
   }
 
   // tslint:disable no-unused-vars
-  export function log<T>(
-    atom: Atom<T>,
-    name?: string
-  ): Atom<T>
+  export function log<T>(atom: Atom<T>, name?: string): Atom<T>
 
-  export function log<T>(
-    atom: ReadOnlyAtom<T>,
-    name?: string
-  ): ReadOnlyAtom<T>
+  export function log<T>(atom: ReadOnlyAtom<T>, name?: string): ReadOnlyAtom<T>
 
-  export function log<T>(
-    atom: Atom<T>,
-    logger?: (prevState: T, newState: T) => void
-  ): Atom<T>
+  export function log<T>(atom: Atom<T>, logger?: (prevState: T, newState: T) => void): Atom<T>
 
   export function log<T>(
     atom: ReadOnlyAtom<T>,
@@ -124,12 +108,9 @@ export namespace Atom {
   ): ReadOnlyAtom<TResult>
   // tslint:enable no-unused-vars
 
-  export function combine<TResult>(
-    ...args: (ReadOnlyAtom<any> | ((...xs: any[]) => TResult))[]
-  ) {
-    return new CombinedAtomViewImpl<TResult>(
-      args.slice(undefined, -1) as ReadOnlyAtom<any>[],
-      xs => (args[args.length - 1] as ((...xs: any[]) => TResult))(...xs)
+  export function combine<TResult>(...args: (ReadOnlyAtom<any> | ((...xs: any[]) => TResult))[]) {
+    return new CombinedAtomViewImpl<TResult>(args.slice(undefined, -1) as ReadOnlyAtom<any>[], xs =>
+      (args[args.length - 1] as ((...xs: any[]) => TResult))(...xs)
     )
   }
 }

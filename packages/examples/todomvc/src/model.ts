@@ -31,15 +31,13 @@ export class AppModel {
 
   add(title: string) {
     this.state.modify(({ todos, nextId }) => ({
-      todos: Object.assign({},
-        todos,
-        {
-          [String(nextId)]: {
-            title,
-            completed: false,
-            id: nextId
-          }
-        }),
+      todos: Object.assign({}, todos, {
+        [String(nextId)]: {
+          title,
+          completed: false,
+          id: nextId
+        }
+      }),
       nextId: nextId + 1
     }))
   }
@@ -48,20 +46,27 @@ export class AppModel {
     this.todos.modify(todos =>
       Object.keys(todos)
         .filter(k => k !== id)
-        .reduce((acc, k) => {
-          acc[k] = todos[k]
-          return acc
-        }, {} as TodoList))
+        .reduce(
+          (acc, k) => {
+            acc[k] = todos[k]
+            return acc
+          },
+          {} as TodoList
+        )
+    )
   }
 
   deleteCompleted() {
     this.todos.modify(todos => {
       return Object.keys(todos)
         .filter(k => !todos[k].completed)
-        .reduce((acc, k) => {
-          acc[k] = todos[k]
-          return acc
-        }, {} as TodoList)
+        .reduce(
+          (acc, k) => {
+            acc[k] = todos[k]
+            return acc
+          },
+          {} as TodoList
+        )
     })
   }
 
@@ -70,11 +75,13 @@ export class AppModel {
       Lens.create(
         todos => Object.keys(todos).filter(k => !todos[k].completed).length === 0,
         (v: boolean, todos: TodoList) =>
-          Object.keys(todos)
-            .reduce((acc, k) => {
+          Object.keys(todos).reduce(
+            (acc, k) => {
               acc[k] = { id: todos[k].id, title: todos[k].title, completed: v }
               return acc
-          }, {} as TodoList)
+            },
+            {} as TodoList
+          )
       )
     )
   }

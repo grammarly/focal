@@ -36,7 +36,8 @@ function testAtom(newAtom: (x: number) => Atom<number>) {
     const cb = (x: number) => observations.push(x)
     const subscription = a.subscribe(cb)
 
-    ; [2, 3, 3, 3, 1].forEach(x => a.set(x))
+      // tslint:disable-next-line:whitespace
+    ;[2, 3, 3, 3, 1].forEach(x => a.set(x))
 
     expect(structEq(observations, [1, 2, 3, 1])).toBeTruthy()
 
@@ -124,7 +125,13 @@ function testDerivedAtom(
 
   describe('resubscribe', () => {
     const a = create(5)
-    const v = createDerived(a, x => x + 1, () => { /* no-op */ })
+    const v = createDerived(
+      a,
+      x => x + 1,
+      () => {
+        /* no-op */
+      }
+    )
 
     const os: number[] = []
     const sub1 = v.subscribe(x => os.push(x))
@@ -164,7 +171,13 @@ function testDerivedAtom(
 
   describe('multiple subscriptions', () => {
     const a = create(5)
-    const v = createDerived(a, x => x + 1, () => { /* no-op */ })
+    const v = createDerived(
+      a,
+      x => x + 1,
+      () => {
+        /* no-op */
+      }
+    )
 
     const os1: number[] = []
     const sub1 = v.subscribe(x => os1.push(x))
@@ -225,7 +238,10 @@ describe('atom', () => {
     describe('lensed, chained lenses', () => {
       testAtom(x => {
         const source = Atom.create({ a: { b: { c: x } } })
-        const lensed = source.lens(x => x.a).lens(x => x.b).lens(x => x.c)
+        const lensed = source
+          .lens(x => x.a)
+          .lens(x => x.b)
+          .lens(x => x.c)
         return lensed
       })
     })
@@ -241,22 +257,21 @@ describe('atom', () => {
     describe('lensed, safe key, chained lenses', () => {
       testAtom(x => {
         const source = Atom.create({ a: { b: { c: x } } })
-        const lensed = source.lens('a').lens('b').lens('c')
+        const lensed = source
+          .lens('a')
+          .lens('b')
+          .lens('c')
         return lensed
       })
     })
 
     describe('lensed, chained + complex', () => {
       const source = Atom.create({ a: { b: { c: 5 } } })
-      const lensed =
-        source
-          .lens(x => x.a)
-          .lens(x => x.b)
-          .lens(x => x.c)
-          .lens(
-            Lens.create(
-              (x: number) => x + 1,
-              (v: number, _: number) => v - 1))
+      const lensed = source
+        .lens(x => x.a)
+        .lens(x => x.b)
+        .lens(x => x.c)
+        .lens(Lens.create((x: number) => x + 1, (v: number, _: number) => v - 1))
 
       expect(lensed.get()).toEqual(6)
 
@@ -267,13 +282,11 @@ describe('atom', () => {
 
     describe('lensed, safe key, chained + complex', () => {
       const source = Atom.create({ a: { b: { c: 5 } } })
-      const lensed =
-        source
-          .lens('a').lens('b').lens('c')
-          .lens(
-            Lens.create(
-              (x: number) => x + 1,
-              (v: number, _: number) => v - 1))
+      const lensed = source
+        .lens('a')
+        .lens('b')
+        .lens('c')
+        .lens(Lens.create((x: number) => x + 1, (v: number, _: number) => v - 1))
 
       expect(lensed.get()).toEqual(6)
 
@@ -284,7 +297,10 @@ describe('atom', () => {
 
     describe('lens then view', () => {
       const x1 = Atom.create({ a: { b: 5 } })
-      const x2 = x1.lens(x => x.a).view(x => x.b).view(x => x + 1)
+      const x2 = x1
+        .lens(x => x.a)
+        .view(x => x.b)
+        .view(x => x + 1)
       const x3 = x1.lens(x => x.a).lens(x => x.b)
 
       expect(x3.get()).toEqual(5)
@@ -304,10 +320,7 @@ describe('atom', () => {
           const first = source.lens(
             Lens.index<number>(0)
               // assert element is non-undefined
-              .compose(Lens.create(
-                (x: number | undefined) => x!,
-                (v, _) => v
-              ))
+              .compose(Lens.create((x: number | undefined) => x!, (v, _) => v))
           )
           return first
         })
@@ -361,8 +374,8 @@ describe('atom', () => {
       })
     })
 
-    testDerivedAtom(
-      (a, f, onCalled) => a.lens(
+    testDerivedAtom((a, f, onCalled) =>
+      a.lens(
         Lens.create(
           (x: number) => {
             onCalled(x)
@@ -420,7 +433,8 @@ describe('atom', () => {
       const viewOs: number[] = []
       const viewSub = view.subscribe(x => viewOs.push(x))
 
-      ; [2, 2, 2, 3, 3, 3, 1, 1, 1].forEach(x => source.set(x))
+        // tslint:disable-next-line
+      ;[2, 2, 2, 3, 3, 3, 1, 1, 1].forEach(x => source.set(x))
 
       expect(viewOs).toEqual([2, 3, 4, 2])
       expect(sourceOs).toEqual([1, 2, 3, 1])
@@ -429,10 +443,12 @@ describe('atom', () => {
       viewSub.unsubscribe()
     })
 
-    testDerivedAtom((a, f, onCalled) => a.view(x => {
-      onCalled(x)
-      return f(x)
-    }))
+    testDerivedAtom((a, f, onCalled) =>
+      a.view(x => {
+        onCalled(x)
+        return f(x)
+      })
+    )
 
     describe('complex expression', () => {
       const source = Atom.create({ a: { b: { c: 5 } } })
@@ -540,12 +556,15 @@ describe('atom', () => {
       })
 
       function testCalls(
-        a: number, b: number, c: number, d: number, e: number, f: number,
+        a: number,
+        b: number,
+        c: number,
+        d: number,
+        e: number,
+        f: number,
         msg: string
       ) {
-        expect(
-          [called1, called2, called3, called4, called5, called5]).toEqual(
-          [a, b, c, d, e, f])
+        expect([called1, called2, called3, called4, called5, called5]).toEqual([a, b, c, d, e, f])
         //   ,
         //   msg
         // )
@@ -564,15 +583,17 @@ describe('atom', () => {
       source.set(2)
       testCalls(3, 3, 3, 3, 3, 3, '3 calls each after subscribe + 2 sets')
 
-      expect(
-        observations
-      ).toEqual(
-        [
-          'Hi -2', 'Ho -2', 'HU -2',
-          'Hi -4', 'Ho -4', 'HU -4',
-          'Hi -6', 'Ho -6', 'HU -6'
-        ]
-      )
+      expect(observations).toEqual([
+        'Hi -2',
+        'Ho -2',
+        'HU -2',
+        'Hi -4',
+        'Ho -4',
+        'HU -4',
+        'Hi -6',
+        'Ho -6',
+        'HU -6'
+      ])
 
       sub.unsubscribe()
     })
@@ -623,15 +644,16 @@ describe('atom', () => {
       })
 
       function testCalls(
-        a: number, b: number, c: number, d: number, e: number, f: number,
+        a: number,
+        b: number,
+        c: number,
+        d: number,
+        e: number,
+        f: number,
         // @TODO jest doesn't have messages for expects
         _msg: string
       ) {
-        expect(
-          [called1, called2, called3, called4, called5, called5]
-        ).toEqual(
-          [a, b, c, d, e, f]
-        )
+        expect([called1, called2, called3, called4, called5, called5]).toEqual([a, b, c, d, e, f])
       }
 
       testCalls(0, 0, 0, 0, 0, 0, 'no calls initially')
@@ -656,8 +678,10 @@ describe('atom', () => {
   describe('combine', () => {
     describe('constant', () => {
       const combined = Atom.combine(
-        Atom.create(1), Atom.create(false), Atom.create('test'),
-        (x, y, z) => y && x < 0 ? z.toUpperCase() : 'NO'
+        Atom.create(1),
+        Atom.create(false),
+        Atom.create('test'),
+        (x, y, z) => (y && x < 0 ? z.toUpperCase() : 'NO')
       )
 
       expect(combined.get()).toEqual('NO')
@@ -668,10 +692,7 @@ describe('atom', () => {
       const s2 = Atom.create(false)
       const s3 = Atom.create('test')
 
-      const combined = Atom.combine(
-        s1, s2, s3,
-        (x, y, z) => y && x < 0 ? z.toUpperCase() : 'NO'
-      )
+      const combined = Atom.combine(s1, s2, s3, (x, y, z) => (y && x < 0 ? z.toUpperCase() : 'NO'))
 
       expect(combined.get()).toEqual('NO')
 
@@ -694,10 +715,7 @@ describe('atom', () => {
       const s3 = Atom.create('test')
       const observations: string[] = []
 
-      const combined = Atom.combine(
-        s1, s2, s3,
-        (x, y, z) => y && x < 0 ? z.toUpperCase() : 'NO'
-      )
+      const combined = Atom.combine(s1, s2, s3, (x, y, z) => (y && x < 0 ? z.toUpperCase() : 'NO'))
 
       const sub = combined.subscribe(x => observations.push(x))
 
@@ -720,10 +738,12 @@ describe('atom', () => {
       sub.unsubscribe()
     })
 
-    testDerivedAtom((a, f, onCalled) => Atom.combine(a, Atom.create(0), (a, b) => {
-      onCalled(a)
-      return f(a)
-    }))
+    testDerivedAtom((a, f, onCalled) =>
+      Atom.combine(a, Atom.create(0), (a, b) => {
+        onCalled(a)
+        return f(a)
+      })
+    )
   })
 
   describe('logger', () => {

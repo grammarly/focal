@@ -37,15 +37,13 @@ const pattern = `
                                                               . : :.:::::::.: :.
 `
 
-const Scroller = (props: { scrollTop: Atom<number>, scrollLeft: Atom<number> }) =>
+const Scroller = (props: { scrollTop: Atom<number>; scrollLeft: Atom<number> }) => (
   <div
-    {
-      ...bindElementProps({
-        ref: 'onScroll',
-        scrollTop: props.scrollTop,
-        scrollLeft: props.scrollLeft
-      })
-    }
+    {...bindElementProps({
+      ref: 'onScroll',
+      scrollTop: props.scrollTop,
+      scrollLeft: props.scrollLeft
+    })}
     style={{
       display: 'inline-block',
       overflow: 'scroll',
@@ -55,14 +53,16 @@ const Scroller = (props: { scrollTop: Atom<number>, scrollLeft: Atom<number> }) 
   >
     <pre>{pattern}</pre>
   </div>
+)
 
-const ScrollInput = (props: { value: Atom<number>, label: string }) =>
+const ScrollInput = (props: { value: Atom<number>; label: string }) => (
   <div>
     <label>
       {props.label}
-      <F.input {...bind({ value: props.value })} type='number' />
+      <F.input {...bind({ value: props.value })} type="number" />
     </label>
   </div>
+)
 
 const App = (props: { state: Atom<AppState> }) => {
   const scrollTop = props.state.lens('scrollTop')
@@ -75,8 +75,8 @@ const App = (props: { state: Atom<AppState> }) => {
         <Scroller scrollTop={scrollTop} scrollLeft={scrollLeft} />
       </div>
       <div>
-        <ScrollInput value={scrollTop} label='y' />
-        <ScrollInput value={scrollLeft} label='x' />
+        <ScrollInput value={scrollTop} label="y" />
+        <ScrollInput value={scrollLeft} label="x" />
       </div>
     </div>
   )

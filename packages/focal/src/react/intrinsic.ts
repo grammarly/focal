@@ -18,8 +18,11 @@ export interface LiftedIntrinsic<
     React.ReactElement<LiftWrapperProps<ObservableReactHTMLProps<E, A>>>
 }
 
-export function liftIntrinsic<E extends Element>(
-  intrinsicClassName: keyof React.ReactHTML
+export function liftIntrinsic<
+  K extends keyof React.ReactHTML,
+  E extends React.ReactHTML[K] extends React.DetailedHTMLFactory<any, infer E> ? E : never
+>(
+  intrinsicClassName: K
 ): LiftedIntrinsic<E> {
   return (props: LiftedIntrinsicComponentProps<E>) =>
     React.createElement<LiftWrapperProps<ObservableReactHTMLProps<E>>>(
@@ -70,7 +73,10 @@ export function createLiftedIntrinsics(): LiftedIntrinsics {
     -readonly [P in keyof LiftedIntrinsics]?: LiftedIntrinsics[P];
   } = {}
 
-  html.forEach(e => (r as any)[e] = liftIntrinsic(e))
+  html.forEach(e =>
+    // @TODO: update type to avoid any
+    r[e] = liftIntrinsic(e) as any
+  )
 
   r.Fragment = (props: LiftedFragmentAttributes) =>
     React.createElement(LiftWrapper, { component: React.Fragment, props })

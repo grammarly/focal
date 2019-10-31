@@ -23,6 +23,7 @@ export interface LiftWrapperProps<TProps> {
   component: React.Component<TProps, any>
     | React.StatelessComponent<TProps>
     | React.ComponentClass<TProps>
+    | React.ComponentType
     | keyof React.ReactHTML
   props: Lifted<TProps>
 }
@@ -341,7 +342,7 @@ function warnEmptyObservable(componentName: string | undefined) {
  */
 class RenderOne<P> implements Subscription {
   private _liftedComponent: LiftWrapper<P>
-  private _innerSubscription: RxSubscription | null
+  private _innerSubscription: RxSubscription | null = null
   private _receivedValue = false
 
   constructor(

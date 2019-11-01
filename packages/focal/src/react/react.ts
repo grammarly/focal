@@ -10,6 +10,7 @@ import {
   of
 } from 'rxjs'
 import { scan, map } from 'rxjs/operators'
+import { LiftHook } from './hook'
 
 export interface Subscription {
   unsubscribe(): void
@@ -150,7 +151,7 @@ export function lift<TProps>(
 ) {
   return (props: LiftedComponentProps<TProps>) =>
     React.createElement<LiftWrapperProps<TProps>>(
-      LiftWrapper,
+      LiftHook,
       { component: component, props: props }
     )
 }
@@ -169,7 +170,7 @@ const PROP_REF = 'ref'
  * @param props React component props
  * @param action action to run for each observable prop
  */
-function walkObservables<T>(
+export function walkObservables<T>(
   props: Lifted<T>,
   action: (obs: Observable<any>) => void
 ) {
@@ -209,7 +210,7 @@ function walkObservables<T>(
  * @param values observable props values, ordered by appearance in flattened tree
  * @returns rendered element
  */
-function render<P>(
+export function render<P>(
   class_: React.Component<P, any> | React.StatelessComponent<P>
     | React.ComponentClass<P> | keyof React.ReactHTML,
   props: Lifted<P>,
@@ -320,7 +321,7 @@ class FakeComponent<P> {
 }
 
 // could make sense to make this configurable
-const handleError = (e: any) => {
+export const handleError = (e: any) => {
   throw e
 }
 

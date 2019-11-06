@@ -131,6 +131,11 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@grammarly/focal@0.8.0-alpha.0":
+  version "0.8.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@grammarly/focal/-/focal-0.8.0-alpha.0.tgz#4d25fb5a64b743b6498c170b9c427e5ab1e296b1"
+  integrity sha512-AG84EKSEMXe0+Qdg5+faE7FB/FeSe2EjPpn5PiA7edfAN+0yPQgW/XdrxciDurguxctVicNHoC9foy57c5NmWw==
+
 "@grammarly/tslint-config@0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@grammarly/tslint-config/-/tslint-config-0.5.1.tgz#4b962f0fbd3cf0b40bd7695069942ba04afb564a"
@@ -4314,9 +4319,10 @@ react-deep-force-update@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-1.1.1.tgz#bcd31478027b64b3339f108921ab520b4313dc2c"
 
-react-dom@16.2.0:
-  version "16.2.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.0.tgz#69003178601c0ca19b709b33a83369fe6124c044"
+react-dom@16.2.1:
+  version "16.2.1"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.1.tgz#5cfb32f66267ece7b3850466bf3b219d4911fc1a"
+  integrity sha512-0ujGgYnpX0GlaAjUfwU7ddy0DjuzPmTHHi2SlPolGv7hAyUpK7XA7WZcxit5ZcU7cW5QU1HJjlS3eMn42tSfYQ==
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"

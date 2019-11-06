@@ -5,10 +5,12 @@
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",
   "es2015": "dist/_esm2015/src/index.js",
-  "typings": "dist/_cjs/src/index.d.ts",
+  "types": "dist/_cjs/src/index.d.ts",
   "sideEffects": false,
   "files": [
-    "dist/src/"
+    "dist/_cjs/src/",
+    "dist/_esm5/src/",
+    "dist/_esm2015/src/"
   ],
   "scripts": {
     "docs": "rm -rf ./docs && typedoc --out docs --theme minimal --ignoreCompilerErrors --tsconfig tsconfig.json",

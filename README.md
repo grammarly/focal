@@ -70,7 +70,7 @@ ReactDOM.render(
 )
 ```
 
-You can play with this example online [on CodeSandbox](https://codesandbox.io/s/52l109yowl).
+You can play with this example online [on CodeSandbox](https://codesandbox.io/s/great-hofstadter-30wr8).
 
 There's also a more elaborate version of [this example](packages/examples/all/src/counter/index.tsx), as well as some other examples, in the [examples directory](packages/examples).
 

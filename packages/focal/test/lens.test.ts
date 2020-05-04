@@ -202,3 +202,26 @@ describe('property expressions', () => {
     process.env.NODE_ENV = originalNodeEnv
   })
 })
+describe('object', () => {
+  class TestObject {
+    constructor(public num: number) {
+    }
+    getNum(): number {
+      return this.num
+    }
+  }
+  let o1 = new TestObject(0)
+  const l1 = Lens.key<TestObject>()('num')
+
+  it('num lens', () => expect(l1.get(o1)).toEqual(0))
+  it('num property', () => expect(o1.num).toEqual(0))
+
+  describe('after lens set', () => {
+    beforeEach(() => {
+      o1 = l1.set(10, o1)
+    })
+    it('num lens', () => expect(l1.get(o1)).toEqual(10))
+    it('num property', () => expect(o1.num).toEqual(10))
+    it('getNum method', () => expect(o1.getNum()).toEqual(10))
+  })
+})

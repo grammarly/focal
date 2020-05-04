@@ -4,17 +4,16 @@ export { equals as structEq } from './equals'
 
 export const DEV_ENV = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
 
-export function setKey<T, K extends keyof T>(k: K, v: T[K], o: T): T {
+export function setKey<T extends Object, K extends keyof T>(k: K, v: T[K], o: T): T {
   if (k in o && structEq(v, o[k])) {
     return o
   } else {
-    // this is the fastest way to do it, see
-    // https://jsperf.com/focal-setkey-for-loop-vs-object-assign
-    const r: { [k in keyof T]: T[k] } = {} as any
-    for (const p in o) r[p] = o[p]
-    r[k] = v
-
-    return r
+    // Faster to use Object.assign and friends in modern JS engines.
+    // Object.create needed to preserve the instance's prototype.
+    const copy: T = Object.create(o)
+    Object.assign(copy, o)
+    copy[k] = v
+    return copy
   }
 }
 

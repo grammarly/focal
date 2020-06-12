@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",
-    "tslint": "5.2.0",
+    "tslint": "5.18.0",
     "typescript": "3.3.3"
   },
   "workspaces": [

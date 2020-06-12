@@ -76,9 +76,11 @@ function identical(a: any, b: any) {
 const _isArguments = ((function () {
   const toString = Object.prototype.toString
 
+  /* eslint-disable brace-style */
   return toString.call(arguments) === '[object Arguments]'
     ? function isArguments(x: any) { return toString.call(x) === '[object Arguments]' }
     : function isArguments(x: any) { return has('callee', x) }
+  /* eslint-enable brace-style */
 }) ())
 
 /**
@@ -103,7 +105,7 @@ const keys = ((function () {
   }) ())
 
   const contains = function contains<T>(list: T[], item: T) {
-    var idx = 0 // tslint:disable-line no-var-keyword
+    var idx = 0 // eslint-disable-line no-var
 
     while (idx < list.length) {
       if (list[idx] === item)

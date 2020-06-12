@@ -59,12 +59,14 @@ export class LiftWrapper<TProps>
     const { props, component } = newProps
 
     let n = 0
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     walkObservables(props, () => n += 1)
 
     switch (n) {
       case 0:
         this.setState({
           subscription: null,
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
           renderCache: render(component, props)
         })
         break
@@ -75,10 +77,10 @@ export class LiftWrapper<TProps>
       // Could this be replaced by a regular closure? Perhaps using
       // a class is an optimization?
       case 1:
-        new RenderOne(this, newProps) // tslint:disable-line
+        new RenderOne(this, newProps) // eslint-disable-line
         break
       default:
-        new RenderMany(this, newProps, n) // tslint:disable-line
+        new RenderMany(this, newProps, n) // eslint-disable-line
         break
     }
   }
@@ -740,7 +742,7 @@ export function bind(template: { [key: string]: Atom<any> }) {
   }
 }
 
-// tslint:disable no-unused-vars
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export function reactiveList<TValue>(
   ids: Observable<string[]>, createListItem: (x: string) => TValue
 ): Observable<TValue[]>
@@ -748,7 +750,7 @@ export function reactiveList<TValue>(
 export function reactiveList<TValue>(
   ids: Observable<number[]>, createListItem: (x: number) => TValue
 ): Observable<TValue[]>
-// tslint:enable no-unused-vars
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 /**
  * Derive a reactive list from:

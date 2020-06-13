@@ -11,7 +11,8 @@
     "clean": "rm -rf ./build",
     "dev": "npm start",
     "start": "node ./webpack/dev_server.js",
-    "test": "yarn build"
+    "test": "yarn build",
+    "lint": "eslint '**/*.ts*'"
   },
   "author": "Grammarly, Inc.",
   "license": "Apache-2.0",

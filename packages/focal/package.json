@@ -25,7 +25,7 @@
     "build": "npm run clean && yarn build:cjs && yarn build:es5 && yarn build:es2015 && npm run lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "tslint --type-check --project tsconfig.json -c tslint.json",
+    "lint": "eslint '**/*.ts*' && tsc --noemit",
     "prepack": "cp ../../README.md ./ && cp ../../LICENSE ./",
     "postpack": "rm README.md && rm LICENSE",
     "preversion": "if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then echo \"Not on the master branch.\" && exit 1; fi",
@@ -91,7 +91,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@grammarly/tslint-config": "0.5.1",
     "@types/jest": "^24.0.0",
     "@types/node": "^6.0.34",
     "@types/react": "16.0.33",
@@ -101,7 +100,6 @@
     "react-dom": "16.2.0",
     "rxjs": "6.3.3",
     "ts-jest": "^23.10.5",
-    "tslint": "5.2.0",
     "typescript": "3.3.3"
   },
   "peerDependencies": {

@@ -9,13 +9,12 @@
     "postinstall": "yarn build"
   },
   "devDependencies": {
-    "@grammarly/tslint-config": "0.5.1",
     "@typescript-eslint/eslint-plugin": "^3.2.0",
     "@typescript-eslint/eslint-plugin-tslint": "^3.2.0",
     "@typescript-eslint/parser": "^3.2.0",
     "eslint": "^7.2.0",
     "eslint-plugin-jsdoc": "^27.0.6",
-    "tslint": "5.18.0",
+    "eslint-plugin-react": "^7.20.0",
     "typescript": "3.3.3"
   },
   "workspaces": [

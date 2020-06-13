@@ -21,10 +21,12 @@ module.exports = {
         "@typescript-eslint",
         "@typescript-eslint/tslint",
         "jsdoc",
+        "react"
     ],
     "rules": {
+        "react/jsx-uses-vars": "error",
+        "react/jsx-uses-react": "error",
         "@typescript-eslint/await-thenable": "error",
-        // "@typescript-eslint/class-name-casing": "error",
         "@typescript-eslint/consistent-type-assertions": "error",
         "@typescript-eslint/consistent-type-definitions": "error",
         "@typescript-eslint/dot-notation": "error",
@@ -57,7 +59,10 @@ module.exports = {
         "@typescript-eslint/no-unused-expressions": "error",
         "@typescript-eslint/no-unused-vars": [
           "error",
-          { "argsIgnorePattern": "^_" }
+          {
+            "argsIgnorePattern": "^_" ,
+            "varsIgnorePattern": "^_"
+          }
         ] ,
         "@typescript-eslint/no-use-before-define": "error",
         "@typescript-eslint/no-var-requires": "off",

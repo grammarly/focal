@@ -7,9 +7,9 @@ interface TestComponent<S> {
   defaultState: S
 }
 
-declare var require: (path: string) => any
+declare let require: (path: string) => any
 
-const tests: { name: string, test: TestComponent<any> }[] = [
+const tests: { name: string; test: TestComponent<any> }[] = [
   'lifted-bug',
   'render-bug'
 ].map(name => {

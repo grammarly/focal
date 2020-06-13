@@ -259,7 +259,7 @@ describe('react', () => {
   )
 
   it('bindElementProps compiles', () => expect((() => {
-    // tslint:disable-next-line no-unused-expression
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     (
       <F.div {...bindElementProps({ ref: 'onScroll', scrollTop: Atom.create(0) })}></F.div>
     )

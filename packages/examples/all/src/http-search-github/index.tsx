@@ -7,8 +7,8 @@ enum ResultKind {
   InProgress
 }
 
-interface Success<T> { kind: ResultKind.Success, value: T }
-interface Failure { kind: ResultKind.Failure, error: any }
+interface Success<T> { kind: ResultKind.Success; value: T }
+interface Failure { kind: ResultKind.Failure; error: any }
 interface InProgress { kind: ResultKind.InProgress }
 
 type Result<T> = Success<T> | Failure | InProgress
@@ -33,7 +33,7 @@ namespace Result {
 
 interface AppState {
   searchString: string
-  result: undefined | Result<{ url: string, name: string }[]>
+  result: undefined | Result<{ url: string; name: string }[]>
 }
 
 namespace AppState {

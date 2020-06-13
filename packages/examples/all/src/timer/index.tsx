@@ -10,14 +10,14 @@ enum Status {
 }
 
 interface Time {
-  seconds: number,
-  milliseconds: number,
+  seconds: number
+  milliseconds: number
   minutes: number
 }
 
 interface AppState {
-  time: Time,
-  laps: Time[],
+  time: Time
+  laps: Time[]
   status: Status
 }
 

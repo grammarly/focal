@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Atom, F, bind } from '@grammarly/focal'
 
 interface AppState {
-  firstName: string,
+  firstName: string
   lastName: string
 }
 

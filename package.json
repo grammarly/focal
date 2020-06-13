@@ -3,9 +3,11 @@
   "name": "focal",
   "scripts": {
     "build": "yarn workspace @grammarly/focal build",
-    "lint": "yarn lint:focal && yarn lint:test",
+    "lint": "yarn lint:focal && yarn lint:test && yarn lint:todomvc && yarn lint:examples",
     "lint:focal": "yarn workspace @grammarly/focal lint",
     "lint:test": "yarn workspace focal-manual-tests lint",
+    "lint:todomvc": "yarn workspace focal-todomvc lint",
+    "lint:examples": "yarn workspace focal-examples lint",
     "package": "yarn workspace @grammarly/focal pack",
     "release": "yarn workspace @grammarly/focal release",
     "test": "yarn workspace @grammarly/focal test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",

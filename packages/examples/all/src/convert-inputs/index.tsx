@@ -5,7 +5,7 @@ const toFahrenheit = (celsius: number) => celsius * 9 / 5 + 32
 const toCelsius = (fahrenheit: number) => (fahrenheit - 32) * 5 / 9
 
 interface AppState {
-  celsius: number,
+  celsius: number
   fahrenheit: number
 }
 

@@ -48,7 +48,7 @@ const THead = (props: { columns: ReadOnlyAtom<string[]> }) =>
   </thead>
 
 const TBody = (props: {
-  state: Atom<typeof defaultState>,
+  state: Atom<typeof defaultState>
   visibleRows: ReadOnlyAtom<{ begin: number; end: number }>
 }) =>
   <F.tbody>
@@ -75,7 +75,7 @@ const App = ({
   state,
   scrollTop = Atom.create(0)
 }: {
-  state: Atom<typeof defaultState>,
+  state: Atom<typeof defaultState>
   scrollTop: Atom<number>
 }) =>
   <div>

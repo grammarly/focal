@@ -35,7 +35,7 @@ const TimeLine = ({
   currentTime,
   maxDuration
 }: {
-  currentTime: Atom<string>,
+  currentTime: Atom<string>
   maxDuration: ReadOnlyAtom<number>
 }) => (
   <div>

@@ -14,6 +14,7 @@
   "scripts": {
     "docs": "rm -rf ./docs && typedoc --out docs --theme minimal --ignoreCompilerErrors --tsconfig tsconfig.json",
     "clean": "rm -rf ./dist",
+    "dev": "tsc -b -w tsconfig.build.cjs.json",
     "build:cjs": "tsc -b tsconfig.build.cjs.json",
     "build:es5": "tsc -b tsconfig.build.es5.json",
     "build:es2015": "tsc -b tsconfig.build.es2015.json",

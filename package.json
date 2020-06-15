@@ -6,6 +6,8 @@
   ],
   "scripts": {
     "build": "yarn workspace @grammarly/focal build",
+    "dev": "yarn workspace @grammarly/focal dev",
+    "clean": "yarn workspace @grammarly/focal-utils clean && yarn workspace @grammarly/focal-state clean && yarn workspace @grammarly/focal clean",
     "package": "yarn workspace @grammarly/focal pack",
     "release": "yarn workspace @grammarly/focal release",
     "test": "yarn workspace @grammarly/focal-state test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",

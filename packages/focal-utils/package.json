@@ -1,16 +1,11 @@
 {
-  "name": "@grammarly/focal",
+  "name": "@grammarly/focal-utils",
   "version": "0.8.1",
-  "description": "FRP UI with React, observables, immutable data and lenses",
+  "description": "Focal common utils",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",
   "es2015": "dist/_esm2015/src/index.js",
   "types": "dist/_cjs/src/index.d.ts",
-  "sideEffects": [
-    "./dist/_cjs/src/lens/json.js",
-    "./dist/_esm5/src/lens/json.js",
-    "./dist/_esm2015/src/lens/json.js"
-  ],
   "files": [
     "dist/_cjs/src/",
     "dist/_esm5/src/",
@@ -91,27 +86,12 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@grammarly/focal-state": "^0.8.1",
-    "@grammarly/focal-utils": "^0.8.1",
     "@grammarly/tslint-config": "0.5.1",
     "@types/jest": "^24.0.0",
     "@types/node": "^6.0.34",
-    "@types/react": "16.0.33",
-    "@types/react-dom": "16.0.3",
     "jest": "^24.1.0",
-    "react": "16.2.0",
-    "react-dom": "16.2.0",
-    "rxjs": "6.3.3",
     "ts-jest": "^23.10.5",
     "tslint": "5.2.0",
     "typescript": "3.3.3"
-  },
-  "peerDependencies": {
-    "@types/react": ">= 16.0.33 < 17.0.0-0",
-    "@types/react-dom": ">= 16.0.3 < 17.0.0-0",
-    "@grammarly/focal-state": ">= 0.8.1 < 0.9.0.0-0",
-    "react": ">= 16.2.0 < 17.0.0-0",
-    "react-dom": ">= 16.2.0 < 17.0.0-0",
-    "rxjs": ">= 6.3.3 < 7.0.0-0"
   }
 }

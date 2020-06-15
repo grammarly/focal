@@ -2,12 +2,12 @@ import { of, EMPTY, NEVER } from 'rxjs'
 import { map, throttleTime } from 'rxjs/operators'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/server'
+import { Atom } from '@grammarly/focal-state'
 
 import {
   F,
   lift,
   bind,
-  Atom,
   reactiveList,
   classes,
   bindElementProps

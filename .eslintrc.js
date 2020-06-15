@@ -169,6 +169,10 @@ module.exports = {
         "no-trailing-spaces": "error",
         "no-unused-labels": "error",
         "no-var": "error",
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
         "prefer-const": "error",
         "radix": "error",
         "spaced-comment": [
@@ -198,10 +202,6 @@ module.exports = {
                     "jsx-alignment": true,
                     "no-unnecessary-local-variable": true,
                     "no-unnecessary-override": true,
-                    "object-curly-spacing": [
-                        true,
-                        "always"
-                    ],
                     "prefer-method-signature": true,
                     "typedef": [
                         true,

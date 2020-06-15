@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "composite": true,
     "target": "es5",
     "sourceMap": true,
     "emitDecoratorMetadata": true,

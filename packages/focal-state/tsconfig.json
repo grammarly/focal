@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "composite": true,
     "target": "es5",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
@@ -21,5 +22,8 @@
   "include": [
     "src/**/*.ts*",
     "test/**/*.ts*"
+  ],
+  "references": [
+    { "path": "../focal-utils/tsconfig.json" }
   ]
 }

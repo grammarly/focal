@@ -21,5 +21,9 @@
   "include": [
     "src/**/*.ts*",
     "test/**/*.ts*"
+  ],
+  "references": [
+    { "path": "../focal-state/tsconfig.json" },
+    { "path": "../focal-utils/tsconfig.json" }
   ]
 }

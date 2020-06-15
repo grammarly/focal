@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["**/*.spec.ts*"],
+  "compilerOptions": {
+    "outDir": "dist/_esm5",
+    "module": "commonjs",
+    "target": "es2015",
+  },
+  "references": [
+    { "path": "../focal-utils/tsconfig.build.es5.json" }
+  ]
+}

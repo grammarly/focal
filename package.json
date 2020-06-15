@@ -5,7 +5,7 @@
     "tslint-eslint-rules"
   ],
   "scripts": {
-    "build": "yarn workspace @grammarly/focal build",
+    "build": "yarn clean && yarn workspace @grammarly/focal build",
     "dev": "yarn workspace @grammarly/focal dev",
     "clean": "yarn workspace @grammarly/focal-utils clean && yarn workspace @grammarly/focal-state clean && yarn workspace @grammarly/focal clean",
     "package": "yarn workspace @grammarly/focal pack",

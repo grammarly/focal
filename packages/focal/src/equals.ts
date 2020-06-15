@@ -26,8 +26,6 @@
  * THE SOFTWARE.
  */
 
-// tslint:disable no-function-expression
-
 function arrayFromIterator<T>(iter: Iterator<T>) {
   const result: T[] = []
   let next: IteratorResult<T>
@@ -104,6 +102,7 @@ const keys = ((function () {
     return arguments.propertyIsEnumerable('length')
   }) ())
 
+  // eslint-disable-next-line func-style
   const contains = function contains<T>(list: T[], item: T) {
     var idx = 0 // eslint-disable-line no-var
 

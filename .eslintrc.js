@@ -87,6 +87,11 @@ module.exports = {
             "error",
             "smart"
         ],
+        "func-style": [
+          "error",
+          "declaration",
+           { "allowArrowFunctions": true }
+        ],
         "guard-for-in": "off",
         "id-blacklist": [
             "error",
@@ -191,7 +196,6 @@ module.exports = {
                         }
                     ],
                     "jsx-alignment": true,
-                    "no-function-expression": true,
                     "no-unnecessary-local-variable": true,
                     "no-unnecessary-override": true,
                     "object-curly-spacing": [

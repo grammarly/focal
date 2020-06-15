@@ -1,4 +1,3 @@
-// tslint:disable no-unnecessary-local-variable
 import { merge, Observable, from, Subject, never, throwError, empty } from 'rxjs'
 import { take, toArray, tap, materialize, map } from 'rxjs/operators'
 import { Atom, Lens, ReadOnlyAtom } from '../src'

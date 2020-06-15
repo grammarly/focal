@@ -29,7 +29,7 @@
 function arrayFromIterator<T>(iter: Iterator<T>) {
   const result: T[] = []
   let next: IteratorResult<T>
-  while (!(next = iter.next()).done) { // tslint:disable-line no-conditional-assignment
+  while (!(next = iter.next()).done) {
     result.push(next.value)
   }
   return result

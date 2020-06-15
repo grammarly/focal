@@ -370,7 +370,7 @@ class LensedAtom<TSource, TDest> extends AbstractAtom<TDest> {
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TDest>) { // tslint:disable-line function-name
+  _subscribe(subscriber: Subscriber<TDest>) {
     if (!this._subscription) {
       this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
@@ -439,7 +439,7 @@ class AtomViewImpl<TSource, TDest> extends AbstractReadOnlyAtom<TDest> {
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TDest>) { // tslint:disable-line function-name
+  _subscribe(subscriber: Subscriber<TDest>) {
     if (!this._subscription) {
       this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
@@ -509,7 +509,7 @@ export class CombinedAtomViewImpl<TResult> extends AbstractReadOnlyAtom<TResult>
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TResult>) { // tslint:disable-line function-name
+  _subscribe(subscriber: Subscriber<TResult>) {
     if (!this._subscription) {
       this._subscription = combineLatest(this._sources)
         .subscribe(xs => this._onSourceValues(xs))

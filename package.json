@@ -9,10 +9,8 @@
     "dev": "yarn workspace @grammarly/focal dev",
     "clean": "yarn workspace @grammarly/focal-utils clean && yarn workspace @grammarly/focal-atom clean && yarn workspace @grammarly/focal clean",
     "docs": "yarn workspace @grammarly/focal-utils docs && yarn workspace @grammarly/focal-atom docs && yarn workspace @grammarly/focal docs",
-    "package:focal": "yarn workspace @grammarly/focal pack",
-    "release:focal": "yarn workspace @grammarly/focal release",
-    "package:focal-atom": "yarn workspace @grammarly/focal-atom pack",
-    "release:focal-atom": "yarn workspace @grammarly/focal-atom release",
+    "package": "yarn workspace @grammarly/focal pack && yarn workspace @grammarly/focal-atom pack",
+    "release": "echo Publishing v${VER:?\"Usage: VER=1.2.3 npm run release\"}... && sh ./scripts/release.sh",
     "test": "yarn workspace @grammarly/focal-atom test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",
     "postinstall": "yarn build"
   },

@@ -92,7 +92,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@grammarly/focal-state": "^0.8.1",
+    "@grammarly/focal-atom": "^0.8.1",
     "@grammarly/focal-utils": "^0.8.1",
     "@grammarly/tslint-config": "0.5.1",
     "@types/jest": "^24.0.0",
@@ -110,7 +110,7 @@
   "peerDependencies": {
     "@types/react": ">= 16.0.33 < 17.0.0-0",
     "@types/react-dom": ">= 16.0.3 < 17.0.0-0",
-    "@grammarly/focal-state": ">= 0.8.1 < 0.9.0.0-0",
+    "@grammarly/focal-atom": ">= 0.8.1 < 0.9.0.0-0",
     "react": ">= 16.2.0 < 17.0.0-0",
     "react-dom": ">= 16.2.0 < 17.0.0-0",
     "rxjs": ">= 6.3.3 < 7.0.0-0"

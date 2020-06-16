@@ -7,7 +7,7 @@
     "target": "esnext"
   },
   "references": [
-    { "path": "../focal-state/tsconfig.build.es2015.json" },
+    { "path": "../focal-atom/tsconfig.build.es2015.json" },
     { "path": "../focal-utils/tsconfig.build.es2015.json" }
   ]
 }

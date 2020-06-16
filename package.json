@@ -7,10 +7,13 @@
   "scripts": {
     "build": "yarn clean && yarn workspace @grammarly/focal build",
     "dev": "yarn workspace @grammarly/focal dev",
-    "clean": "yarn workspace @grammarly/focal-utils clean && yarn workspace @grammarly/focal-state clean && yarn workspace @grammarly/focal clean",
-    "package": "yarn workspace @grammarly/focal pack",
-    "release": "yarn workspace @grammarly/focal release",
-    "test": "yarn workspace @grammarly/focal-state test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",
+    "clean": "yarn workspace @grammarly/focal-utils clean && yarn workspace @grammarly/focal-atom clean && yarn workspace @grammarly/focal clean",
+    "docs": "yarn workspace @grammarly/focal-utils docs && yarn workspace @grammarly/focal-atom docs && yarn workspace @grammarly/focal docs",
+    "package:focal": "yarn workspace @grammarly/focal pack",
+    "release:focal": "yarn workspace @grammarly/focal release",
+    "package:focal-atom": "yarn workspace @grammarly/focal-atom pack",
+    "release:focal-atom": "yarn workspace @grammarly/focal-atom release",
+    "test": "yarn workspace @grammarly/focal-atom test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",
     "postinstall": "yarn build"
   },
   "devDependencies": {
@@ -19,7 +22,7 @@
     "typescript": "3.3.3"
   },
   "workspaces": [
-    "packages/focal-state",
+    "packages/focal-atom",
     "packages/focal-utils",
     "packages/focal",
     "packages/test",

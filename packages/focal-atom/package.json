@@ -1,7 +1,7 @@
 {
-  "name": "@grammarly/focal-state",
+  "name": "@grammarly/focal-atom",
   "version": "0.8.1",
-  "description": "FRP State: observables, immutable data and lenses",
+  "description": "FRP Atom: observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",
   "es2015": "dist/_esm2015/src/index.js",
@@ -31,7 +31,7 @@
     "postpack": "rm README.md && rm LICENSE",
     "preversion": "if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then echo \"Not on the master branch.\" && exit 1; fi",
     "postversion": "git push && git push --tags",
-    "release": "echo Publishing v${VER:?\"Usage: VER=1.2.3 npm run release\"}... && npm publish https://github.com/grammarly/focal/releases/download/v$VER/grammarly-focal-v$VER.tgz --access public"
+    "release": "echo Publishing v${VER:?\"Usage: VER=1.2.3 npm run release\"}... && npm publish https://github.com/grammarly/focal/releases/download/v$VER/grammarly-focalv$VER.tgz --access public"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "contributors": [

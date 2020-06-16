@@ -1,4 +1,4 @@
-export { Lens, Prism, Optic, Atom, ReadOnlyAtom, Option } from '@grammarly/focal-state'
+export { Lens, Prism, Optic, Atom, ReadOnlyAtom, Option } from '@grammarly/focal-atom'
 
 export {
   bind,

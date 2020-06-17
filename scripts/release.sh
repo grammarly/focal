@@ -18,10 +18,6 @@ cp ./LICENSE ./packages/focal/AUTHORS && cp ./LICENSE ./packages/focal-atom/AUTH
 
 echo "Publishing @grammarly/focal-atom with '$VER'"
 cd $BASEDIR/packages/focal-atom && npm publish https://github.com/grammarly/focal/releases/download/v$VER/grammarly-focal-atom-v$VER.tgz --access public --dry-run
-echo "\nACTION REQUIRED!!!\n"
-echo "Manually update @grammarly/focal to use '@grammarly/focal-atom@$VER' and press any key:"
-read $ANYKEY
-echo "Publishing @grammarly/focal with '$VER'"
 cd $BASEDIR/packages/focal && npm publish https://github.com/grammarly/focal/releases/download/v$VER/grammarly-focal-v$VER.tgz --access public --dry-run
 
 rm -rf $BASEDIR/packages/focal/README.md && rm -rf $BASEDIR/packages/focal-atom/README.md

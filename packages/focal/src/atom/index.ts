@@ -1,16 +1,9 @@
 import { Observable, BehaviorSubject, Subscription } from 'rxjs'
 import { tap, share, filter } from 'rxjs/operators'
 
-import {
-  Atom as _Atom,
-  ReadOnlyAtom,
-  JsonAtom,
-  CombinedAtomViewImpl
-} from './base'
+import { Atom as _Atom, ReadOnlyAtom, JsonAtom, CombinedAtomViewImpl } from './base'
 
-export {
-  ReadOnlyAtom
-} from './base'
+export { ReadOnlyAtom } from './base'
 
 // a hack we need to do so we can merge the Atom type with
 // the namespace below and then export it.
@@ -30,20 +23,11 @@ export namespace Atom {
   }
 
   // tslint:disable no-unused-vars
-  export function log<T>(
-    atom: Atom<T>,
-    name?: string
-  ): Atom<T>
+  export function log<T>(atom: Atom<T>, name?: string): Atom<T>
 
-  export function log<T>(
-    atom: ReadOnlyAtom<T>,
-    name?: string
-  ): ReadOnlyAtom<T>
+  export function log<T>(atom: ReadOnlyAtom<T>, name?: string): ReadOnlyAtom<T>
 
-  export function log<T>(
-    atom: Atom<T>,
-    logger?: (prevState: T, newState: T) => void
-  ): Atom<T>
+  export function log<T>(atom: Atom<T>, logger?: (prevState: T, newState: T) => void): Atom<T>
 
   export function log<T>(
     atom: ReadOnlyAtom<T>,
@@ -127,12 +111,9 @@ export namespace Atom {
   ): ReadOnlyAtom<TResult>
   // tslint:enable no-unused-vars
 
-  export function combine<TResult>(
-    ...args: (ReadOnlyAtom<any> | ((...xs: any[]) => TResult))[]
-  ) {
-    return new CombinedAtomViewImpl<TResult>(
-      args.slice(undefined, -1) as ReadOnlyAtom<any>[],
-      xs => (args[args.length - 1] as ((...xs: any[]) => TResult))(...xs)
+  export function combine<TResult>(...args: (ReadOnlyAtom<any> | ((...xs: any[]) => TResult))[]) {
+    return new CombinedAtomViewImpl<TResult>(args.slice(undefined, -1) as ReadOnlyAtom<any>[], xs =>
+      (args[args.length - 1] as ((...xs: any[]) => TResult))(...xs)
     )
   }
 
@@ -170,19 +151,17 @@ export namespace Atom {
     return new Observable<ReadOnlyAtom<T>>(o => {
       const sub = new Subscription()
 
-      sub.add(
-        atomSubj
-          .pipe(filter((x): x is Atom<T> => !!x))
-          .subscribe(o)
-      )
+      sub.add(atomSubj.pipe(filter((x): x is Atom<T> => !!x)).subscribe(o))
 
-      sub.add(initAndUpdateAtom.subscribe(
-        undefined,
-        // propagate errors
-        e => o.error(e),
-        // propagate completion
-        () => o.complete()
-      ))
+      sub.add(
+        initAndUpdateAtom.subscribe(
+          undefined,
+          // propagate errors
+          e => o.error(e),
+          // propagate completion
+          () => o.complete()
+        )
+      )
 
       return sub
     })

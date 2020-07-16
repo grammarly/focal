@@ -9,9 +9,7 @@
  *
  * @module
  */
-import {
-  Lens, Prism, Optic
-} from './base'
+import { Lens, Prism, Optic } from './base'
 
 // This import adds JSON-specific lens functions to the Lens
 // namespace, in style of RxJS.
@@ -26,10 +24,6 @@ import {
 // But maybe there is a way to avoid this?
 import './json'
 
-export {
-  PropExpr
-} from './json'
+export { PropExpr } from './json'
 
-export {
-  Lens, Prism, Optic
-}
+export { Lens, Prism, Optic }

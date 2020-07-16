@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { Atom, F } from '@grammarly/focal'
 
-const toFahrenheit = (celsius: number) => celsius * 9 / 5 + 32
-const toCelsius = (fahrenheit: number) => (fahrenheit - 32) * 5 / 9
+const toFahrenheit = (celsius: number) => (celsius * 9) / 5 + 32
+const toCelsius = (fahrenheit: number) => ((fahrenheit - 32) * 5) / 9
 
 interface AppState {
-  celsius: number,
+  celsius: number
   fahrenheit: number
 }
 
@@ -18,29 +18,36 @@ namespace AppState {
   }
 }
 
-const App = (props: { state: Atom<AppState> }) =>
+const App = (props: { state: Atom<AppState> }) => (
   <div>
     <p>
       <F.input
-        type='number'
+        type="number"
         value={props.state.view(x => x.celsius.toString())}
-        onChange={e => props.state.set({
-          celsius: +e.currentTarget.value,
-          fahrenheit: toFahrenheit(+e.currentTarget.value)
-        })}
-      />°C
+        onChange={e =>
+          props.state.set({
+            celsius: +e.currentTarget.value,
+            fahrenheit: toFahrenheit(+e.currentTarget.value)
+          })
+        }
+      />
+      °C
     </p>
     <p>
       <F.input
-        type='number'
+        type="number"
         value={props.state.view(x => x.fahrenheit.toString())}
-        onChange={e => props.state.set({
-          fahrenheit: +e.currentTarget.value,
-          celsius: toCelsius(+e.currentTarget.value)
-        })}
-      />°F
+        onChange={e =>
+          props.state.set({
+            fahrenheit: +e.currentTarget.value,
+            celsius: toCelsius(+e.currentTarget.value)
+          })
+        }
+      />
+      °F
     </p>
   </div>
+)
 
 export default {
   Component: App,

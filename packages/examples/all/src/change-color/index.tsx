@@ -12,7 +12,7 @@ const BOLD = 'bold'
 
 interface AppState {
   style: {
-    color: string,
+    color: string
     font: string
   }
 }
@@ -34,43 +34,31 @@ const App = (props: { state: Atom<AppState> }) => {
   return (
     <div>
       <div>
-        {
-          [GREEN, RED, BLUE].map((x, index) => (
-            <label key={index}>
-              <F.input
-                checked={color.view(isEqualTo(x))}
-                onChange={() => color.set(x)}
-                type='checkbox'
-              />
-              {x}
-            </label>
-          ))
-        }
+        {[GREEN, RED, BLUE].map((x, index) => (
+          <label key={index}>
+            <F.input
+              checked={color.view(isEqualTo(x))}
+              onChange={() => color.set(x)}
+              type="checkbox"
+            />
+            {x}
+          </label>
+        ))}
       </div>
 
       <div>
-        {
-          [NORMAL, ITALIC, BOLD].map((x, index) => (
-            <label key={index}>
-              <F.input
-                checked={font.view(isEqualTo(x))}
-                onChange={() => font.set(x)}
-                type='checkbox'
-              />
-              {x}
-            </label>
-          ))
-        }
+        {[NORMAL, ITALIC, BOLD].map((x, index) => (
+          <label key={index}>
+            <F.input
+              checked={font.view(isEqualTo(x))}
+              onChange={() => font.set(x)}
+              type="checkbox"
+            />
+            {x}
+          </label>
+        ))}
       </div>
-      <F.p
-        {
-          ...classes(
-            styles.family,
-            color.view(x => styles[x]),
-            font.view(x => styles[x])
-          )
-        }
-      >
+      <F.p {...classes(styles.family, color.view(x => styles[x]), font.view(x => styles[x]))}>
         Some text
       </F.p>
     </div>

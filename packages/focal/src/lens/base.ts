@@ -3,7 +3,8 @@ import { Option } from './../utils'
 export interface Optic<TSource, T, U> {
   get(s: TSource): T
   set(v: U, s: TSource): TSource
-  modify(updateFn: (v: T) => U, s: TSource): TSource // tslint:disable-line no-unused-vars
+  // tslint:disable-next-line no-unused-vars
+  modify(updateFn: (v: T) => U, s: TSource): TSource
 
   // @TODO can't optic compose?
 }
@@ -12,7 +13,8 @@ function createModify<TSource, T, U>(
   getter: (s: TSource) => T,
   setter: (v: U, s: TSource) => TSource
 ) {
-  return function modify(updateFn: (v: T) => U, s: TSource) { // tslint:disable-line
+  // tslint:disable-next-line
+  return function modify(updateFn: (v: T) => U, s: TSource) {
     return setter(updateFn(getter(s)), s)
   }
 }
@@ -68,15 +70,11 @@ export namespace Prism {
         return create(
           (s: TSource) => {
             const x = getter(s)
-            return x !== undefined
-              ? next.get(x)
-              : undefined
+            return x !== undefined ? next.get(x) : undefined
           },
           (v: U, s: TSource) => {
             const x = getter(s)
-            return x !== undefined
-              ? setter(next.set(v, x), s)
-              : s
+            return x !== undefined ? setter(next.set(v, x), s) : s
           }
         )
       }
@@ -129,15 +127,24 @@ export namespace Lens {
   export function compose<T1, T2, U>(l1: Lens<T1, T2>, l2: Lens<T2, U>): Lens<T1, U>
 
   export function compose<T1, T2, T3, U>(
-    l1: Lens<T1, T2>, l2: Lens<T2, T3>, l3: Lens<T3, U>
+    l1: Lens<T1, T2>,
+    l2: Lens<T2, T3>,
+    l3: Lens<T3, U>
   ): Lens<T1, U>
 
   export function compose<T1, T2, T3, T4, U>(
-    l1: Lens<T1, T2>, l2: Lens<T2, T3>, l3: Lens<T3, T4>, l4: Lens<T4, U>
+    l1: Lens<T1, T2>,
+    l2: Lens<T2, T3>,
+    l3: Lens<T3, T4>,
+    l4: Lens<T4, U>
   ): Lens<T1, U>
 
   export function compose<T1, T2, T3, T4, T5, U>(
-    l1: Lens<T1, T2>, l2: Lens<T2, T3>, l3: Lens<T3, T4>, l4: Lens<T4, T5>, l5: Lens<T5, U>
+    l1: Lens<T1, T2>,
+    l2: Lens<T2, T3>,
+    l3: Lens<T3, T4>,
+    l4: Lens<T4, T5>,
+    l5: Lens<T5, U>
   ): Lens<T1, U>
 
   export function compose<T, U>(...lenses: Lens<any, any>[]): Lens<T, U>

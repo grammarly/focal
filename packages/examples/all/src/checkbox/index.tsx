@@ -11,17 +11,18 @@ export namespace AppState {
   }
 }
 
-export const App = (props: { state: Atom<AppState> }) =>
+export const App = (props: { state: Atom<AppState> }) => (
   <div>
     <label>
       <F.input
         {...bind({ checked: Atom.log(props.state.lens('checked'), 'Checkbox') })}
-        type='checkbox'
+        type="checkbox"
       />
       Toggle me
     </label>
-    <F.p>{props.state.view(x => x.checked ? 'ON' : 'OFF')}</F.p>
+    <F.p>{props.state.view(x => (x.checked ? 'ON' : 'OFF'))}</F.p>
   </div>
+)
 
 export default {
   Component: App,

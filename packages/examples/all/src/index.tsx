@@ -16,12 +16,11 @@ appState.subscribe(s => {
 })
 
 // inject app state in global for debugging
-; (window as any).appState = appState
+;(window as any).appState = appState
 
 function startApp(C: typeof App.AppComponent) {
   const targetEl = document.getElementById('app')
-  if (targetEl == null)
-    throw new Error('React app target element not found. Wrong HTML file?')
+  if (targetEl == null) throw new Error('React app target element not found. Wrong HTML file?')
 
   ReactDOM.render(<C state={appState} />, targetEl)
 }

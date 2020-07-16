@@ -4,38 +4,46 @@
  * @module
  */
 
-import {
-  structEq,
-  setKey,
-  conservatively,
-  findIndex,
-  Option,
-  DEV_ENV,
-  warning
-} from './../utils'
+import { structEq, setKey, conservatively, findIndex, Option, DEV_ENV, warning } from './../utils'
 
 import { Lens, Prism } from './base'
 
 export type PropExpr<O, P> = (x: O) => P
 
 // @TODO can we optimize this regexp?
-const PROP_EXPR_RE = new RegExp([
-  '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
+const PROP_EXPR_RE = new RegExp(
+  [
+    '^',
+    'function',
+    '\\(',
+    '[^), ]+',
+    '\\)',
+    '\\{',
     '("use strict";)?',
     'return\\s',
-      '[^\\.]+\\.(\\S+?);?',
-  '\\}', '$'
-].join('\\s*'))
+    '[^\\.]+\\.(\\S+?);?',
+    '\\}',
+    '$'
+  ].join('\\s*')
+)
 
-const WALLABY_PROP_EXPR_RE = new RegExp([
-  '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
+const WALLABY_PROP_EXPR_RE = new RegExp(
+  [
+    '^',
+    'function',
+    '\\(',
+    '[^), ]+',
+    '\\)',
+    '\\{',
     '("use strict";)?',
-    '(\\$_\\$wf\\(\\d+\\);)?',  // wallaby.js code coverage compatability (#36)
+    '(\\$_\\$wf\\(\\d+\\);)?', // wallaby.js code coverage compatability (#36)
     'return\\s',
-      '(\\$_\\$w\\(\\d+, \\d+\\),\\s)?',  // wallaby.js code coverage compatability (#36)
-      '[^\\.]+\\.(\\S+?);?',
-  '\\}', '$'
-].join('\\s*'))
+    '(\\$_\\$w\\(\\d+, \\d+\\),\\s)?', // wallaby.js code coverage compatability (#36)
+    '[^\\.]+\\.(\\S+?);?',
+    '\\}',
+    '$'
+  ].join('\\s*')
+)
 
 export function parsePropertyPath(getterSource: string): string[] {
   const exprRegexp = process.env.NODE_ENV === 'wallaby' ? WALLABY_PROP_EXPR_RE : PROP_EXPR_RE
@@ -140,17 +148,17 @@ export function keyImpl<TObject = any>(): KeyImplFor<TObject>
 
 export function keyImpl<TObject>(k?: string) {
   return k === undefined
-    // type-safe key
-    ? <K extends keyof TObject>(k: K): Lens<TObject, TObject[K]> =>
-      Lens.create<TObject, TObject[K]>(
-        (s: TObject) => s[k],
-        (v: TObject[K], s: TObject) => setKey(k, v, s)
+    ? // type-safe key
+      <K extends keyof TObject>(k: K): Lens<TObject, TObject[K]> =>
+        Lens.create<TObject, TObject[K]>(
+          (s: TObject) => s[k],
+          (v: TObject[K], s: TObject) => setKey(k, v, s)
+        )
+    : // untyped key
+      Lens.create(
+        (s: { [k: string]: any }) => s[k] as Option<any>,
+        (v: any, s: { [k: string]: any }) => setKey(k, v, s)
       )
-    // untyped key
-    : Lens.create(
-      (s: { [k: string]: any }) => s[k] as Option<any>,
-      (v: any, s: { [k: string]: any }) => setKey(k, v, s)
-    )
 }
 
 let propExprDeprecatedWarnings = 0
@@ -165,9 +173,9 @@ function warnPropExprDeprecated(path: string[]) {
 
     warning(
       `The property expression overload of Atom.lens and Lens.prop are deprecated and ` +
-      `will be removed in next versions of Focal. Please use the key name overload for ` +
-      `Atom.lens and Lens.key instead. ` +
-      `You can convert your code by changing the calls:
+        `will be removed in next versions of Focal. Please use the key name overload for ` +
+        `Atom.lens and Lens.key instead. ` +
+        `You can convert your code by changing the calls:
   a.lens(x => ${propExpr}) to a.lens(${keys}),
   Lens.prop((x: T) => ${propExpr}) to Lens.key<T>()(${keys}).`
     )
@@ -185,8 +193,7 @@ export function propImpl<TObject, TProperty>(
 }
 
 export function indexImpl<TItem>(i: number): Prism<TItem[], TItem> {
-  if (i < 0)
-    throw new TypeError(`${i} is not a valid array index, expected >= 0`)
+  if (i < 0) throw new TypeError(`${i} is not a valid array index, expected >= 0`)
 
   return Prism.create(
     (xs: TItem[]) => xs[i] as Option<TItem>,
@@ -208,16 +215,13 @@ export function withDefaultImpl<T>(defaultValue: T): Lens<Option<T>, T> {
 }
 
 function choose<T, U>(getLens: (state: T) => Lens<T, U>): Lens<T, U> {
-  return Lens.create(
-    (s: T) => getLens(s).get(s),
-    (v: U, s: T) => getLens(s).set(v, s)
-  )
+  return Lens.create((s: T) => getLens(s).get(s), (v: U, s: T) => getLens(s).set(v, s))
 }
 
 export function replaceImpl<T>(originalValue: T, newValue: T): Lens<T, T> {
   return Lens.create<T, T>(
-    x => structEq(x, originalValue) ? newValue : x,
-    conservatively((y: T) => structEq(y, newValue) ? originalValue : y)
+    x => (structEq(x, originalValue) ? newValue : x),
+    conservatively((y: T) => (structEq(y, newValue) ? originalValue : y))
   )
 }
 
@@ -225,9 +229,7 @@ export function findImpl<T>(predicate: (x: T) => boolean): Prism<T[], T> {
   return choose((xs: T[]) => {
     const i = findIndex(xs, predicate)
 
-    return i < 0
-      ? Lens.nothing<T[], T>()
-      : Lens.index<T>(i)
+    return i < 0 ? Lens.nothing<T[], T>() : Lens.index<T>(i)
   })
 }
 

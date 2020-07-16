@@ -20,7 +20,8 @@ export type Lifted<T> = {
 }
 
 export interface LiftWrapperProps<TProps> {
-  component: React.Component<TProps, any>
+  component:
+    | React.Component<TProps, any>
     | React.StatelessComponent<TProps>
     | React.ComponentClass<TProps>
     | React.ComponentType
@@ -37,8 +38,10 @@ export interface LiftWrapperState {
  * A wrapper component that allows to use observables for prop values of a
  * given component.
  */
-export class LiftWrapper<TProps>
-    extends React.Component<LiftWrapperProps<TProps>, LiftWrapperState> {
+export class LiftWrapper<TProps> extends React.Component<
+  LiftWrapperProps<TProps>,
+  LiftWrapperState
+> {
   state = LiftWrapper._initState
 
   static _initState: LiftWrapperState = {
@@ -58,7 +61,7 @@ export class LiftWrapper<TProps>
     const { props, component } = newProps
 
     let n = 0
-    walkObservables(props, () => n += 1)
+    walkObservables(props, () => (n += 1))
 
     switch (n) {
       case 0:
@@ -84,16 +87,17 @@ export class LiftWrapper<TProps>
 
   private _unsubscribe() {
     const subscription = this.state ? this.state.subscription : null
-    if (subscription)
-      subscription.unsubscribe()
+    if (subscription) subscription.unsubscribe()
   }
 
-  UNSAFE_componentWillReceiveProps(newProps: LiftWrapperProps<TProps>) { // tslint:disable-line
+  UNSAFE_componentWillReceiveProps(newProps: LiftWrapperProps<TProps>) {
+    // tslint:disable-line
     this._unsubscribe()
     this._subscribe(newProps)
   }
 
-  UNSAFE_componentWillMount() { // tslint:disable-line
+  UNSAFE_componentWillMount() {
+    // tslint:disable-line
     this._unsubscribe()
     this._subscribe(this.props)
   }
@@ -150,10 +154,10 @@ export function lift<TProps>(
   component: React.ComponentClass<TProps> | React.StatelessComponent<TProps>
 ) {
   return (props: LiftedComponentProps<TProps>) =>
-    React.createElement<LiftWrapperProps<TProps>>(
-      LiftWrapper,
-      { component: component, props: props }
-    )
+    React.createElement<LiftWrapperProps<TProps>>(LiftWrapper, {
+      component: component,
+      props: props
+    })
 }
 
 const PROP_CHILDREN = 'children'
@@ -170,10 +174,7 @@ const PROP_REF = 'ref'
  * @param props React component props
  * @param action action to run for each observable prop
  */
-function walkObservables<T>(
-  props: Lifted<T>,
-  action: (obs: Observable<any>) => void
-) {
+function walkObservables<T>(props: Lifted<T>, action: (obs: Observable<any>) => void) {
   for (const key in props) {
     const value = props[key]
 
@@ -181,22 +182,20 @@ function walkObservables<T>(
     if (value instanceof Observable) {
       action(value)
 
-    // 'children' is an array
+      // 'children' is an array
     } else if (PROP_CHILDREN === key && value instanceof Array) {
       const n = value.length
 
       for (let i = 0; i < n; ++i) {
         const child = value[i]
-        if (child instanceof Observable)
-          action(child)
+        if (child instanceof Observable) action(child)
       }
 
-    // 'style' prop
+      // 'style' prop
     } else if (PROP_STYLE === key) {
       for (const k in value) {
         const style = value[k]
-        if (style instanceof Observable)
-          action(style)
+        if (style instanceof Observable) action(style)
       }
     }
   }
@@ -211,7 +210,8 @@ function walkObservables<T>(
  * @returns rendered element
  */
 function render<P>(
-  class_: React.Component<P, any>
+  class_:
+    | React.Component<P, any>
     | React.StatelessComponent<P>
     | React.ComponentClass<P>
     | React.ComponentType
@@ -246,7 +246,7 @@ function render<P>(
       } else {
         newProps[key] = observedValue
       }
-    // 'children' prop
+      // 'children' prop
     } else if (isChildren) {
       if (propValue instanceof Array) {
         const n = propValue.length
@@ -256,23 +256,23 @@ function render<P>(
           if (child instanceof Observable) {
             if (!newChildren) {
               newChildren = Array(propValue.length)
-              for (let j = 0; j < i; ++j)
-                newChildren[j] = propValue[j]
+              for (let j = 0; j < i; ++j) newChildren[j] = propValue[j]
             }
             const childValue = observedValues[++k]
-            newChildren[i] = !childValue || childValue.key
-              ? childValue
-              : React.createElement(React.Fragment, { key: i }, childValue)
+            newChildren[i] =
+              !childValue || childValue.key
+                ? childValue
+                : React.createElement(React.Fragment, { key: i }, childValue)
           } else if (newChildren) {
             newChildren[i] = propValue[i]
           }
         }
       }
       newChildren = newChildren || propValue
-    // 'mount' prop
+      // 'mount' prop
     } else if (isForwardRef) {
       newProps.ref = propValue
-    // 'style' prop
+      // 'style' prop
     } else if (isStyle) {
       let newStyle: any
       for (const i in propValue) {
@@ -281,8 +281,7 @@ function render<P>(
           if (!newStyle) {
             newStyle = {}
             for (const j in propValue) {
-              if (j === i)
-                break
+              if (j === i) break
               newStyle[j] = propValue[j]
             }
           }
@@ -292,7 +291,7 @@ function render<P>(
         }
       }
       newProps.style = newStyle || propValue
-    // all other (non-liftable) props
+      // all other (non-liftable) props
     } else {
       newProps[key] = propValue
     }
@@ -310,18 +309,13 @@ function render<P>(
  * pushed onto the component.
  */
 class FakeComponent<P> {
-  constructor(
-    public state: LiftWrapperState,
-    public props: LiftWrapperProps<P>
-  ) {}
+  constructor(public state: LiftWrapperState, public props: LiftWrapperProps<P>) {}
 
-  setState(state: (LiftWrapperState | ((state: LiftWrapperState) => LiftWrapperState))) {
+  setState(state: LiftWrapperState | ((state: LiftWrapperState) => LiftWrapperState)) {
     const newState = typeof state === 'function' ? state(this.state) : state
 
-    if ('subscription' in newState)
-      this.state.subscription = newState.subscription
-    if ('renderCache' in newState)
-      this.state.renderCache = newState.renderCache
+    if ('subscription' in newState) this.state.subscription = newState.subscription
+    if ('renderCache' in newState) this.state.renderCache = newState.renderCache
   }
 }
 
@@ -333,10 +327,10 @@ const handleError = (e: any) => {
 function warnEmptyObservable(componentName: string | undefined) {
   warning(
     `${componentName ? `The component <${componentName}>` : 'An unnamed component'} has ` +
-    `received an observable that doesn't immediately emit a value in one of its props. ` +
-    `Since this observable hasn't yet called its subscription handler, the component ` +
-    `can not be rendered at the time. ` +
-    `Check the props of ${componentName ? `<${componentName}>` : 'this component'}.`
+      `received an observable that doesn't immediately emit a value in one of its props. ` +
+      `Since this observable hasn't yet called its subscription handler, the component ` +
+      `can not be rendered at the time. ` +
+      `Check the props of ${componentName ? `<${componentName}>` : 'this component'}.`
   )
 }
 
@@ -350,30 +344,24 @@ class RenderOne<P> implements Subscription {
   private _innerSubscription: RxSubscription | null = null
   private _receivedValue = false
 
-  constructor(
-    liftedComponent: LiftWrapper<P>,
-    newProps: LiftWrapperProps<P>
-  ) {
+  constructor(liftedComponent: LiftWrapper<P>, newProps: LiftWrapperProps<P>) {
     const state: LiftWrapperState = {
       subscription: this,
       renderCache: liftedComponent.state && liftedComponent.state.renderCache
     }
 
-    this._liftedComponent =
-      new FakeComponent<P>(state, newProps) as LiftWrapper<P>
+    this._liftedComponent = new FakeComponent<P>(state, newProps) as LiftWrapper<P>
 
-    walkObservables(
-      newProps.props,
-      observable => {
-        this._innerSubscription = observable.subscribe(
-          (v: any) => this._handleValue(v),
-          handleError,
-          () => this._handleCompleted())
+    walkObservables(newProps.props, observable => {
+      this._innerSubscription = observable.subscribe(
+        (v: any) => this._handleValue(v),
+        handleError,
+        () => this._handleCompleted()
+      )
 
-        // observable has completed and unsubscribed by itself
-        if (this._innerSubscription && this._innerSubscription.closed)
-          this._innerSubscription = null
-      })
+      // observable has completed and unsubscribed by itself
+      if (this._innerSubscription && this._innerSubscription.closed) this._innerSubscription = null
+    })
 
     if (DEV_ENV && !this._receivedValue)
       warnEmptyObservable(getReactComponentName(this._liftedComponent.props.component))
@@ -383,8 +371,7 @@ class RenderOne<P> implements Subscription {
   }
 
   unsubscribe() {
-    if (this._innerSubscription)
-      this._innerSubscription.unsubscribe()
+    if (this._innerSubscription) this._innerSubscription.unsubscribe()
   }
 
   private _handleValue(value: any) {
@@ -416,24 +403,18 @@ class RenderMany<P> implements Subscription {
   private _values: any[]
   private _innerSubscriptions: (RxSubscription | null)[]
 
-  constructor(
-    liftedComponent: LiftWrapper<P>,
-    newProps: LiftWrapperProps<P>,
-    N: number
-  ) {
+  constructor(liftedComponent: LiftWrapper<P>, newProps: LiftWrapperProps<P>, N: number) {
     const state: LiftWrapperState = {
       subscription: this,
       renderCache: liftedComponent.state && liftedComponent.state.renderCache
     }
 
-    this._liftedComponent =
-      new FakeComponent(state, newProps) as LiftWrapper<P>
+    this._liftedComponent = new FakeComponent(state, newProps) as LiftWrapper<P>
 
     this._innerSubscriptions = []
     this._values = Array(N)
 
-    for (let i = 0; i < N; ++i)
-      this._values[i] = this
+    for (let i = 0; i < N; ++i) this._values[i] = this
 
     walkObservables(newProps.props, observable => {
       const i = this._innerSubscriptions.length
@@ -441,11 +422,11 @@ class RenderMany<P> implements Subscription {
       let subscription: RxSubscription | null = observable.subscribe(
         (v: any) => this._handleValue(i, v),
         handleError,
-        () => this._handleCompleted(i))
+        () => this._handleCompleted(i)
+      )
 
       // observable has completed and unsubscribed by itself
-      if (subscription && subscription.closed)
-        subscription = null
+      if (subscription && subscription.closed) subscription = null
 
       // handlers are called at subscribe time
       // before unsubscriber was added to this.innerSubscriptions
@@ -474,8 +455,7 @@ class RenderMany<P> implements Subscription {
     let i = -1
     walkObservables(this._liftedComponent.props.props, _ => {
       const unsubscriber = this._innerSubscriptions[++i]
-      if (unsubscriber)
-        unsubscriber.unsubscribe()
+      if (unsubscriber) unsubscriber.unsubscribe()
     })
   }
 
@@ -484,9 +464,7 @@ class RenderMany<P> implements Subscription {
 
     // do nothing if at least one of the observables hasn't
     // sent a value yet
-    for (let i = this._values.length - 1; 0 <= i; --i)
-      if (this._values[i] === this)
-        return
+    for (let i = this._values.length - 1; 0 <= i; --i) if (this._values[i] === this) return
 
     const liftedComponent = this._liftedComponent
     const { component, props } = liftedComponent.props
@@ -500,15 +478,11 @@ class RenderMany<P> implements Subscription {
   private _handleCompleted(idx: number) {
     const n = this._innerSubscriptions.length
 
-    if (n > idx)
-      this._innerSubscriptions[idx] = null
+    if (n > idx) this._innerSubscriptions[idx] = null
 
-    if (n !== this._values.length)
-      return
+    if (n !== this._values.length) return
 
-    for (let i = 0; i < n; ++i)
-      if (this._innerSubscriptions[i])
-        return
+    for (let i = 0; i < n; ++i) if (this._innerSubscriptions[i]) return
 
     this._liftedComponent.setState(LiftWrapper._endState)
   }
@@ -522,9 +496,7 @@ export type ClassNameLike = undefined | null | boolean | string
  * Filter out undefined, null, false and empty strings.
  * Throw on a `true` value.
  */
-function filterClassNames(
-  cs: ObservableInputLike<ClassNameLike>[]
-) {
+function filterClassNames(cs: ObservableInputLike<ClassNameLike>[]) {
   return cs.filter(c => {
     if (c === true) throw new TypeError('Unexpected `true` value in classes')
     return c !== null && c !== undefined && c !== '' && c !== false
@@ -590,17 +562,14 @@ export function classes(
 ): { className: ObservableLike<string | undefined> | string | undefined } {
   // case w/o observables
   if (!cs || cs.find(x => x instanceof Observable) === undefined) {
-    const filtered =
-      filterClassNames(
-        (cs || []) as ClassNameLike[] // assert ClassNameLike[]: no observables (checked above)
-      ) as string[] // assert string[]: no observables (checked above)
+    const filtered = filterClassNames(
+      (cs || []) as ClassNameLike[] // assert ClassNameLike[]: no observables (checked above)
+    ) as string[] // assert string[]: no observables (checked above)
 
     return {
-      className: filtered.length > 0
-        ? filtered.join(' ')
-        : undefined
+      className: filtered.length > 0 ? filtered.join(' ') : undefined
     }
-  // case with observables
+    // case with observables
   } else {
     return {
       className: combineLatest(
@@ -612,9 +581,7 @@ export function classes(
         (...cs: ClassNameLike[]) => {
           const filtered = filterClassNames(cs || [])
 
-          return filtered.length > 0
-            ? filtered.join(' ')
-            : undefined
+          return filtered.length > 0 ? filtered.join(' ') : undefined
         }
       )
     }
@@ -622,9 +589,9 @@ export function classes(
 }
 
 // @TODO this is naїve, can we do better?
-function combineTemplate(
-  template: { [key: string]: ObservableInput<any> }
-): Observable<{ [key: string]: any }> {
+function combineTemplate(template: {
+  [key: string]: ObservableInput<any>
+}): Observable<{ [key: string]: any }> {
   const keys: string[] = []
   const values: ObservableInput<any>[] = []
 
@@ -647,9 +614,9 @@ function combineTemplate(
  * prop to propagate any values in given observable dictionary to
  * respective instance element properties.
  */
-export function setElementProps<TElement extends Element>(
-  template: { [key: string]: ObservableInput<any> }
-) {
+export function setElementProps<TElement extends Element>(template: {
+  [key: string]: ObservableInput<any>
+}) {
   let observable: Observable<{ [key: string]: any }> | null = null
   let subscription: RxSubscription | null = null
 
@@ -665,8 +632,7 @@ export function setElementProps<TElement extends Element>(
 
       subscription = observable.subscribe(
         value => {
-          for (const k in value)
-            (domElement as any)[k] = value[k]
+          for (const k in value) (domElement as any)[k] = value[k]
         },
         handleError,
         () => {
@@ -699,7 +665,7 @@ type BindElementPropsReturnType =
       [x: string]: ((e: React.SyntheticEvent<any>) => void) | ((domElement: Element | null) => void)
       [PROP_MOUNT](domElement: Element | null): void
     }
-    | {
+  | {
       [x: string]: ((e: React.SyntheticEvent<any>) => void) | ((domElement: Element | null) => void)
       [PROP_FORWARD_REF](domElement: Element | null): void
     }
@@ -710,36 +676,32 @@ export function bindElementProps(
   // this function already compiles without the 'string | ...', but it's
   // calls do not.
   template: Partial<{
-    ref: string;
-    mount: string;
+    ref: string
+    mount: string
     forwardRef: string
   }> & { [k: string]: string | Atom<any> }
 ): BindElementPropsReturnType {
-  const {
-    [PROP_REF]: ref,
-    [PROP_MOUNT]: mount,
-    [PROP_FORWARD_REF]: forwardRef,
-    ...tpl
-  } = template
+  const { [PROP_REF]: ref, [PROP_MOUNT]: mount, [PROP_FORWARD_REF]: forwardRef, ...tpl } = template
 
   const elementRef = setElementProps(tpl)
   const elementPropsHandler = getElementProps(tpl as { [k: string]: Atom<any> })
 
   return ref
-    ? ({
-      [PROP_REF]: elementRef,
-      [ref]: elementPropsHandler
-    })
-    : forwardRef ?  ({
-      [PROP_FORWARD_REF]: elementRef,
-      [forwardRef]: elementPropsHandler
-    })
+    ? {
+        [PROP_REF]: elementRef,
+        [ref]: elementPropsHandler
+      }
+    : forwardRef
+    ? {
+        [PROP_FORWARD_REF]: elementRef,
+        [forwardRef]: elementPropsHandler
+      }
     : mount
-      ? ({
+    ? {
         [PROP_MOUNT]: elementRef,
         [mount]: elementPropsHandler
-      })
-      : {}
+      }
+    : {}
 }
 
 /**
@@ -769,11 +731,13 @@ export function bind(template: { [key: string]: Atom<any> }) {
 
 // tslint:disable no-unused-vars
 export function reactiveList<TValue>(
-  ids: Observable<string[]>, createListItem: (x: string) => TValue
+  ids: Observable<string[]>,
+  createListItem: (x: string) => TValue
 ): Observable<TValue[]>
 
 export function reactiveList<TValue>(
-  ids: Observable<number[]>, createListItem: (x: number) => TValue
+  ids: Observable<number[]>,
+  createListItem: (x: number) => TValue
 ): Observable<TValue[]>
 // tslint:enable no-unused-vars
 
@@ -784,7 +748,7 @@ export function reactiveList<TValue>(
  */
 export function reactiveList<TValue, TKey extends string | number>(
   ids: Observable<TKey[]>,
-  createListItem: ((x: TKey) => TValue)
+  createListItem: (x: TKey) => TValue
 ): Observable<TValue[]> {
   return ids.pipe(
     scan<TKey[], [{ [k: string]: TValue }, TValue[]]>(
@@ -800,9 +764,7 @@ export function reactiveList<TValue, TKey extends string | number>(
             newValues[i] = newIds[k]
           } else {
             newIds[k] = newValues[i] =
-              k in oldIds
-                ? oldIds[k]
-                : (createListItem as (_: string | number) => TValue)(id)
+              k in oldIds ? oldIds[k] : (createListItem as (_: string | number) => TValue)(id)
           }
         }
         return [newIds, newValues]

@@ -9,10 +9,11 @@ function mkName() {
 }
 
 const El = ({ text = '', ts = '' }) => {
-  return <F.div>
-    El #{text} (render #{ts})
-    {of(undefined)}
-  </F.div>
+  return (
+    <F.div>
+      El #{text} (render #{ts}){of(undefined)}
+    </F.div>
+  )
 }
 
 const ElWithHover = ({ text = '' }) => {
@@ -21,49 +22,44 @@ const ElWithHover = ({ text = '' }) => {
 
   const hovered = Atom.create(false)
 
-  return <F.div
-    onMouseEnter={() => hovered.set(true)}
-    onMouseLeave={() => hovered.set(false)}
-  >
-    El #{text} (render #{ts}) is&nbsp;
-    {hovered.view(x => {
-      console.log('VIEW', ts, x)
-      return x ? 'hovered' : 'NOT hovered'
-    })}
-  </F.div>
+  return (
+    <F.div onMouseEnter={() => hovered.set(true)} onMouseLeave={() => hovered.set(false)}>
+      El #{text} (render #{ts}) is&nbsp;
+      {hovered.view(x => {
+        console.log('VIEW', ts, x)
+        return x ? 'hovered' : 'NOT hovered'
+      })}
+    </F.div>
+  )
 }
 
 const MinimalReproduce = () => {
   const state = Atom.create([0])
 
-  return <F.div>
-    <h2>The hover does not work after you add an item</h2>
+  return (
+    <F.div>
+      <h2>The hover does not work after you add an item</h2>
 
-    <button onClick={_ => state.modify(s => ([] as number[]).concat(s.concat([s.length])))}>
-      add item
-    </button>
+      <button onClick={_ => state.modify(s => ([] as number[]).concat(s.concat([s.length])))}>
+        add item
+      </button>
 
-    {state.view(xs =>
-      xs.map((text, i) =>
-        <ElWithHover key={i} text={text.toString()} />
-    ))}
+      {state.view(xs => xs.map((text, i) => <ElWithHover key={i} text={text.toString()} />))}
 
-    <h2>Simplified</h2>
+      <h2>Simplified</h2>
 
-    {state.view(xs =>
-      xs.map((text, i) => {
-        const ts = mkName()
-        return <El key={i} text={text.toString()} ts={ts} />
-      }))}
-  </F.div>
+      {state.view(xs =>
+        xs.map((text, i) => {
+          const ts = mkName()
+          return <El key={i} text={text.toString()} ts={ts} />
+        })
+      )}
+    </F.div>
+  )
 }
 
-export const Main = ({
-  state = Atom.create(0)
-}) => {
-  return (
-    <MinimalReproduce />
-  )
+export const Main = ({ state = Atom.create(0) }) => {
+  return <MinimalReproduce />
 }
 
 export default {

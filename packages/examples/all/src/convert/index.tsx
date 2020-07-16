@@ -15,8 +15,8 @@ const App = (props: { state: Atom<AppState> }) => {
   const temperature = props.state.lens('temperature')
   return (
     <div>
-      <F.input {...bind({ value: temperature })} type='text' />
-      °C is <F.span>{temperature.view(x => +x * 9 / 5 + 32 )}°F</F.span>
+      <F.input {...bind({ value: temperature })} type="text" />
+      °C is <F.span>{temperature.view(x => (+x * 9) / 5 + 32)}°F</F.span>
     </div>
   )
 }

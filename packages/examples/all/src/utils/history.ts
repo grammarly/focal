@@ -39,9 +39,7 @@ export namespace History {
 
             return {
               position: newPosition,
-              history: s.history
-                .slice(0, newPosition)
-                .concat([v])
+              history: s.history.slice(0, newPosition).concat([v])
             }
           }
         )
@@ -50,12 +48,10 @@ export namespace History {
       canRedo: redoCount.view(x => x === 0),
 
       undo() {
-        if (position.get() > 0)
-          position.modify(x => x - 1)
+        if (position.get() > 0) position.modify(x => x - 1)
       },
       redo() {
-        if (redoCount.get() > 0)
-          position.modify(x => x + 1)
+        if (redoCount.get() > 0) position.modify(x => x + 1)
       }
     }
   }

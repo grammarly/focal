@@ -47,7 +47,9 @@ class Test2 extends React.Component<{ trigger: Observable<void> }, { list: strin
       <>
         <h4>React</h4>
         <ul>
-          {list.map(l => <li key={l}>{l}</li>)}
+          {list.map(l => (
+            <li key={l}>{l}</li>
+          ))}
         </ul>
       </>
     )
@@ -62,7 +64,7 @@ function onClick() {
 
 const App = () => (
   <div>
-    <input type='button' onClick={onClick} value='Click me' />
+    <input type="button" onClick={onClick} value="Click me" />
     <Test trigger={trigger} />
     <Test2 trigger={trigger} />
   </div>

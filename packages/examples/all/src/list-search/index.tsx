@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { interval,  Subscription } from 'rxjs'
+import { interval, Subscription } from 'rxjs'
 import { Atom, F, bind } from '@grammarly/focal'
 
 const defaultSearchList = Object.keys(window)
@@ -11,8 +11,8 @@ function getRandomSearchList() {
 }
 
 interface AppState {
-  searchString: string,
-  searchList: string[],
+  searchString: string
+  searchList: string[]
   timer: number
 }
 
@@ -24,20 +24,18 @@ namespace AppState {
   }
 }
 
-class App extends  React.Component<{ state: Atom<AppState> }, {}> {
+class App extends React.Component<{ state: Atom<AppState> }, {}> {
   private _subscription: Subscription
 
   componentDidMount() {
     const { state } = this.props
     const timer = state.lens('timer')
 
-    this._subscription = interval(1000)
-      .subscribe(_ => {
-        state.lens('timer').modify(x => x === 0 ? 5 : x - 1)
+    this._subscription = interval(1000).subscribe(_ => {
+      state.lens('timer').modify(x => (x === 0 ? 5 : x - 1))
 
-        if (timer.get() === 5)
-          state.lens('searchList').set(getRandomSearchList())
-      })
+      if (timer.get() === 5) state.lens('searchList').set(getRandomSearchList())
+    })
   }
 
   componentWillUnmount() {
@@ -53,17 +51,15 @@ class App extends  React.Component<{ state: Atom<AppState> }, {}> {
         <F.input {...bind({ value: search })} />
         <F.div>Timer: {state.view('timer')}</F.div>
         <F.div>
-          {
-            Atom.combine(search, state.lens('searchList'), (searchValue, list) => (
-              <div>
-                {
-                  list
-                    .filter(x => x.toLowerCase().includes(searchValue.toLowerCase()))
-                    .map((x, i) => <li key={x + i}>{x}</li>)
-                }
-              </div>
-            ))
-          }
+          {Atom.combine(search, state.lens('searchList'), (searchValue, list) => (
+            <div>
+              {list
+                .filter(x => x.toLowerCase().includes(searchValue.toLowerCase()))
+                .map((x, i) => (
+                  <li key={x + i}>{x}</li>
+                ))}
+            </div>
+          ))}
         </F.div>
       </div>
     )

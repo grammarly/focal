@@ -8,7 +8,7 @@ interface ExampleComponent<S> {
 
 declare const require: (path: string) => any
 
-const examples: { name: string, example: ExampleComponent<any> }[] = [
+const examples: { name: string; example: ExampleComponent<any> }[] = [
   'counter',
   'clock',
   'checkbox',
@@ -45,10 +45,7 @@ examples.forEach(ex => {
   defaultState[ex.name] = ex.example.defaultState
 })
 
-export const AppComponent = ({
-  state = Atom.create(defaultState)
-}) => {
-
+export const AppComponent = ({ state = Atom.create(defaultState) }) => {
   return (
     <main>
       <h1>Focal examples</h1>

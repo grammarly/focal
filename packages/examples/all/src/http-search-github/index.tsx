@@ -7,9 +7,17 @@ enum ResultKind {
   InProgress
 }
 
-interface Success<T> { kind: ResultKind.Success, value: T }
-interface Failure { kind: ResultKind.Failure, error: any }
-interface InProgress { kind: ResultKind.InProgress }
+interface Success<T> {
+  kind: ResultKind.Success
+  value: T
+}
+interface Failure {
+  kind: ResultKind.Failure
+  error: any
+}
+interface InProgress {
+  kind: ResultKind.InProgress
+}
 
 type Result<T> = Success<T> | Failure | InProgress
 
@@ -33,7 +41,7 @@ namespace Result {
 
 interface AppState {
   searchString: string
-  result: undefined | Result<{ url: string, name: string }[]>
+  result: undefined | Result<{ url: string; name: string }[]>
 }
 
 namespace AppState {
@@ -48,70 +56,64 @@ function runSearch(result: Atom<typeof AppState.defaultState.result>, query: str
 
   fetch(`https://api.github.com/search/repositories?q=${query}`)
     .then(res =>
-      res.json()
-        .then(json => res.status === 200
-          ? Promise.resolve(json)
-          : Promise.reject(json.message)))
+      res
+        .json()
+        .then(json => (res.status === 200 ? Promise.resolve(json) : Promise.reject(json.message)))
+    )
     .then((json: any) =>
       json.items.map((repo: any) => ({
         url: repo.html_url,
         name: repo.full_name
-      })))
+      }))
+    )
     .then(r => result.set(Result.success(r)))
     .catch(err => result.set(Result.failure(err)))
 }
 
 export const App = (props: { state: Atom<AppState> }) => {
   const result = props.state.lens('result')
-  const repos = result.view(x => x && x.kind === ResultKind.Success ? x.value : [])
+  const repos = result.view(x => (x && x.kind === ResultKind.Success ? x.value : []))
 
   return (
     <div>
       <div>
-        <F.input {...bind({ value: props.state.lens('searchString') })} type='text' />
+        <F.input {...bind({ value: props.state.lens('searchString') })} type="text" />
         <input
-          type='submit'
-          value='Search'
+          type="submit"
+          value="Search"
           onClick={() => runSearch(result, props.state.get().searchString)}
         />
       </div>
       <F.div>
-        {
-          result.view(r => {
-            if (r === undefined) {
-              return 'Enter a search query and click "Search"'
-            } else {
-              switch (r.kind) {
-                case ResultKind.InProgress:
-                  return 'Searching...'
+        {result.view(r => {
+          if (r === undefined) {
+            return 'Enter a search query and click "Search"'
+          } else {
+            switch (r.kind) {
+              case ResultKind.InProgress:
+                return 'Searching...'
 
-                case ResultKind.Failure:
-                  return `Error: ${r.error}`
+              case ResultKind.Failure:
+                return `Error: ${r.error}`
 
-                case ResultKind.Success:
-                  return 'Search results:'
+              case ResultKind.Success:
+                return 'Search results:'
 
-                default:
-                  const _: never = r
-                  return undefined
-              }
+              default:
+                const _: never = r
+                return undefined
             }
-          })
-        }
+          }
+        })}
       </F.div>
       <F.ul>
-        {
-          reactiveList(
-            repos.view(x => x.map((_, index) => index)),
-            index => (
-              <li key={index}>
-                <F.a href={repos.view(x => x[index] && x[index].url)}>
-                  {repos.view(x => x[index] && x[index].name)}
-                </F.a>
-              </li>
-            )
-          )
-        }
+        {reactiveList(repos.view(x => x.map((_, index) => index)), index => (
+          <li key={index}>
+            <F.a href={repos.view(x => x[index] && x[index].url)}>
+              {repos.view(x => x[index] && x[index].name)}
+            </F.a>
+          </li>
+        ))}
       </F.ul>
     </div>
   )

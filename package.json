@@ -5,13 +5,16 @@
     "build": "yarn workspace @grammarly/focal build",
     "package": "yarn workspace @grammarly/focal pack",
     "release": "yarn workspace @grammarly/focal release",
-    "test": "yarn workspace @grammarly/focal test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",
-    "postinstall": "yarn build"
+    "test": "yarn workspace @grammarly/focal test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build && yarn prettier:check",
+    "postinstall": "yarn build",
+    "prettier:fix": "prettier --write './packages/**/*.ts?(x)'",
+    "prettier:check": "prettier --list-different './packages/**/*.ts?(x)'"
   },
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",
     "tslint": "5.20.0",
-    "typescript": "3.6.4"
+    "typescript": "3.6.4",
+    "prettier": "1.18.2"
   },
   "workspaces": [
     "packages/focal",

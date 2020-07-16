@@ -13,7 +13,7 @@ import * as React from 'react'
 import { Atom, F, bind } from '@grammarly/focal'
 
 interface AppState {
-  inputValue: string,
+  inputValue: string
   value: number
 }
 
@@ -50,33 +50,29 @@ const App = (props: { state: Atom<AppState> }) => {
   const value = props.state.view('value')
   return (
     <div>
-      <F.input type='number' {...bind({ value: props.state.lens('inputValue') })} />
+      <F.input type="number" {...bind({ value: props.state.lens('inputValue') })} />
       <input
-        type='submit'
-        value='Update'
+        type="submit"
+        value="Update"
         onClick={() => props.state.modify(x => ({ ...x, value: parseInt(x.inputValue, 10) }))}
       />
       <div>
         <h3>Observable.scan</h3>
         <F.span>
-          {
-            value.pipe(
-              scan(([_, curr], val) => [curr, val], [0, value.get()]),
-              switchMap(getUpdateNumberObservable)
-            )
-          }
+          {value.pipe(
+            scan(([_, curr], val) => [curr, val], [0, value.get()]),
+            switchMap(getUpdateNumberObservable)
+          )}
         </F.span>
       </div>
       <div>
         <h3>Observable.bufferCount</h3>
         <F.span>
-          {
-            value.pipe(
-              bufferCount(2, 1),
-              switchMap(getUpdateNumberObservable),
-              merge(value.pipe(first()))
-            )
-          }
+          {value.pipe(
+            bufferCount(2, 1),
+            switchMap(getUpdateNumberObservable),
+            merge(value.pipe(first()))
+          )}
         </F.span>
       </div>
     </div>

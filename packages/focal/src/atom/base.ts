@@ -99,19 +99,16 @@ export interface ReadOnlyAtom<T> extends Observable<T> {
   /**
    * View this atom at a give property path.
    */
-  view<
-    K1 extends keyof T,
-    K2 extends keyof T[K1]
-  >(k1: K1, k2: K2): ReadOnlyAtom<T[K1][K2]>
+  view<K1 extends keyof T, K2 extends keyof T[K1]>(k1: K1, k2: K2): ReadOnlyAtom<T[K1][K2]>
 
   /**
    * View this atom at a give property path.
    */
-  view<
-    K1 extends keyof T,
-    K2 extends keyof T[K1],
-    K3 extends keyof T[K1][K2]
-  >(k1: K1, k2: K2, k3: K3): ReadOnlyAtom<T[K1][K2][K3]>
+  view<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+    k1: K1,
+    k2: K2,
+    k3: K3
+  ): ReadOnlyAtom<T[K1][K2][K3]>
 
   /**
    * View this atom at a give property path.
@@ -121,7 +118,12 @@ export interface ReadOnlyAtom<T> extends Observable<T> {
     K2 extends keyof T[K1],
     K3 extends keyof T[K1][K2],
     K4 extends keyof T[K1][K2][K3]
-  >(k1: K1, k2: K2, k3: K3, k4: K4): ReadOnlyAtom<T[K1][K2][K3][K4]>
+  >(
+    k1: K1,
+    k2: K2,
+    k3: K3,
+    k4: K4
+  ): ReadOnlyAtom<T[K1][K2][K3][K4]>
 
   /**
    * View this atom at a give property path.
@@ -132,7 +134,13 @@ export interface ReadOnlyAtom<T> extends Observable<T> {
     K3 extends keyof T[K1][K2],
     K4 extends keyof T[K1][K2][K3],
     K5 extends keyof T[K1][K2][K3][K4]
-  >(k1: K1, k2: K2, k3: K3, k4: K4, k5: K5): ReadOnlyAtom<T[K1][K2][K3][K4][K5]>
+  >(
+    k1: K1,
+    k2: K2,
+    k3: K3,
+    k4: K4,
+    k5: K5
+  ): ReadOnlyAtom<T[K1][K2][K3][K4][K5]>
 }
 
 /**
@@ -202,19 +210,16 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
   /**
    * Create a lensed atom that's focused on a given property path.
    */
-  lens<
-    K1 extends keyof T,
-    K2 extends keyof T[K1]
-  >(k1: K1, k2: K2): Atom<T[K1][K2]>
+  lens<K1 extends keyof T, K2 extends keyof T[K1]>(k1: K1, k2: K2): Atom<T[K1][K2]>
 
   /**
    * Create a lensed atom that's focused on a given property path.
    */
-  lens<
-    K1 extends keyof T,
-    K2 extends keyof T[K1],
-    K3 extends keyof T[K1][K2]
-  >(k1: K1, k2: K2, k3: K3): Atom<T[K1][K2][K3]>
+  lens<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+    k1: K1,
+    k2: K2,
+    k3: K3
+  ): Atom<T[K1][K2][K3]>
 
   /**
    * Create a lensed atom that's focused on a given property path.
@@ -224,7 +229,12 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
     K2 extends keyof T[K1],
     K3 extends keyof T[K1][K2],
     K4 extends keyof T[K1][K2][K3]
-  >(k1: K1, k2: K2, k3: K3, k4: K4): Atom<T[K1][K2][K3][K4]>
+  >(
+    k1: K1,
+    k2: K2,
+    k3: K3,
+    k4: K4
+  ): Atom<T[K1][K2][K3][K4]>
 
   /**
    * Create a lensed atom that's focused on a given property path.
@@ -235,12 +245,17 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
     K3 extends keyof T[K1][K2],
     K4 extends keyof T[K1][K2][K3],
     K5 extends keyof T[K1][K2][K3][K4]
-  >(k1: K1, k2: K2, k3: K3, k4: K4, k5: K5): Atom<T[K1][K2][K3][K4][K5]>
+  >(
+    k1: K1,
+    k2: K2,
+    k3: K3,
+    k4: K4,
+    k5: K5
+  ): Atom<T[K1][K2][K3][K4][K5]>
 }
 
-export abstract class AbstractReadOnlyAtom<T>
-    extends BehaviorSubject<T>
-    implements ReadOnlyAtom<T> {
+export abstract class AbstractReadOnlyAtom<T> extends BehaviorSubject<T>
+  implements ReadOnlyAtom<T> {
   abstract get(): T
 
   view(): ReadOnlyAtom<T>
@@ -252,24 +267,22 @@ export abstract class AbstractReadOnlyAtom<T>
   view<U>(...args: any[]): ReadOnlyAtom<any> {
     // tslint:disable no-use-before-declare
     return args[0] !== undefined
-      // view(getter) case
-      ? typeof args[0] === 'function'
+      ? // view(getter) case
+        typeof args[0] === 'function'
         ? new AtomViewImpl<T, U>(this, args[0] as (x: T) => U)
-        // view('key') case
-        : typeof args[0] === 'string'
-          ? new AtomViewImpl<T, U>(this, Lens.compose<T, U>(...args.map(Lens.key())).get)
-          // view(lens) and view(prism) cases
+        : // view('key') case
+        typeof args[0] === 'string'
+        ? new AtomViewImpl<T, U>(this, Lens.compose<T, U>(...args.map(Lens.key())).get)
+        : // view(lens) and view(prism) cases
           // @NOTE single case handles both lens and prism arg
-          : new AtomViewImpl<T, U>(this, x => (args[0] as Lens<T, U>).get(x))
-      // view() case
-      : this as ReadOnlyAtom<T>
+          new AtomViewImpl<T, U>(this, x => (args[0] as Lens<T, U>).get(x))
+      : // view() case
+        (this as ReadOnlyAtom<T>)
     // tslint:enable no-use-before-declare
   }
 }
 
-export abstract class AbstractAtom<T>
-    extends AbstractReadOnlyAtom<T>
-    implements Atom<T> {
+export abstract class AbstractAtom<T> extends AbstractReadOnlyAtom<T> implements Atom<T> {
   abstract modify(updateFn: (x: T) => T): void
 
   set(x: T) {
@@ -286,12 +299,18 @@ export abstract class AbstractAtom<T>
     // lens(prop expr) case
     return typeof arg1 === 'function'
       ? new LensedAtom<T, U>(this, Lens.prop(arg1 as (x: T) => U), structEq)
-      // lens('key') case
-      : typeof arg1 === 'string'
-        ? new LensedAtom(
-          this, Lens.compose(Lens.key(arg1), ...args.map(k => Lens.key(k))), structEq)
-        // lens(lens) case
-        : new LensedAtom<T, U>(this, arg1 as Lens<T, U>, structEq)
+      : // lens('key') case
+      typeof arg1 === 'string'
+      ? new LensedAtom(
+          this,
+          Lens.compose(
+            Lens.key(arg1),
+            ...args.map(k => Lens.key(k))
+          ),
+          structEq
+        )
+      : // lens(lens) case
+        new LensedAtom<T, U>(this, arg1 as Lens<T, U>, structEq)
     // tslint:enable no-use-before-declare
   }
 }
@@ -309,15 +328,13 @@ export class JsonAtom<T> extends AbstractAtom<T> {
     const prevValue = this.getValue()
     const next = updateFn(prevValue)
 
-    if (!structEq(prevValue, next))
-      this.next(next)
+    if (!structEq(prevValue, next)) this.next(next)
   }
 
   set(x: T) {
     const prevValue = this.getValue()
 
-    if (!structEq(prevValue, x))
-      this.next(x)
+    if (!structEq(prevValue, x)) this.next(x)
   }
 }
 
@@ -345,9 +362,7 @@ class LensedAtom<TSource, TDest> extends AbstractAtom<TDest> {
     //
     // This way we don't need to recalculate the lens value
     // every time.
-    return this._subscription
-      ? this.getValue()
-      : this._lens.get(this._source.get())
+    return this._subscription ? this.getValue() : this._lens.get(this._source.get())
   }
 
   modify(updateFn: (x: TDest) => TDest) {
@@ -362,15 +377,15 @@ class LensedAtom<TSource, TDest> extends AbstractAtom<TDest> {
     const prevValue = this.getValue()
     const next = this._lens.get(x)
 
-    if (!this._eq(prevValue, next))
-      this.next(next)
+    if (!this._eq(prevValue, next)) this.next(next)
   }
 
   private _subscription: Subscription | null = null
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TDest>) { // tslint:disable-line function-name
+  // tslint:disable-next-line function-name
+  _subscribe(subscriber: Subscriber<TDest>) {
     if (!this._subscription) {
       this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
@@ -422,24 +437,22 @@ class AtomViewImpl<TSource, TDest> extends AbstractReadOnlyAtom<TDest> {
     //
     // This way we don't need to recalculate the view value
     // every time.
-    return this._subscription
-      ? this.getValue()
-      : this._getter(this._source.get())
+    return this._subscription ? this.getValue() : this._getter(this._source.get())
   }
 
   private _onSourceValue(x: TSource) {
     const prevValue = this.getValue()
     const next = this._getter(x)
 
-    if (!this._eq(prevValue, next))
-      this.next(next)
+    if (!this._eq(prevValue, next)) this.next(next)
   }
 
   private _subscription: Subscription | null = null
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TDest>) { // tslint:disable-line function-name
+  // tslint:disable-next-line function-name
+  _subscribe(subscriber: Subscriber<TDest>) {
     if (!this._subscription) {
       this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
@@ -492,27 +505,24 @@ export class CombinedAtomViewImpl<TResult> extends AbstractReadOnlyAtom<TResult>
     //
     // This way we don't need to recalculate the view value
     // every time.
-    return this._subscription
-      ? this.getValue()
-      : this._combineFn(this._sources.map(x => x.get()))
+    return this._subscription ? this.getValue() : this._combineFn(this._sources.map(x => x.get()))
   }
 
   private _onSourceValues(xs: any[]) {
     const prevValue = this.getValue()
     const next = this._combineFn(xs)
 
-    if (!this._eq(prevValue, next))
-      this.next(next)
+    if (!this._eq(prevValue, next)) this.next(next)
   }
 
   private _subscription: Subscription | null = null
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TResult>) { // tslint:disable-line function-name
+  // tslint:disable-next-line function-name
+  _subscribe(subscriber: Subscriber<TResult>) {
     if (!this._subscription) {
-      this._subscription = combineLatest(this._sources)
-        .subscribe(xs => this._onSourceValues(xs))
+      this._subscription = combineLatest(this._sources).subscribe(xs => this._onSourceValues(xs))
     }
     this._refCount++
 

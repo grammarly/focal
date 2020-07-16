@@ -1,10 +1,10 @@
 export interface NodeState {
-  value: number,
+  value: number
   children: NodeState[]
 }
 
 export interface AppState {
- tree: NodeState
+  tree: NodeState
 }
 
 export const defaultNodeState = {

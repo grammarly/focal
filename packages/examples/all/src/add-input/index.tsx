@@ -25,16 +25,13 @@ const App = (props: { state: Atom<AppState> }) => {
   return (
     <div>
       <div>
-        <F.input { ...bind({ value: props.state.lens('entry') }) } type='text' />
-        <input type='submit' value='Add' onClick={() => props.state.modify(addItem)} />
+        <F.input {...bind({ value: props.state.lens('entry') })} type="text" />
+        <input type="submit" value="Add" onClick={() => props.state.modify(addItem)} />
       </div>
       <F.ul>
-        {
-          reactiveList(
-            values.view(x => x.map((_, index) => index)),
-            index => <F.li>{values.view(x => x[index])}</F.li>
-          )
-        }
+        {reactiveList(values.view(x => x.map((_, index) => index)), index => (
+          <F.li>{values.view(x => x[index])}</F.li>
+        ))}
       </F.ul>
     </div>
   )

@@ -1,5 +1,6 @@
 // tslint:disable no-unnecessary-local-variable
-import { merge } from 'rxjs'
+import { merge, Observable, from, Subject, never, throwError, empty } from 'rxjs'
+import { take, toArray, tap, materialize, map } from 'rxjs/operators'
 import { Atom, Lens, ReadOnlyAtom } from '../src'
 import { structEq } from '../src/utils'
 
@@ -356,9 +357,9 @@ describe('atom', () => {
         const source = Atom.create([1, 2, 3])
         const first = source.lens(Lens.index<number>(0))
 
-        const observations: number[] = []
+        const observations: (number | undefined)[] = []
 
-        const cb = (x: number) => {
+        const cb = (x: number | undefined) => {
           observations.push(x)
         }
         const subscription = first.subscribe(cb)
@@ -759,5 +760,143 @@ describe('atom', () => {
 
     expect(consoleLogFireTime).toEqual(2)
     expect(consoleLogArguments).toEqual([['bar', 'bar'], ['bar', 'foo']])
+  })
+
+  describe('fromObservable', () => {
+    test('emits atom', async () => {
+      const a = await Atom.fromObservable(from([1])).pipe(take(1)).toPromise()
+      expect(a.get()).toEqual(1)
+    })
+
+    test('emits atom once', async () => {
+      const a = await merge(
+        Atom.fromObservable(
+          from(Array.from(new Array(15)).map(_ => Math.random()))
+        ),
+        from(['hello'])
+      ).pipe(take(2), toArray()).toPromise()
+
+      expect(a[1]).toEqual('hello')
+    })
+
+    test('does not subscribe to source immediately', () => {
+      let subscribed = false
+
+      const src = new Observable(o => {
+        subscribed = true
+        o.complete()
+
+        return () => { subscribed = false }
+      })
+
+      const _ = Atom.fromObservable(src)
+
+      expect(subscribed).toEqual(false)
+    })
+
+    test('one sub max, unsub when not in use', async () => {
+      let subCount = 0
+
+      const src = new Observable<number>(o => {
+        subCount++
+        o.next(1)
+
+        return () => { subCount-- }
+      })
+
+      const a = Atom.fromObservable(src)
+
+      // no subs until we have subscribed to use the atom
+      expect(subCount).toEqual(0)
+
+      const subs = Array.from(new Array(5)).map(_ => a.subscribe(a => {
+        expect(a.get()).toEqual(1)
+      }))
+
+      // exactly one sub, no matter how many times the atom observable was subbed to
+      expect(subCount).toEqual(1)
+
+      subs.forEach(s => s.unsubscribe())
+
+      // no subs to source when unused
+      expect(subCount).toEqual(0)
+    })
+
+    test('does not return atom if source has no value', async () => {
+      const r = await merge(
+        Atom.fromObservable(never()),
+        from(['hello'])
+      ).pipe(take(1), toArray()).toPromise()
+
+      expect(r).toEqual(['hello'])
+    })
+
+    test('atom values correspond to source', async () => {
+      const src = new Subject<number>()
+
+      const r = Atom.fromObservable(src).pipe(
+        tap(async a => {
+          const srcValues = Array.from(new Array(10), _ => Math.random())
+          const atomValues = a.pipe(toArray()).toPromise()
+
+          srcValues.forEach(x => {
+            src.next(x)
+            expect(a.get()).toEqual(x)
+          })
+
+          expect(await atomValues).toEqual(srcValues)
+        }),
+        take(1)
+      ).toPromise()
+
+      src.next(0)
+      await r
+    })
+
+    test('atom values not updated after unsubscribed from result', async () => {
+      const src = new Subject<number>()
+      let atom!: ReadOnlyAtom<number>
+
+      const sub = Atom.fromObservable(src).pipe(
+        tap(a => {
+          atom = a
+        })
+      ).subscribe()
+
+      src.next(1)
+      expect(atom.get()).toEqual(1)
+      src.next(2)
+      expect(atom.get()).toEqual(2)
+
+      sub.unsubscribe()
+
+      src.next(5)
+      expect(atom.get()).toEqual(2)
+    })
+
+    test('source error is propagated', async () => {
+      try {
+        await (Atom.fromObservable(throwError('hello')).toPromise())
+        fail()
+      } catch (e) {
+        expect(e).toEqual('hello')
+      }
+    })
+
+    test('source completion is propagated 1', async () => {
+      expect(
+        await Atom.fromObservable(empty()).pipe(
+          materialize(), map(x => x.kind), toArray()
+        ).toPromise()
+      ).toEqual(['C'])
+    })
+
+    test('source completion is propagated 2', async () => {
+      expect(
+        await Atom.fromObservable(from([1, 2, 3])).pipe(
+          materialize(), map(x => x.kind), toArray()
+        ).toPromise()
+      ).toEqual(['N', 'C'])
+    })
   })
 })

@@ -1,14 +1,20 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.8.0-alpha.0",
+  "version": "0.8.1",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",
   "es2015": "dist/_esm2015/src/index.js",
-  "typings": "dist/_cjs/src/index.d.ts",
-  "sideEffects": false,
+  "types": "dist/_cjs/src/index.d.ts",
+  "sideEffects": [
+    "./dist/_cjs/src/lens/json.js",
+    "./dist/_esm5/src/lens/json.js",
+    "./dist/_esm2015/src/lens/json.js"
+  ],
   "files": [
-    "dist/src/"
+    "dist/_cjs/src/",
+    "dist/_esm5/src/",
+    "dist/_esm2015/src/"
   ],
   "scripts": {
     "docs": "rm -rf ./docs && typedoc --out docs --theme minimal --ignoreCompilerErrors --tsconfig tsconfig.json",
@@ -86,23 +92,23 @@
   "dependencies": {},
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",
-    "@types/jest": "^24.0.0",
+    "@types/jest": "24.0.20",
     "@types/node": "^6.0.34",
-    "@types/react": "16.0.33",
-    "@types/react-dom": "16.0.3",
+    "@types/react": "16.9.11",
+    "@types/react-dom": "16.9.3",
     "jest": "^24.1.0",
-    "react": "16.2.0",
-    "react-dom": "16.2.0",
+    "react": "16.11.0",
+    "react-dom": "16.11.0",
     "rxjs": "6.3.3",
     "ts-jest": "^23.10.5",
-    "tslint": "5.2.0",
-    "typescript": "3.3.3"
+    "tslint": "5.20.0",
+    "typescript": "3.6.4"
   },
   "peerDependencies": {
-    "@types/react": ">= 16.0.33 < 17.0.0-0",
-    "@types/react-dom": ">= 16.0.3 < 17.0.0-0",
-    "react": ">= 16.2.0 < 17.0.0-0",
-    "react-dom": ">= 16.2.0 < 17.0.0-0",
+    "@types/react": ">= 16.9.11 < 17.0.0-0",
+    "@types/react-dom": ">= 16.9.3 < 17.0.0-0",
+    "react": ">= 16.11.0 < 17.0.0-0",
+    "react-dom": ">= 16.11.0 < 17.0.0-0",
     "rxjs": ">= 6.3.3 < 7.0.0-0"
   }
 }

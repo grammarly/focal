@@ -12,8 +12,8 @@
   },
   "devDependencies": {
     "@grammarly/tslint-config": "0.5.1",
-    "tslint": "5.2.0",
-    "typescript": "3.3.3",
+    "tslint": "5.20.0",
+    "typescript": "3.6.4",
     "prettier": "1.18.2"
   },
   "workspaces": [
@@ -22,6 +22,6 @@
     "packages/examples/*"
   ],
   "resolutions": {
-    "@types/react": "16.0.33"
+    "@types/react": "16.9.11"
   }
 }

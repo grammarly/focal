@@ -344,9 +344,9 @@ describe('atom', () => {
         const source = Atom.create([1, 2, 3])
         const first = source.lens(Lens.index<number>(0))
 
-        const observations: number[] = []
+        const observations: (number | undefined)[] = []
 
-        const cb = (x: number) => {
+        const cb = (x: number | undefined) => {
           observations.push(x)
         }
         const subscription = first.subscribe(cb)

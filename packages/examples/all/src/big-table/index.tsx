@@ -89,7 +89,7 @@ const App = ({
       <THead columns={state.view('columns')}/>
     </table>
     <F.div
-      {...bindElementProps({ ref: 'onScroll', scrollTop })}
+      {...bindElementProps({ forwardRef: 'onScroll', scrollTop })}
       style={{
         position: 'relative',
         overflowX: 'hidden',

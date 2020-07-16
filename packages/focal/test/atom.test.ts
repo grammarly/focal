@@ -1,5 +1,5 @@
 // tslint:disable no-unnecessary-local-variable
-import { merge, Subject } from 'rxjs'
+import { merge } from 'rxjs'
 import { Atom, Lens, ReadOnlyAtom } from '../src'
 import { structEq } from '../src/utils'
 

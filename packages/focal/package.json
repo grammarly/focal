@@ -46,7 +46,6 @@
   "dependencies": {},
   "devDependencies": {
     "@grammarly/focal-atom": "^0.8.1",
-    "@grammarly/focal-utils": "^0.8.1",
     "@grammarly/tslint-config": "0.5.1",
     "@types/jest": "^24.0.0",
     "@types/node": "^6.0.34",

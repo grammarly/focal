@@ -192,7 +192,7 @@ function type(val: any) {
  *      var b = {}; b.v = b
  *      equals(a, b); //=> true
  */
-export function equals(a: any, b: any, stackA: any[] = [], stackB: any[] = []) {
+export function structEq(a: any, b: any, stackA: any[] = [], stackB: any[] = []) {
   if (identical(a, b)) return true
   if (type(a) !== type(b)) return false
   if (a == null || b == null) return false
@@ -243,7 +243,7 @@ export function equals(a: any, b: any, stackA: any[] = [], stackB: any[] = []) {
 
     case 'Map':
     case 'Set':
-      if (!equals(arrayFromIterator(a.entries()), arrayFromIterator(b.entries()), stackA, stackB))
+      if (!structEq(arrayFromIterator(a.entries()), arrayFromIterator(b.entries()), stackA, stackB))
         return false
 
       break
@@ -285,7 +285,7 @@ export function equals(a: any, b: any, stackA: any[] = [], stackB: any[] = []) {
   while (idx >= 0) {
     const key = keysA[idx]
 
-    if (!(has(key, b) && equals(b[key], a[key], stackA, stackB)))
+    if (!(has(key, b) && structEq(b[key], a[key], stackA, stackB)))
       return false
 
     idx -= 1

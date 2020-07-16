@@ -5,8 +5,5 @@
     "outDir": "dist/_cjs",
     "module": "commonjs",
     "target": "es5"
-  },
-  "references": [
-    { "path": "../focal-utils/tsconfig.build.cjs.json" }
-  ]
+  }
 }

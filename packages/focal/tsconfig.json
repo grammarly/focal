@@ -23,7 +23,6 @@
     "test/**/*.ts*"
   ],
   "references": [
-    { "path": "../focal-atom/tsconfig.json" },
-    { "path": "../focal-utils/tsconfig.json" }
+    { "path": "../focal-atom/tsconfig.json" }
   ]
 }

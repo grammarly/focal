@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { structEq } from '@grammarly/focal-utils'
-import { Atom } from '@grammarly/focal-atom'
+import { Atom, structEq } from '@grammarly/focal-atom'
 import { warning, getReactComponentName, DEV_ENV } from './../utils'
 import {
   Observable,

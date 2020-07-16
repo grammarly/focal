@@ -2,7 +2,7 @@
 import { merge, Observable, from, Subject, never, throwError, empty } from 'rxjs'
 import { take, toArray, tap, materialize, map } from 'rxjs/operators'
 import { Atom, Lens, ReadOnlyAtom } from '../src'
-import { structEq } from '../src/utils'
+import { structEq } from '../src/equals'
 
 function testAtom(newAtom: (x: number) => Atom<number>) {
   it('atom/basic', async () => {

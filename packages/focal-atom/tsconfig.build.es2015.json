@@ -5,8 +5,5 @@
     "outDir": "dist/_esm2015",
     "module": "es2015",
     "target": "esnext"
-  },
-  "references": [
-    { "path": "../focal-utils/tsconfig.build.es2015.json" }
-  ]
+  }
 }

@@ -1,5 +1,4 @@
-import { structEq } from '@grammarly/focal-utils'
-export { structEq } from '@grammarly/focal-utils'
+import { structEq } from './equals'
 
 export const DEV_ENV = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
 

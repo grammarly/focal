@@ -8,6 +8,5 @@
   },
   "references": [
     { "path": "../focal-atom/tsconfig.build.cjs.json" },
-    { "path": "../focal-utils/tsconfig.build.cjs.json" }
   ]
 }

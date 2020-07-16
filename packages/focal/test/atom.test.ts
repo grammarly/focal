@@ -764,17 +764,22 @@ describe('atom', () => {
 
   describe('fromObservable', () => {
     test('emits atom', async () => {
-      const a = await Atom.fromObservable(from([1])).pipe(take(1)).toPromise()
+      const a = await Atom.fromObservable(from([1]))
+        .pipe(take(1))
+        .toPromise()
       expect(a.get()).toEqual(1)
     })
 
     test('emits atom once', async () => {
       const a = await merge(
-        Atom.fromObservable(
-          from(Array.from(new Array(15)).map(_ => Math.random()))
-        ),
+        Atom.fromObservable(from(Array.from(new Array(15)).map(_ => Math.random()))),
         from(['hello'])
-      ).pipe(take(2), toArray()).toPromise()
+      )
+        .pipe(
+          take(2),
+          toArray()
+        )
+        .toPromise()
 
       expect(a[1]).toEqual('hello')
     })
@@ -786,7 +791,9 @@ describe('atom', () => {
         subscribed = true
         o.complete()
 
-        return () => { subscribed = false }
+        return () => {
+          subscribed = false
+        }
       })
 
       const _ = Atom.fromObservable(src)
@@ -801,7 +808,9 @@ describe('atom', () => {
         subCount++
         o.next(1)
 
-        return () => { subCount-- }
+        return () => {
+          subCount--
+        }
       })
 
       const a = Atom.fromObservable(src)
@@ -809,9 +818,11 @@ describe('atom', () => {
       // no subs until we have subscribed to use the atom
       expect(subCount).toEqual(0)
 
-      const subs = Array.from(new Array(5)).map(_ => a.subscribe(a => {
-        expect(a.get()).toEqual(1)
-      }))
+      const subs = Array.from(new Array(5)).map(_ =>
+        a.subscribe(a => {
+          expect(a.get()).toEqual(1)
+        })
+      )
 
       // exactly one sub, no matter how many times the atom observable was subbed to
       expect(subCount).toEqual(1)
@@ -823,10 +834,12 @@ describe('atom', () => {
     })
 
     test('does not return atom if source has no value', async () => {
-      const r = await merge(
-        Atom.fromObservable(never()),
-        from(['hello'])
-      ).pipe(take(1), toArray()).toPromise()
+      const r = await merge(Atom.fromObservable(never()), from(['hello']))
+        .pipe(
+          take(1),
+          toArray()
+        )
+        .toPromise()
 
       expect(r).toEqual(['hello'])
     })
@@ -834,20 +847,22 @@ describe('atom', () => {
     test('atom values correspond to source', async () => {
       const src = new Subject<number>()
 
-      const r = Atom.fromObservable(src).pipe(
-        tap(async a => {
-          const srcValues = Array.from(new Array(10), _ => Math.random())
-          const atomValues = a.pipe(toArray()).toPromise()
+      const r = Atom.fromObservable(src)
+        .pipe(
+          tap(async a => {
+            const srcValues = Array.from(new Array(10), _ => Math.random())
+            const atomValues = a.pipe(toArray()).toPromise()
 
-          srcValues.forEach(x => {
-            src.next(x)
-            expect(a.get()).toEqual(x)
-          })
+            srcValues.forEach(x => {
+              src.next(x)
+              expect(a.get()).toEqual(x)
+            })
 
-          expect(await atomValues).toEqual(srcValues)
-        }),
-        take(1)
-      ).toPromise()
+            expect(await atomValues).toEqual(srcValues)
+          }),
+          take(1)
+        )
+        .toPromise()
 
       src.next(0)
       await r
@@ -857,11 +872,13 @@ describe('atom', () => {
       const src = new Subject<number>()
       let atom!: ReadOnlyAtom<number>
 
-      const sub = Atom.fromObservable(src).pipe(
-        tap(a => {
-          atom = a
-        })
-      ).subscribe()
+      const sub = Atom.fromObservable(src)
+        .pipe(
+          tap(a => {
+            atom = a
+          })
+        )
+        .subscribe()
 
       src.next(1)
       expect(atom.get()).toEqual(1)
@@ -876,7 +893,7 @@ describe('atom', () => {
 
     test('source error is propagated', async () => {
       try {
-        await (Atom.fromObservable(throwError('hello')).toPromise())
+        await Atom.fromObservable(throwError('hello')).toPromise()
         fail()
       } catch (e) {
         expect(e).toEqual('hello')
@@ -885,17 +902,25 @@ describe('atom', () => {
 
     test('source completion is propagated 1', async () => {
       expect(
-        await Atom.fromObservable(empty()).pipe(
-          materialize(), map(x => x.kind), toArray()
-        ).toPromise()
+        await Atom.fromObservable(empty())
+          .pipe(
+            materialize(),
+            map(x => x.kind),
+            toArray()
+          )
+          .toPromise()
       ).toEqual(['C'])
     })
 
     test('source completion is propagated 2', async () => {
       expect(
-        await Atom.fromObservable(from([1, 2, 3])).pipe(
-          materialize(), map(x => x.kind), toArray()
-        ).toPromise()
+        await Atom.fromObservable(from([1, 2, 3]))
+          .pipe(
+            materialize(),
+            map(x => x.kind),
+            toArray()
+          )
+          .toPromise()
       ).toEqual(['N', 'C'])
     })
   })

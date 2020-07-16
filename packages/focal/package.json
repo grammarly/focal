@@ -1,14 +1,20 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.8.0-alpha.0",
+  "version": "0.8.1",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",
   "es2015": "dist/_esm2015/src/index.js",
-  "typings": "dist/_cjs/src/index.d.ts",
-  "sideEffects": false,
+  "types": "dist/_cjs/src/index.d.ts",
+  "sideEffects": [
+    "./dist/_cjs/src/lens/json.js",
+    "./dist/_esm5/src/lens/json.js",
+    "./dist/_esm2015/src/lens/json.js"
+  ],
   "files": [
-    "dist/src/"
+    "dist/_cjs/src/",
+    "dist/_esm5/src/",
+    "dist/_esm2015/src/"
   ],
   "scripts": {
     "docs": "rm -rf ./docs && typedoc --out docs --theme minimal --ignoreCompilerErrors --tsconfig tsconfig.json",

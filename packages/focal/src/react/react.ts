@@ -315,7 +315,9 @@ class FakeComponent<P> {
     public props: LiftWrapperProps<P>
   ) {}
 
-  setState(newState: LiftWrapperState) {
+  setState(state: (LiftWrapperState | ((state: LiftWrapperState) => LiftWrapperState))) {
+    const newState = typeof state === 'function' ? state(this.state) : state
+
     if ('subscription' in newState)
       this.state.subscription = newState.subscription
     if ('renderCache' in newState)
@@ -393,8 +395,9 @@ class RenderOne<P> implements Subscription {
     const { component, props } = liftedComponent.props
     const renderCache = render(component, props, [value])
 
-    if (!structEq(liftedComponent.state.renderCache, renderCache))
-      liftedComponent.setState({ renderCache })
+    liftedComponent.setState(state =>
+      !structEq(state.renderCache, renderCache) ? { renderCache } : {}
+    )
   }
 
   private _handleCompleted() {
@@ -489,8 +492,9 @@ class RenderMany<P> implements Subscription {
     const { component, props } = liftedComponent.props
     const renderCache = render(component, props, this._values)
 
-    if (!structEq(liftedComponent.state.renderCache, renderCache))
-      liftedComponent.setState({ renderCache })
+    liftedComponent.setState(state =>
+      !structEq(state.renderCache, renderCache) ? { renderCache } : {}
+    )
   }
 
   private _handleCompleted(idx: number) {

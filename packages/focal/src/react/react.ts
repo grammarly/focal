@@ -90,12 +90,14 @@ export class LiftWrapper<TProps>
       subscription.unsubscribe()
   }
 
-  UNSAFE_componentWillReceiveProps(newProps: LiftWrapperProps<TProps>) { // tslint:disable-line
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps: LiftWrapperProps<TProps>) {
     this._unsubscribe()
     this._subscribe(newProps)
   }
 
-  UNSAFE_componentWillMount() { // tslint:disable-line
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
     this._unsubscribe()
     this._subscribe(this.props)
   }
@@ -712,8 +714,8 @@ export function bindElementProps(
   // this function already compiles without the 'string | ...', but it's
   // calls do not.
   template: Partial<{
-    ref: string;
-    mount: string;
+    ref: string
+    mount: string
     forwardRef: string
   }> & { [k: string]: string | Atom<any> }
 ): BindElementPropsReturnType {

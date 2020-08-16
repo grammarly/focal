@@ -11,7 +11,8 @@ declare let require: (path: string) => any
 
 const tests: { name: string; test: TestComponent<any> }[] = [
   'lifted-bug',
-  'render-bug'
+  'render-bug',
+  'setstate-bug'
 ].map(name => {
   return { name, test: require(`./${name}/index.tsx`).default as TestComponent<any> }
 })

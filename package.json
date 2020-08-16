@@ -20,7 +20,7 @@
     "eslint": "^7.2.0",
     "eslint-plugin-jsdoc": "^27.0.6",
     "eslint-plugin-react": "^7.20.0",
-    "typescript": "3.3.3"
+    "typescript": "3.6.4"
   },
   "workspaces": [
     "packages/focal",
@@ -28,6 +28,6 @@
     "packages/examples/*"
   ],
   "resolutions": {
-    "@types/react": "16.0.33"
+    "@types/react": "16.9.11"
   }
 }

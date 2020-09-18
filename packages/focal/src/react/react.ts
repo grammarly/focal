@@ -22,6 +22,7 @@ export interface LiftWrapperProps<TProps> {
   component: React.Component<TProps, any>
     | React.StatelessComponent<TProps>
     | React.ComponentClass<TProps>
+    | React.ComponentType
     | keyof React.ReactHTML
   props: Lifted<TProps>
 }
@@ -37,9 +38,7 @@ export interface LiftWrapperState {
  */
 export class LiftWrapper<TProps>
     extends React.Component<LiftWrapperProps<TProps>, LiftWrapperState> {
-  constructor(props: LiftWrapperProps<TProps>) {
-    super(props, LiftWrapper._initState)
-  }
+  state = LiftWrapper._initState
 
   static _initState: LiftWrapperState = {
     renderCache: null,
@@ -88,12 +87,12 @@ export class LiftWrapper<TProps>
       subscription.unsubscribe()
   }
 
-  componentWillReceiveProps(newProps: LiftWrapperProps<TProps>) {
+  UNSAFE_componentWillReceiveProps(newProps: LiftWrapperProps<TProps>) { // tslint:disable-line
     this._unsubscribe()
     this._subscribe(newProps)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() { // tslint:disable-line
     this._unsubscribe()
     this._subscribe(this.props)
   }
@@ -159,8 +158,9 @@ export function lift<TProps>(
 const PROP_CHILDREN = 'children'
 const PROP_STYLE = 'style'
 
-export const PROP_MOUNT = 'mount'
-export const PROP_REF = 'ref'
+const PROP_MOUNT = 'mount'
+const PROP_FORWARD_REF = 'forwardRef'
+const PROP_REF = 'ref'
 
 /**
  * Walk a React component props object tree, and for each observable prop found,
@@ -210,8 +210,11 @@ function walkObservables<T>(
  * @returns rendered element
  */
 function render<P>(
-  class_: React.Component<P, any> | React.StatelessComponent<P>
-    | React.ComponentClass<P> | keyof React.ReactHTML,
+  class_: React.Component<P, any>
+    | React.StatelessComponent<P>
+    | React.ComponentClass<P>
+    | React.ComponentType
+    | keyof React.ReactHTML,
   props: Lifted<P>,
   observedValues: any[] = []
 ): React.DOMElement<any, any> {
@@ -229,7 +232,7 @@ function render<P>(
   for (const key in props) {
     const propValue = (props as any)[key]
     const isChildren = key === PROP_CHILDREN
-    const isMount = key === PROP_MOUNT
+    const isForwardRef = key === PROP_FORWARD_REF || key === PROP_MOUNT
     const isStyle = key === PROP_STYLE
 
     // prop is an observable
@@ -237,7 +240,7 @@ function render<P>(
       const observedValue = observedValues[++k]
       if (isChildren) {
         newChildren = observedValue
-      } else if (isMount) {
+      } else if (isForwardRef) {
         newProps.ref = observedValue
       } else {
         newProps[key] = observedValue
@@ -266,7 +269,7 @@ function render<P>(
       }
       newChildren = newChildren || propValue
     // 'mount' prop
-    } else if (isMount) {
+    } else if (isForwardRef) {
       newProps.ref = propValue
     // 'style' prop
     } else if (isStyle) {
@@ -311,7 +314,9 @@ class FakeComponent<P> {
     public props: LiftWrapperProps<P>
   ) {}
 
-  setState(newState: LiftWrapperState) {
+  setState(state: (LiftWrapperState | ((state: LiftWrapperState) => LiftWrapperState))) {
+    const newState = typeof state === 'function' ? state(this.state) : state
+
     if ('subscription' in newState)
       this.state.subscription = newState.subscription
     if ('renderCache' in newState)
@@ -341,7 +346,7 @@ function warnEmptyObservable(componentName: string | undefined) {
  */
 class RenderOne<P> implements Subscription {
   private _liftedComponent: LiftWrapper<P>
-  private _innerSubscription: RxSubscription | null
+  private _innerSubscription: RxSubscription | null = null
   private _receivedValue = false
 
   constructor(
@@ -389,8 +394,9 @@ class RenderOne<P> implements Subscription {
     const { component, props } = liftedComponent.props
     const renderCache = render(component, props, [value])
 
-    if (!structEq(liftedComponent.state.renderCache, renderCache))
-      liftedComponent.setState({ renderCache })
+    liftedComponent.setState(state =>
+      !structEq(state.renderCache, renderCache) ? { renderCache } : {}
+    )
   }
 
   private _handleCompleted() {
@@ -485,8 +491,9 @@ class RenderMany<P> implements Subscription {
     const { component, props } = liftedComponent.props
     const renderCache = render(component, props, this._values)
 
-    if (!structEq(liftedComponent.state.renderCache, renderCache))
-      liftedComponent.setState({ renderCache })
+    liftedComponent.setState(state =>
+      !structEq(state.renderCache, renderCache) ? { renderCache } : {}
+    )
   }
 
   private _handleCompleted(idx: number) {
@@ -691,25 +698,45 @@ type BindElementPropsReturnType =
       [x: string]: ((e: React.SyntheticEvent<any>) => void) | ((domElement: Element | null) => void)
       [PROP_MOUNT](domElement: Element | null): void
     }
+    | {
+      [x: string]: ((e: React.SyntheticEvent<any>) => void) | ((domElement: Element | null) => void)
+      [PROP_FORWARD_REF](domElement: Element | null): void
+    }
   | {}
 
 export function bindElementProps(
   // @TODO need to fix the type of { [k: string]: string | Atom<any> }.
   // this function already compiles without the 'string | ...', but it's
   // calls do not.
-  template: { ref?: string; mount?: string } & { [k: string]: string | Atom<any> }
+  template: Partial<{
+    ref: string;
+    mount: string;
+    forwardRef: string
+  }> & { [k: string]: string | Atom<any> }
 ): BindElementPropsReturnType {
-  const { [PROP_REF]: ref, [PROP_MOUNT]: mount, ...tpl } = template
+  const {
+    [PROP_REF]: ref,
+    [PROP_MOUNT]: mount,
+    [PROP_FORWARD_REF]: forwardRef,
+    ...tpl
+  } = template
+
+  const elementRef = setElementProps(tpl)
+  const elementPropsHandler = getElementProps(tpl as { [k: string]: Atom<any> })
 
   return ref
     ? ({
-      [PROP_REF]: setElementProps(tpl),
-      [ref]: getElementProps(tpl as { [k: string]: Atom<any> })
+      [PROP_REF]: elementRef,
+      [ref]: elementPropsHandler
+    })
+    : forwardRef ?  ({
+      [PROP_FORWARD_REF]: elementRef,
+      [forwardRef]: elementPropsHandler
     })
     : mount
       ? ({
-        [PROP_MOUNT]: setElementProps(tpl),
-        [mount]: getElementProps(tpl as { [k: string]: Atom<any> })
+        [PROP_MOUNT]: elementRef,
+        [mount]: elementPropsHandler
       })
       : {}
 }

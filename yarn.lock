@@ -131,11 +131,6 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@grammarly/focal@0.8.1":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@grammarly/focal/-/focal-0.8.1.tgz#bdaacddf547ed10f0b5b075564021bdf09427180"
-  integrity sha512-I/l5q3FGbq6eRznwlO1Jm1iPLMGG7c01xVSqma3iYYBQAfs13KbpG+IL6wequ676OL3UHBtD2W9O6RrBP2Otow==
-
 "@grammarly/tslint-config@0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@grammarly/tslint-config/-/tslint-config-0.5.1.tgz#4b962f0fbd3cf0b40bd7695069942ba04afb564a"

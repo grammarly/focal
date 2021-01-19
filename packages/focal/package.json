@@ -1,6 +1,6 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",

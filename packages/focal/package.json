@@ -7,6 +7,9 @@
   "es2015": "dist/_esm2015/src/index.js",
   "types": "dist/_cjs/src/index.d.ts",
   "sideEffects": [
+    "./dist/_cjs/src/lens/index.js",
+    "./dist/_esm5/src/lens/index.js",
+    "./dist/_esm2015/src/lens/index.js",
     "./dist/_cjs/src/lens/json.js",
     "./dist/_esm5/src/lens/json.js",
     "./dist/_esm2015/src/lens/json.js"

@@ -68,6 +68,16 @@ module.exports = {
         ],
         "@typescript-eslint/strict-boolean-expressions": "off",
         "@typescript-eslint/type-annotation-spacing": "error",
+        "@typescript-eslint/typedef": [
+          "error",
+          {
+            "propertyDeclaration": true
+          }
+        ],
+        "@typescript-eslint/method-signature-style": [
+          "error",
+          "method"
+        ],
         "arrow-parens": [
             "error",
             "as-needed"
@@ -184,8 +194,10 @@ module.exports = {
                 ]
             }
         ],
-        "use-isnan": "error",
+        "use-isnan": "error"
         /*
+          // check mapping of tslint to eslint rules and current status of rules migration here
+          // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/ROADMAP.md
         "@typescript-eslint/tslint/config": [
             "error",
             {
@@ -201,12 +213,6 @@ module.exports = {
                     ],
                     "jsx-alignment": true,
                     "no-unnecessary-local-variable": true,
-                    "no-unnecessary-override": true,
-                    "prefer-method-signature": true,
-                    "typedef": [
-                        true,
-                        "property-declaration"
-                    ],
                     "whitespace": [
                         true,
                         "check-branch",
@@ -217,6 +223,7 @@ module.exports = {
                         "check-module",
                         "check-typecast"
                     ]
+                    "no-unnecessary-override": true
                 }
             }
         ]

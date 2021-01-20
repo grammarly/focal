@@ -1,12 +1,15 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.8.1",
+  "version": "0.8.3",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",
   "es2015": "dist/_esm2015/src/index.js",
   "types": "dist/_cjs/src/index.d.ts",
   "sideEffects": [
+    "./dist/_cjs/src/lens/index.js",
+    "./dist/_esm5/src/lens/index.js",
+    "./dist/_esm2015/src/lens/index.js",
     "./dist/_cjs/src/lens/json.js",
     "./dist/_esm5/src/lens/json.js",
     "./dist/_esm2015/src/lens/json.js"
@@ -29,8 +32,7 @@
     "prepack": "cp ../../README.md ./ && cp ../../LICENSE ./",
     "postpack": "rm README.md && rm LICENSE",
     "preversion": "if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then echo \"Not on the master branch.\" && exit 1; fi",
-    "postversion": "git push && git push --tags",
-    "release": "echo Publishing v${VER:?\"Usage: VER=1.2.3 npm run release\"}... && npm publish https://github.com/grammarly/focal/releases/download/v$VER/grammarly-focal-v$VER.tgz --access public"
+    "postversion": "git push && git push --tags"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "contributors": [

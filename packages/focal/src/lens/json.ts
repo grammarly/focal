@@ -103,6 +103,7 @@ export interface KeyImplFor<TObject> {
  */
 export function keyImpl<TValue = any>(k: string): Prism<{ [k: string]: TValue }, TValue>
 
+/* eslint-disable no-redeclare */
 /**
  * Create a lens focusing on a key of an object.
  *
@@ -153,6 +154,7 @@ export function keyImpl<TObject>(k?: string) {
       (v: any, s: { [k: string]: any }) => setKey(k, v, s)
     )
 }
+/* eslint-enable no-redeclare */
 
 let propExprDeprecatedWarnings = 0
 

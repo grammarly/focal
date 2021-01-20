@@ -17,6 +17,7 @@ function createModify<TSource, T, U>(
   }
 }
 
+// eslint-disable-next-line no-redeclare
 export namespace Optic {
   export function optic<TSource, T, U>(
     getter: (s: TSource) => T,
@@ -52,6 +53,7 @@ export interface Prism<TSource, T> extends Optic<TSource, Option<T>, T> {
   compose<U>(next: Prism<T, U>): Prism<TSource, U>
 }
 
+// eslint-disable-next-line no-redeclare
 export namespace Prism {
   export function create<TSource, T>(
     getter: (s: TSource) => Option<T>,
@@ -84,6 +86,7 @@ export namespace Prism {
   }
 }
 
+// eslint-disable-next-line no-redeclare
 export namespace Lens {
   /**
    * Create a lens.

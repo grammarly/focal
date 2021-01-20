@@ -535,6 +535,7 @@ function filterClassNames(
   }) as (string | ObservableInput<ClassNameLike>)[]
 }
 
+/* eslint-disable no-redeclare */
 export function classes(...cs: ClassNameLike[]): { className: string | undefined }
 
 export function classes(
@@ -624,6 +625,7 @@ export function classes(
     }
   }
 }
+/* eslint-enable no-redeclare */
 
 // @TODO this is naїve, can we do better?
 function combineTemplate(
@@ -771,7 +773,7 @@ export function bind(template: { [key: string]: Atom<any> }) {
   }
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-redeclare */
 export function reactiveList<TValue>(
   ids: Observable<string[]>, createListItem: (x: string) => TValue
 ): Observable<TValue[]>
@@ -779,7 +781,6 @@ export function reactiveList<TValue>(
 export function reactiveList<TValue>(
   ids: Observable<number[]>, createListItem: (x: number) => TValue
 ): Observable<TValue[]>
-/* eslint-enable @typescript-eslint/no-unused-vars */
 
 /**
  * Derive a reactive list from:
@@ -816,3 +817,4 @@ export function reactiveList<TValue, TKey extends string | number>(
     map(([, values]) => values)
   )
 }
+/* eslint-enable no-redeclare */

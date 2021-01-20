@@ -213,16 +213,6 @@ module.exports = {
                     ],
                     "jsx-alignment": true,
                     "no-unnecessary-local-variable": true,
-                    "whitespace": [
-                        true,
-                        "check-branch",
-                        "check-decl",
-                        "check-operator",
-                        "check-separator",
-                        "check-type",
-                        "check-module",
-                        "check-typecast"
-                    ]
                     "no-unnecessary-override": true
                 }
             }

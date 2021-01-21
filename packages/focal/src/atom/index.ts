@@ -16,7 +16,7 @@ export {
 // the namespace below and then export it.
 export type Atom<T> = _Atom<T>
 
-// eslint-disable-next-line no-redeclare
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export namespace Atom {
   /**
    * Create an atom with given initial value.

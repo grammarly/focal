@@ -78,6 +78,8 @@ module.exports = {
           "error",
           "method"
         ],
+        "no-redeclare": "off",
+        "@typescript-eslint/no-redeclare": ["error"],
         "arrow-parens": [
             "error",
             "as-needed"
@@ -167,7 +169,6 @@ module.exports = {
         "no-multiple-empty-lines": "error",
         "no-new-wrappers": "error",
         "no-null/no-null": "off",
-        "no-redeclare": "error",
         "no-regex-spaces": "error",
         "no-shadow": [
             "off",

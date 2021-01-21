@@ -211,7 +211,6 @@ module.exports = {
                             "function-regex": "^[a-z][\\w\\d]+$"
                         }
                     ],
-                    "jsx-alignment": true,
                     "no-unnecessary-local-variable": true,
                     "no-unnecessary-override": true
                 }

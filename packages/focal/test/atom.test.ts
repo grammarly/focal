@@ -500,42 +500,36 @@ describe('atom', () => {
 
       let called1 = 0
       const a1 = source.view(x => {
-        console.log('a1', called1, x)
         called1++
         return x + 1
       })
 
       let called2 = 0
       const a2 = a1.view(x => {
-        console.log('a2', called2, x)
         called2++
         return -x
       })
 
       let called3 = 0
       const a3 = a2.view(x => {
-        console.log('a3', called3, x)
         called3++
         return x * 2
       })
 
       let called4 = 0
       const a4 = a3.view(x => {
-        console.log('a4', called4, x)
         called4++
         return `Hi ${x}`
       })
 
       let called5 = 0
       const a5 = a3.view(x => {
-        console.log('a5', called5, x)
         called5++
         return `Ho ${x}`
       })
 
       let called6 = 0
       const a6 = a3.view(x => {
-        console.log('a6', called6, x)
         called6++
         return `HU ${x}`
       })
@@ -583,42 +577,36 @@ describe('atom', () => {
 
       let called1 = 0
       const a1 = source.view(x => {
-        console.log('a1', called1, x)
         called1++
         return x + 1
       })
 
       let called2 = 0
       const a2 = a1.view(x => {
-        console.log('a2', called2, x)
         called2++
         return -x
       })
 
       let called3 = 0
       const a3 = a2.view(x => {
-        console.log('a3', called3, x)
         called3++
         return x * 2
       })
 
       let called4 = 0
       const a4 = a3.view(x => {
-        console.log('a4', called4, x)
         called4++
         return `Hi ${x}`
       })
 
       let called5 = 0
       const a5 = a3.view(x => {
-        console.log('a5', called5, x)
         called5++
         return `Ho ${x}`
       })
 
       let called6 = 0
       const a6 = a3.view(x => {
-        console.log('a6', called6, x)
         called6++
         return `HU ${x}`
       })
@@ -877,6 +865,73 @@ describe('atom', () => {
           materialize(), map(x => x.kind), toArray()
         ).toPromise()
       ).toEqual(['N', 'C'])
+    })
+  })
+
+  describe('value equality', () => {
+    interface TestValue {
+      a: number,
+      b: number
+    }
+
+    const eqByA = (a: TestValue, b: TestValue): boolean => {
+      console.log('equals', a.a === b.a)
+      return a.a === b.a
+    }
+
+    it('custom equals is called on modify', () => {
+      const eqMock = jest.fn(eqByA)
+      const a = Atom.create<TestValue>({ a: 1, b: 2 }, eqMock)
+
+      a.modify(v => ({ ...v, b: 3 }))
+
+      expect(eqMock.mock.calls.length).toBe(1)
+    })
+
+    it('custom equals used on modify', () => {
+      const a = Atom.create<TestValue>({ a: 1, b: 2 }, eqByA)
+      const observations: TestValue[] = []
+      const cb = (x: TestValue) => observations.push(x)
+      const subscription = a.subscribe(cb)
+
+      a.modify(v => ({ ...v, b: 3 }))
+      a.modify(v => ({ ...v, a: 2 }))
+
+      expect(observations.length).toBe(2) // including initial value
+      expect(observations).toEqual([{ a: 1, b: 2 }, { a: 2, b: 2 }])
+
+      subscription.unsubscribe()
+    })
+
+    it('custom equals used on set', () => {
+      const a = Atom.create<TestValue>({ a: 1, b: 2 }, eqByA)
+      const observations: TestValue[] = []
+      const cb = (x: TestValue) => observations.push(x)
+      const subscription = a.subscribe(cb)
+
+      a.set({ a: 1, b: 3 })
+      a.set({ a: 2, b: 2 })
+
+      expect(observations.length).toBe(2) // including initial value
+      expect(observations).toEqual([{ a: 1, b: 2 }, { a: 2, b: 2 }])
+
+      subscription.unsubscribe()
+    })
+
+    it('custom equals used in child atom', () => {
+      const a = Atom.create<TestValue>({ a: 1, b: 2 }, eqByA)
+      const b = a.view(v => v.b)
+      const bObservations: number[] = []
+      const cb = (x: number) => bObservations.push(x)
+      const subscription = b.subscribe(cb)
+
+      a.set({ a: 1, b: 3 })
+      a.set({ a: 2, b: 4 })
+
+      expect(bObservations.length).toBe(2) // including initial value
+      expect(bObservations).toEqual([2, 4])
+
+      subscription.unsubscribe()
     })
   })
 })

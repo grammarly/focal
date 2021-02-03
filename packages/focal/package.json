@@ -28,7 +28,7 @@
     "build": "npm run clean && yarn build:cjs && yarn build:es5 && yarn build:es2015 && npm run lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint './src/**/*.ts*' './test/**/*.ts*' && tsc --noemit",
+    "lint": "tslint --type-check --project tsconfig.json -c tslint.json",
     "prepack": "cp ../../README.md ./ && cp ../../LICENSE ./",
     "postpack": "rm README.md && rm LICENSE"
   },

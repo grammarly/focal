@@ -30,8 +30,7 @@
     "test:watch": "jest --watch",
     "lint": "eslint './src/**/*.ts*' './test/**/*.ts*' && tsc --noemit",
     "prepack": "cp ../../README.md ./ && cp ../../LICENSE ./",
-    "postpack": "rm README.md && rm LICENSE",
-    "preversion": "if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then echo \"Not on the master branch.\" && exit 1; fi"
+    "postpack": "rm README.md && rm LICENSE"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "contributors": [

@@ -1,6 +1,6 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",
@@ -28,10 +28,9 @@
     "build": "npm run clean && yarn build:cjs && yarn build:es5 && yarn build:es2015 && npm run lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint './src/**/*.ts*' './test/**/*.ts*' && tsc --noemit",
+    "lint": "tslint --type-check --project tsconfig.json -c tslint.json",
     "prepack": "cp ../../README.md ./ && cp ../../LICENSE ./",
-    "postpack": "rm README.md && rm LICENSE",
-    "preversion": "if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then echo \"Not on the master branch.\" && exit 1; fi"
+    "postpack": "rm README.md && rm LICENSE"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "contributors": [

@@ -2,7 +2,11 @@
 
 ## Release
 
-For each tag `v*` that is pushed into `master` branch CI creates ["Release"](https://github.com/grammarly/focal/releases) and attaches package tarball `grammarly-focal-v*.tgz`. For details see `release.yml`
+1. Create pull-request for relese "Release vX.X.X"
+2. Run in root `yarn bump-release X.X.X`
+3. yarn bump-release will bump focal version, update deps in private packages and create a commit
+4. Merge and manually create [GitHub Release](https://github.com/grammarly/focal/releases)
+5. On release "publish" GitHub Actions will trigger build and attach tarball to "Release". For details see `release.yml`
 
 ## Tests
 

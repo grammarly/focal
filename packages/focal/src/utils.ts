@@ -42,12 +42,16 @@ export function findIndex<T>(xs: T[], p: (x: T) => boolean): number {
 
 export function warning(message: string) {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
-    console.error('[Focal]: ' + message) // tslint:disable-line no-console
+    console.error('[Focal]: ' + message)
   }
 
   // Throw a dummy error so it's possible to enter debugger with
   // 'break on all exceptions'.
-  try { throw new Error(message) } catch (_) { /* no-op */ }
+  try {
+    throw new Error(message)
+  } catch (_) {
+    /* no-op */
+  }
 }
 
 export function getReactComponentName(

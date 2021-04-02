@@ -1,5 +1,5 @@
 export interface NodeState {
-  value: number,
+  value: number
   children: NodeState[]
 }
 

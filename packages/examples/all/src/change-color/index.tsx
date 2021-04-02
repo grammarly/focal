@@ -12,7 +12,7 @@ const BOLD = 'bold'
 
 interface AppState {
   style: {
-    color: string,
+    color: string
     font: string
   }
 }

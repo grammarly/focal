@@ -6,7 +6,7 @@ class Test extends React.Component<{ trigger: Observable<void> }> {
   list = Atom.create(['a', 'b', 'c'])
 
   componentWillMount() {
-    this.props.trigger.subscribe(list => {
+    this.props.trigger.subscribe(_ => {
       this.list.set(['a', 'b'])
       this.list.set(['a', 'b', 'c'])
     })

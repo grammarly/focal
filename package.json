@@ -3,14 +3,23 @@
   "name": "focal",
   "scripts": {
     "build": "yarn workspace @grammarly/focal build",
+    "lint": "yarn lint:focal && yarn lint:test && yarn lint:todomvc && yarn lint:examples",
+    "lint:focal": "yarn workspace @grammarly/focal lint",
+    "lint:test": "yarn workspace focal-manual-tests lint",
+    "lint:todomvc": "yarn workspace focal-todomvc lint",
+    "lint:examples": "yarn workspace focal-examples lint",
     "package": "yarn workspace @grammarly/focal pack",
     "test": "yarn workspace @grammarly/focal test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",
     "postinstall": "yarn build",
     "bump-version": "sh ./scripts/release.sh"
   },
   "devDependencies": {
-    "@grammarly/tslint-config": "0.5.1",
-    "tslint": "5.20.0",
+    "@typescript-eslint/eslint-plugin": "^4.14.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^4.14.0",
+    "@typescript-eslint/parser": "^4.14.0",
+    "eslint": "^7.18.0",
+    "eslint-plugin-jsdoc": "^31.0.8",
+    "eslint-plugin-react": "^7.22.0",
     "typescript": "3.6.4"
   },
   "workspaces": [

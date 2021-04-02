@@ -1,7 +1,7 @@
 import { App } from './app'
 
 // hot reload support
-declare const require: (name: String) => any
+declare const require: (name: string) => any
 declare const module: {
   hot?: { accept(path?: string, callback?: () => void): void }
 }

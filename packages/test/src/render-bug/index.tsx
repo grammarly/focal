@@ -59,6 +59,7 @@ const MinimalReproduce = () => {
 }
 
 export const Main = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   state = Atom.create(0)
 }) => {
   return (

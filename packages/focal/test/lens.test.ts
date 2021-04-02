@@ -13,7 +13,7 @@ function roundtrip<T, U>(
   })
 }
 
-// tslint:disable-next-line
+// eslint-disable-next-line max-len
 // see https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial#the-lens-laws-
 function testLaws<T, U>(
   l: Lens<T, U>,

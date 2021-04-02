@@ -4,7 +4,7 @@ import { Atom } from '@grammarly/focal'
 import { debounceTime } from 'rxjs/operators'
 
 // hot reload support
-declare const require: (name: String) => any
+declare const require: (name: string) => any
 declare const module: {
   hot?: { accept(path?: string, callback?: () => void): void }
 }
@@ -49,7 +49,9 @@ app.start()
 function bench(action: () => void, name: string) {
   const now =
     window.performance && window.performance.now ?
-      function () { return window.performance.now() } // tslint:disable-line
+      function () {
+        return window.performance.now()
+      }
       : Date.now
 
   const startTime = now()
@@ -57,11 +59,9 @@ function bench(action: () => void, name: string) {
   const endTime = now()
   const syncTime = endTime - startTime
 
-  // tslint:disable
   // no idea what's this for – taken from the Elm benchmark,
-  // tslint:disable-next-line
+  // eslint-disable-next-line max-len
   // https://github.com/evancz/todomvc-perf-comparison/blob/master/resources/benchmark-runner.js#L113
-  // tslint:enable
   setTimeout(() => {
     setTimeout(() => {
       const endTime = now()
@@ -75,7 +75,7 @@ function bench(action: () => void, name: string) {
     run: function(numberOfItems = 200) {
       const newTodo = document.getElementsByClassName('new-todo')[0] as HTMLInputElement
 
-      function elmBenchmark1() { // tslint:disable-line
+      function elmBenchmark1() {
         for (let i = 0; i < numberOfItems; i++) {
           const keydownEvent = document.createEvent('Event')
           keydownEvent.initEvent('keydown', true, true)
@@ -113,10 +113,8 @@ function bench(action: () => void, name: string) {
     }
   },
   om: {
-    // tslint:disable
     // @TODO implement Om-like benchmark that only manipulates app state.
-    // tslint:disable-next-line
+    // eslint-disable-next-line max-len
     // see https://github.com/swannodette/todomvc/blob/gh-pages/labs/architecture-examples/om/src/todomvc/app.cljs#L181
-    // tslint:enable
   }
 }

@@ -13,6 +13,7 @@ interface InProgress { kind: ResultKind.InProgress }
 
 type Result<T> = Success<T> | Failure | InProgress
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 namespace Result {
   export function success<T>(value: T): Success<T> {
     return {

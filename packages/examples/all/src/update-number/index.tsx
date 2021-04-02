@@ -13,7 +13,7 @@ import * as React from 'react'
 import { Atom, F, bind } from '@grammarly/focal'
 
 interface AppState {
-  inputValue: string,
+  inputValue: string
   value: number
 }
 

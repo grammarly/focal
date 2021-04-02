@@ -8,7 +8,7 @@ interface ExampleComponent<S> {
 
 declare const require: (path: string) => any
 
-const examples: { name: string, example: ExampleComponent<any> }[] = [
+const examples: { name: string; example: ExampleComponent<any> }[] = [
   'counter',
   'clock',
   'checkbox',

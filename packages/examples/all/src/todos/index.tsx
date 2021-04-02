@@ -7,7 +7,7 @@ import {
   SHOW_ALL, SHOW_ACTIVE, SHOW_COMPLETED
 } from './model'
 
-const Todo = (props: { id: string, todo: Atom<TodoState> }) => {
+const Todo = (props: { id: string; todo: Atom<TodoState> }) => {
   const { todo, id } = props
   const todoStyle = {
     cursor: 'pointer',

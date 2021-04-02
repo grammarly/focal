@@ -88,6 +88,7 @@ export interface KeyImplFor<TObject> {
    * allow to specify only some of the type arguments.
    *
    * This is the second call, where you supply the key argument.
+   *
    * @example
    * interface SomeObject {
    *   someProp: number

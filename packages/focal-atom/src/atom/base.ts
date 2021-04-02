@@ -148,7 +148,7 @@ export interface Atom<T> extends ReadOnlyAtom<T> {
    * The update function should be:
    * - referentially transparent: return same result for same arguments
    * - side-effect free: don't perform any mutations (including calling
-   *   Atom.set/Atom.modify) and side effects
+   * Atom.set/Atom.modify) and side effects
    *
    * @param updateFn value update function
    */
@@ -251,7 +251,7 @@ export abstract class AbstractReadOnlyAtom<T>
   view<K extends keyof T>(k: K): ReadOnlyAtom<T[K]>
 
   view<U>(...args: any[]): ReadOnlyAtom<any> {
-    // tslint:disable no-use-before-declare
+    /* eslint-disable @typescript-eslint/no-use-before-define */
     return args[0] !== undefined
       // view(getter) case
       ? typeof args[0] === 'function'
@@ -264,7 +264,7 @@ export abstract class AbstractReadOnlyAtom<T>
           : new AtomViewImpl<T, U>(this, x => (args[0] as Lens<T, U>).get(x))
       // view() case
       : this as ReadOnlyAtom<T>
-    // tslint:enable no-use-before-declare
+    /* eslint-enable @typescript-eslint/no-use-before-define */
   }
 }
 
@@ -282,8 +282,8 @@ export abstract class AbstractAtom<T>
   lens<K extends keyof T>(k: K): Atom<T[K]>
 
   lens<U>(arg1: Lens<T, U> | PropExpr<T, U> | string, ...args: string[]): Atom<any> {
-    // tslint:disable no-use-before-declare
 
+    /* eslint-disable @typescript-eslint/no-use-before-define */
     // lens(prop expr) case
     return typeof arg1 === 'function'
       ? new LensedAtom<T, U>(this, Lens.prop(arg1 as (x: T) => U), structEq)
@@ -293,7 +293,7 @@ export abstract class AbstractAtom<T>
           this, Lens.compose(Lens.key(arg1), ...args.map(k => Lens.key(k))), structEq)
         // lens(lens) case
         : new LensedAtom<T, U>(this, arg1 as Lens<T, U>, structEq)
-    // tslint:enable no-use-before-declare
+    /* eslint-enable @typescript-eslint/no-use-before-define */
   }
 }
 
@@ -371,7 +371,7 @@ class LensedAtom<TSource, TDest> extends AbstractAtom<TDest> {
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TDest>) { // tslint:disable-line function-name
+  _subscribe(subscriber: Subscriber<TDest>) {
     if (!this._subscription) {
       this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
@@ -440,7 +440,7 @@ class AtomViewImpl<TSource, TDest> extends AbstractReadOnlyAtom<TDest> {
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TDest>) { // tslint:disable-line function-name
+  _subscribe(subscriber: Subscriber<TDest>) {
     if (!this._subscription) {
       this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
@@ -510,7 +510,7 @@ export class CombinedAtomViewImpl<TResult> extends AbstractReadOnlyAtom<TResult>
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TResult>) { // tslint:disable-line function-name
+  _subscribe(subscriber: Subscriber<TResult>) {
     if (!this._subscription) {
       this._subscription = combineLatest(this._sources)
         .subscribe(xs => this._onSourceValues(xs))

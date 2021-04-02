@@ -3,7 +3,7 @@ import { Option } from './../utils'
 export interface Optic<TSource, T, U> {
   get(s: TSource): T
   set(v: U, s: TSource): TSource
-  modify(updateFn: (v: T) => U, s: TSource): TSource // tslint:disable-line no-unused-vars
+  modify(updateFn: (v: T) => U, s: TSource): TSource
 
   // @TODO can't optic compose?
 }
@@ -12,7 +12,7 @@ function createModify<TSource, T, U>(
   getter: (s: TSource) => T,
   setter: (v: U, s: TSource) => TSource
 ) {
-  return function modify(updateFn: (v: T) => U, s: TSource) { // tslint:disable-line
+  return function modify(updateFn: (v: T) => U, s: TSource) {
     return setter(updateFn(getter(s)), s)
   }
 }

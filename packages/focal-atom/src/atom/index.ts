@@ -16,6 +16,7 @@ export {
 // the namespace below and then export it.
 export type Atom<T> = _Atom<T>
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export namespace Atom {
   /**
    * Create an atom with given initial value.
@@ -29,7 +30,6 @@ export namespace Atom {
     return new JsonAtom(initialValue)
   }
 
-  // tslint:disable no-unused-vars
   export function log<T>(
     atom: Atom<T>,
     name?: string
@@ -49,7 +49,6 @@ export namespace Atom {
     atom: ReadOnlyAtom<T>,
     logger?: (prevState: T, newState: T) => void
   ): ReadOnlyAtom<T>
-  // tslint:enable no-unused-vars
 
   export function log<T>(
     atom: Atom<T> | ReadOnlyAtom<T>,
@@ -74,7 +73,6 @@ export namespace Atom {
     return atom
   }
 
-  // tslint:disable no-unused-vars
   export function combine<T1, T2, TResult>(
     source1: ReadOnlyAtom<T1>,
     source2: ReadOnlyAtom<T2>,

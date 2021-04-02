@@ -37,7 +37,7 @@ const pattern = `
                                                               . : :.:::::::.: :.
 `
 
-const Scroller = (props: { scrollTop: Atom<number>, scrollLeft: Atom<number> }) =>
+const Scroller = (props: { scrollTop: Atom<number>; scrollLeft: Atom<number> }) =>
   <div
     {
       ...bindElementProps({
@@ -56,7 +56,7 @@ const Scroller = (props: { scrollTop: Atom<number>, scrollLeft: Atom<number> }) 
     <pre>{pattern}</pre>
   </div>
 
-const ScrollInput = (props: { value: Atom<number>, label: string }) =>
+const ScrollInput = (props: { value: Atom<number>; label: string }) =>
   <div>
     <label>
       {props.label}

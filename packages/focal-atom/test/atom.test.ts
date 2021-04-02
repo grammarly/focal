@@ -1,4 +1,3 @@
-// tslint:disable no-unnecessary-local-variable
 import { merge, Observable, from, Subject, never, throwError, empty } from 'rxjs'
 import { take, toArray, tap, materialize, map } from 'rxjs/operators'
 import { Atom, Lens, ReadOnlyAtom } from '../src'
@@ -74,7 +73,7 @@ function testDerivedAtom(
     expect(viewFnCalls).toEqual([5, 6])
     expect(os).toEqual([6, 7])
 
-    a.modify(x => {
+    a.modify(_ => {
       sub.unsubscribe()
       return 0
     })
@@ -112,7 +111,7 @@ function testDerivedAtom(
     expect(viewFnCalls2).toEqual([6, 7])
     expect(os2).toEqual([11, 12])
 
-    a.modify(x => {
+    a.modify(_ => {
       sub1.unsubscribe()
       return 0
     })
@@ -542,7 +541,7 @@ describe('atom', () => {
 
       function testCalls(
         a: number, b: number, c: number, d: number, e: number, f: number,
-        msg: string
+        _msg: string
       ) {
         expect(
           [called1, called2, called3, called4, called5, called5]).toEqual(
@@ -721,7 +720,7 @@ describe('atom', () => {
       sub.unsubscribe()
     })
 
-    testDerivedAtom((a, f, onCalled) => Atom.combine(a, Atom.create(0), (a, b) => {
+    testDerivedAtom((a, f, onCalled) => Atom.combine(a, Atom.create(0), (a, _) => {
       onCalled(a)
       return f(a)
     }))
@@ -766,7 +765,9 @@ describe('atom', () => {
         subscribed = true
         o.complete()
 
-        return () => { subscribed = false }
+        return () => {
+          subscribed = false
+        }
       })
 
       const _ = Atom.fromObservable(src)
@@ -781,7 +782,9 @@ describe('atom', () => {
         subCount++
         o.next(1)
 
-        return () => { subCount-- }
+        return () => {
+          subCount--
+        }
       })
 
       const a = Atom.fromObservable(src)

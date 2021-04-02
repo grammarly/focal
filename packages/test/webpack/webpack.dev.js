@@ -1,6 +1,6 @@
 var webpack = require('webpack')
 var path = require('path')
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
   devtool: 'eval-source-map',
@@ -13,11 +13,6 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'tslint-loader',
-        enforce: "pre"
-      },
-      {
-        test: /\.tsx?$/,
         loader: 'ts-loader'
       }
     ]
@@ -28,6 +23,9 @@ module.exports = {
     publicPath: '/js/'
   },
   plugins: [
+    new ESLintPlugin({
+      extensions: ["tsx", "ts"],
+    }),
     new webpack.HotModuleReplacementPlugin()
   ],
   resolve: {

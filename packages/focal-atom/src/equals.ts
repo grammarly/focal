@@ -26,12 +26,10 @@
  * THE SOFTWARE.
  */
 
-// tslint:disable no-function-expression
-
 function arrayFromIterator<T>(iter: Iterator<T>) {
   const result: T[] = []
   let next: IteratorResult<T>
-  while (!(next = iter.next()).done) { // tslint:disable-line no-conditional-assignment
+  while (!(next = iter.next()).done) {
     result.push(next.value)
   }
   return result
@@ -76,9 +74,11 @@ function identical(a: any, b: any) {
 const _isArguments = ((function () {
   const toString = Object.prototype.toString
 
+  /* eslint-disable brace-style */
   return toString.call(arguments) === '[object Arguments]'
     ? function isArguments(x: any) { return toString.call(x) === '[object Arguments]' }
     : function isArguments(x: any) { return has('callee', x) }
+  /* eslint-enable brace-style */
 }) ())
 
 /**
@@ -102,8 +102,9 @@ const keys = ((function () {
     return arguments.propertyIsEnumerable('length')
   }) ())
 
+  // eslint-disable-next-line func-style
   const contains = function contains<T>(list: T[], item: T) {
-    var idx = 0 // tslint:disable-line no-var-keyword
+    var idx = 0 // eslint-disable-line no-var
 
     while (idx < list.length) {
       if (list[idx] === item)

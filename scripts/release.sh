@@ -24,4 +24,13 @@ rm -rf $BASEDIR/packages/focal/README.md && rm -rf $BASEDIR/packages/focal-atom/
 rm -rf $BASEDIR/packages/focal/LICENSE && rm -rf $BASEDIR/packages/focal-atom/LICENSE
 rm -rf $BASEDIR/packages/focal/AUTHORS && rm -rf $BASEDIR/packages/focal-atom/AUTHORS
 
+cd packages/focal && yarn version --new-version $VER --no-git-tag-version && cd ../..
+sed -i '' 's/grammarly\/focal":.*$/grammarly\/focal": "'${VER}'",/g' packages/examples/all/package.json
+sed -i '' 's/grammarly\/focal":.*$/grammarly\/focal": "'${VER}'",/g' packages/examples/todomvc/package.json
+sed -i '' 's/grammarly\/focal":.*$/grammarly\/focal": "'${VER}'",/g' packages/test/package.json
+# yarn
+git add .
+git commit -m "v$VER"
+
+
 git push && git push --tags

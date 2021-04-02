@@ -1,12 +1,15 @@
 {
   "name": "@grammarly/focal",
-  "version": "0.8.1",
+  "version": "0.8.5",
   "description": "FRP UI with React, observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",
   "es2015": "dist/_esm2015/src/index.js",
   "types": "dist/_cjs/src/index.d.ts",
   "sideEffects": [
+    "./dist/_cjs/src/lens/index.js",
+    "./dist/_esm5/src/lens/index.js",
+    "./dist/_esm2015/src/lens/index.js",
     "./dist/_cjs/src/lens/json.js",
     "./dist/_esm5/src/lens/json.js",
     "./dist/_esm2015/src/lens/json.js"
@@ -26,7 +29,7 @@
     "build": "yarn run clean && yarn build:cjs && yarn build:es5 && yarn build:es2015 && yarn run lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "tslint --type-check --project tsconfig.json -c tslint.json"
+    "lint": "eslint './src/**/*.ts*' 'test/**/*.ts*' && tsc --noemit"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "keywords": [
@@ -46,7 +49,6 @@
   "dependencies": {},
   "devDependencies": {
     "@grammarly/focal-atom": "^0.8.1",
-    "@grammarly/tslint-config": "0.5.1",
     "@types/jest": "24.0.20",
     "@types/node": "^6.0.34",
     "@types/react": "16.9.11",
@@ -56,7 +58,6 @@
     "react-dom": "16.11.0",
     "rxjs": "6.3.3",
     "ts-jest": "^23.10.5",
-    "tslint": "5.20.0",
     "typescript": "3.6.4"
   },
   "peerDependencies": {

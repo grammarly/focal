@@ -11,8 +11,8 @@ function getRandomSearchList() {
 }
 
 interface AppState {
-  searchString: string,
-  searchList: string[],
+  searchString: string
+  searchList: string[]
   timer: number
 }
 

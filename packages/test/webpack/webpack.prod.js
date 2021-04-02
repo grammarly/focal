@@ -1,6 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
   devtool: 'source-map',
@@ -8,11 +9,6 @@ module.exports = {
   mode: 'production',
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        loader: 'tslint-loader',
-        enforce: "pre"
-      },
       {
         test: /\.tsx?$/,
         loader: 'ts-loader'
@@ -25,6 +21,9 @@ module.exports = {
     publicPath: '/js/'
   },
   plugins: [
+    new ESLintPlugin({
+      extensions: ["tsx", "ts"],
+    }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.DefinePlugin({
       'process.env': {

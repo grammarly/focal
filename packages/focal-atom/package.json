@@ -26,7 +26,10 @@
     "build": "npm run clean && yarn build:cjs && yarn build:es5 && yarn build:es2015 && npm run lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "tslint --type-check --project tsconfig.json -c tslint.json"
+    "lint": "tslint --type-check --project tsconfig.json -c tslint.json",
+    "prepack": "cp ../../README.md ./ && cp ../../LICENSE ./",
+    "postpack": "rm README.md && rm LICENSE"
+
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "keywords": [

@@ -1,14 +1,5 @@
 #!/bin/bash
 
-BASEDIR="$(cd "$(dirname "$0")/.."; pwd)";
-if ! [[ $(git rev-parse --abbrev-ref HEAD) == \"master\" ]]; then
-  echo \"Not on the master branch.\" && exit 1;
-fi
-
-if [[ "$VER" == "" ]]; then
-  echo "Usage: VER=1.2.3 npm run release";
-fi
-
 echo Bumping version to v${VER}...
 
 cd packages/focal && yarn version --new-version $VER --no-git-tag-version && cd ../..
@@ -29,6 +20,3 @@ yarn
 # commit changes
 git add .
 git commit -m "v$VER"
-
-# push changes and tag
-git push && git push --tags

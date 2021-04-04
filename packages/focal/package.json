@@ -29,7 +29,9 @@
     "build": "yarn run clean && yarn build:cjs && yarn build:es5 && yarn build:es2015 && yarn run lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint './src/**/*.ts*' 'test/**/*.ts*' && tsc --noemit"
+    "lint": "eslint './src/**/*.ts*' 'test/**/*.ts*' && tsc --noemit",
+    "prepack": "cp ../../README.md ./ && cp ../../LICENSE ./",
+    "postpack": "rm README.md && rm LICENSE"
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "keywords": [

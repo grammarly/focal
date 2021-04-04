@@ -160,7 +160,7 @@
 
 "@jest/types@^24.9.0":
   version "24.9.0"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/@jest/types/-/types-24.9.0.tgz#63cb26cb7500d069e5a389441a7c6ab5e909fc59"
+  resolved "https://registry.yarnpkg.com/@jest/types/-/types-24.9.0.tgz#63cb26cb7500d069e5a389441a7c6ab5e909fc59"
   integrity sha1-Y8smy3UA0Gnlo4lEGnxqtekJ/Fk=
   dependencies:
     "@types/istanbul-lib-coverage" "^2.0.0"
@@ -208,19 +208,19 @@
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.3"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.3.tgz#4ba8ddb720221f432e443bd5f9117fd22cfd4762"
+  resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.3.tgz#4ba8ddb720221f432e443bd5f9117fd22cfd4762"
   integrity sha1-S6jdtyAiH0MuRDvV+RF/0iz9R2I=
 
 "@types/istanbul-lib-report@*":
   version "3.0.0"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/@types/istanbul-lib-report/-/istanbul-lib-report-3.0.0.tgz#c14c24f18ea8190c118ee7562b7ff99a36552686"
+  resolved "https://registry.yarnpkg.com/@types/istanbul-lib-report/-/istanbul-lib-report-3.0.0.tgz#c14c24f18ea8190c118ee7562b7ff99a36552686"
   integrity sha1-wUwk8Y6oGQwRjudWK3/5mjZVJoY=
   dependencies:
     "@types/istanbul-lib-coverage" "*"
 
 "@types/istanbul-reports@^1.1.1":
   version "1.1.2"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/@types/istanbul-reports/-/istanbul-reports-1.1.2.tgz#e875cc689e47bce549ec81f3df5e6f6f11cfaeb2"
+  resolved "https://registry.yarnpkg.com/@types/istanbul-reports/-/istanbul-reports-1.1.2.tgz#e875cc689e47bce549ec81f3df5e6f6f11cfaeb2"
   integrity sha1-6HXMaJ5HvOVJ7IHz315vbxHPrrI=
   dependencies:
     "@types/istanbul-lib-coverage" "*"
@@ -240,7 +240,7 @@
 
 "@types/jest@^24.0.0":
   version "24.9.1"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/@types/jest/-/jest-24.9.1.tgz#02baf9573c78f1b9974a5f36778b366aa77bd534"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.9.1.tgz#02baf9573c78f1b9974a5f36778b366aa77bd534"
   integrity sha1-Arr5Vzx48bmXSl82d4s2aqd71TQ=
   dependencies:
     jest-diff "^24.3.0"
@@ -290,12 +290,12 @@
 
 "@types/yargs-parser@*":
   version "20.2.0"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/@types/yargs-parser/-/yargs-parser-20.2.0.tgz#dd3e6699ba3237f0348cd085e4698780204842f9"
+  resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-20.2.0.tgz#dd3e6699ba3237f0348cd085e4698780204842f9"
   integrity sha1-3T5mmboyN/A0jNCF5GmHgCBIQvk=
 
 "@types/yargs@^13.0.0":
   version "13.0.11"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/@types/yargs/-/yargs-13.0.11.tgz#def2f0c93e4bdf2c61d7e34899b17e34be28d3b1"
+  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-13.0.11.tgz#def2f0c93e4bdf2c61d7e34899b17e34be28d3b1"
   integrity sha1-3vLwyT5L3yxh1+NImbF+NL4o07E=
   dependencies:
     "@types/yargs-parser" "*"
@@ -1829,7 +1829,7 @@ diff-sequences@^24.0.0:
 
 diff-sequences@^24.9.0:
   version "24.9.0"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/diff-sequences/-/diff-sequences-24.9.0.tgz#5715d6244e2aa65f48bba0bc972db0b0b11e95b5"
+  resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-24.9.0.tgz#5715d6244e2aa65f48bba0bc972db0b0b11e95b5"
   integrity sha1-VxXWJE4qpl9Iu6C8ly2wsLEelbU=
 
 diff@^3.1.0, diff@^3.2.0:
@@ -3731,7 +3731,7 @@ jest-diff@^24.0.0:
 
 jest-diff@^24.3.0:
   version "24.9.0"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/jest-diff/-/jest-diff-24.9.0.tgz#931b7d0d5778a1baf7452cb816e325e3724055da"
+  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-24.9.0.tgz#931b7d0d5778a1baf7452cb816e325e3724055da"
   integrity sha1-kxt9DVd4obr3RSy4FuMl43JAVdo=
   dependencies:
     chalk "^2.0.1"
@@ -3780,7 +3780,7 @@ jest-get-type@^24.0.0:
 
 jest-get-type@^24.9.0:
   version "24.9.0"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/jest-get-type/-/jest-get-type-24.9.0.tgz#1684a0c8a50f2e4901b6644ae861f579eed2ef0e"
+  resolved "https://registry.yarnpkg.com/jest-get-type/-/jest-get-type-24.9.0.tgz#1684a0c8a50f2e4901b6644ae861f579eed2ef0e"
   integrity sha1-FoSgyKUPLkkBtmRK6GH1ee7S7w4=
 
 jest-haste-map@^24.0.0:
@@ -5315,7 +5315,7 @@ pretty-format@^24.0.0:
 
 pretty-format@^24.9.0:
   version "24.9.0"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/pretty-format/-/pretty-format-24.9.0.tgz#12fac31b37019a4eea3c11aa9a959eb7628aa7c9"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-24.9.0.tgz#12fac31b37019a4eea3c11aa9a959eb7628aa7c9"
   integrity sha1-EvrDGzcBmk7qPBGqmpWet2KKp8k=
   dependencies:
     "@jest/types" "^24.9.0"
@@ -6953,7 +6953,7 @@ typedarray@^0.0.6:
 
 typescript@3.3.3:
   version "3.3.3"
-  resolved "https://artifactory.grammarly.io/artifactory/api/npm/common-npm/typescript/-/typescript-3.3.3.tgz#f1657fc7daa27e1a8930758ace9ae8da31403221"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.3.tgz#f1657fc7daa27e1a8930758ace9ae8da31403221"
   integrity sha1-8WV/x9qifhqJMHWKzpro2jFAMiE=
 
 typescript@3.6.4:

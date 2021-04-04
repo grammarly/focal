@@ -18,7 +18,6 @@
     "package": "yarn workspace @grammarly/focal pack && yarn workspace @grammarly/focal-atom pack",
     "release": "echo Publishing v${VER:?\"Usage: VER=1.2.3 npm run release\"}... && sh ./scripts/release.sh",
     "test": "yarn workspace @grammarly/focal-atom test && yarn workspace @grammarly/focal test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",
-    "postinstall": "yarn build",
     "bump-version": "sh ./scripts/release.sh"
   },
   "devDependencies": {

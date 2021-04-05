@@ -297,7 +297,7 @@ export abstract class AbstractAtom<T>
 }
 
 export class JsonAtom<T> extends AbstractAtom<T> {
-  constructor(initialValue: T) {
+  constructor(initialValue: T, private _eq: (x: T, y: T) => boolean = structEq) {
     super(initialValue)
   }
 
@@ -309,14 +309,14 @@ export class JsonAtom<T> extends AbstractAtom<T> {
     const prevValue = this.getValue()
     const next = updateFn(prevValue)
 
-    if (!structEq(prevValue, next))
+    if (!this._eq(prevValue, next))
       this.next(next)
   }
 
   set(x: T) {
     const prevValue = this.getValue()
 
-    if (!structEq(prevValue, x))
+    if (!this._eq(prevValue, x))
       this.next(x)
   }
 }

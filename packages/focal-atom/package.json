@@ -1,15 +1,12 @@
 {
-  "name": "@grammarly/focal",
+  "name": "@grammarly/focal-atom",
   "version": "0.8.5",
-  "description": "FRP UI with React, observables, immutable data and lenses",
+  "description": "FRP Atom: observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",
   "es2015": "dist/_esm2015/src/index.js",
   "types": "dist/_cjs/src/index.d.ts",
   "sideEffects": [
-    "./dist/_cjs/src/lens/index.js",
-    "./dist/_esm5/src/lens/index.js",
-    "./dist/_esm2015/src/lens/index.js",
     "./dist/_cjs/src/lens/json.js",
     "./dist/_esm5/src/lens/json.js",
     "./dist/_esm2015/src/lens/json.js"
@@ -26,12 +23,13 @@
     "build:cjs": "tsc -b tsconfig.build.cjs.json",
     "build:es5": "tsc -b tsconfig.build.es5.json",
     "build:es2015": "tsc -b tsconfig.build.es2015.json",
-    "build": "yarn run clean && yarn build:cjs && yarn build:es5 && yarn build:es2015 && yarn run lint",
+    "build": "npm run clean && yarn build:cjs && yarn build:es5 && yarn build:es2015 && npm run lint",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint './src/**/*.ts*' 'test/**/*.ts*' && tsc --noemit",
     "prepack": "cp ../../README.md ./ && cp ../../LICENSE ./",
     "postpack": "rm README.md && rm LICENSE"
+
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
   "contributors": [
@@ -96,24 +94,14 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@grammarly/focal-atom": "^0.8.5",
-    "@types/jest": "24.0.20",
+    "@types/jest": "^24.0.0",
     "@types/node": "^6.0.34",
-    "@types/react": "16.9.11",
-    "@types/react-dom": "16.9.3",
     "jest": "^24.1.0",
-    "react": "16.11.0",
-    "react-dom": "16.11.0",
     "rxjs": "6.3.3",
     "ts-jest": "^23.10.5",
-    "typescript": "3.6.4"
+    "typescript": "3.3.3"
   },
   "peerDependencies": {
-    "@types/react": ">= 16.9.11 < 17.0.0-0",
-    "@types/react-dom": ">= 16.9.3 < 17.0.0-0",
-    "@grammarly/focal-atom": ">= 0.8.5 < 0.9.0.0-0",
-    "react": ">= 16.11.0 < 17.0.0-0",
-    "react-dom": ">= 16.11.0 < 17.0.0-0",
     "rxjs": ">= 6.3.3 < 7.0.0-0"
   }
 }

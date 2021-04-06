@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "composite": true,
     "target": "es5",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
@@ -14,7 +15,6 @@
     "noUnusedParameters": false,
     "moduleResolution": "node",
     "jsx": "react",
-    "strict": true,
     "strictNullChecks": true,
     "noImplicitThis": true,
     "lib": ["es6", "es2015", "dom", "scripthost"]
@@ -22,8 +22,5 @@
   "include": [
     "src/**/*.ts*",
     "test/**/*.ts*"
-  ],
-  "references": [
-    { "path": "../focal-atom/tsconfig.json" }
   ]
 }

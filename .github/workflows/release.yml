@@ -13,17 +13,25 @@ jobs:
         id: branch_name
         run: |
           echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=TARBALL::grammarly-focal-${GITHUB_REF#refs/tags/}.tgz
+          echo ::set-output name=TARBALL_FOCAL::grammarly-focal-${GITHUB_REF#refs/tags/}.tgz
+          echo ::set-output name=TARBALL_FOCAL_ATOM::grammarly-focal-atom-${GITHUB_REF#refs/tags/}.tgz
       - name: Checkout code
         uses: actions/checkout@v2
       - run: yarn install
       - run: yarn build
       - run: yarn test
       - run: yarn package
-      - name: Upload binaries to release
+      - name: Upload @grammarly/focal binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./packages/focal/${{ steps.branch_name.outputs.TARBALL }}
-          asset_name: ${{ steps.branch_name.outputs.TARBALL }}
+          file: ./packages/focal/${{ steps.branch_name.outputs.TARBALL_FOCAL }}
+          asset_name: ${{ steps.branch_name.outputs.TARBALL_FOCAL }}
+          tag: ${{ github.ref }}
+      - name: Upload @grammarly/focal-atom binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./packages/focal-atom/${{ steps.branch_name.outputs.TARBALL_FOCAL_ATOM }}
+          asset_name: ${{ steps.branch_name.outputs.TARBALL_FOCAL_ATOM }}
           tag: ${{ github.ref }}

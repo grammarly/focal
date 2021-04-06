@@ -1,5 +1,6 @@
 import { Lens, Prism, PropExpr } from './../lens'
-import { structEq, Option } from './../utils'
+import { Option } from './../utils'
+import { structEq } from './../equals'
 
 import { Observable, Subscriber, Subscription, BehaviorSubject, combineLatest } from 'rxjs'
 

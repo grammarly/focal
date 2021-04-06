@@ -45,7 +45,9 @@ export function warning(message: string) {
 
   // Throw a dummy error so it's possible to enter debugger with
   // 'break on all exceptions'.
-  try { throw new Error(message) } catch (_) { /* no-op */ }
+  try {
+    throw new Error(message)
+  } catch (_) { /* no-op */ }
 }
 
 export type Option<T> = T | undefined

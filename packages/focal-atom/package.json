@@ -32,6 +32,52 @@
 
   },
   "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
+  "contributors": [
+    {
+      "name": "Sergey Yavnyi",
+      "email": "sergey.yavnyi@grammarly.com"
+    },
+    {
+      "name": "Valentyn Gaidylo",
+      "email": "valentyn.gaidylo@grammarly.com"
+    },
+    {
+      "name": "Igor Kononuchenko",
+      "email": "igor.kononuchenko@grammarly.com"
+    },
+    {
+      "name": "Alisa Mansurova",
+      "email": "alisa.mansurova@grammarly.com"
+    },
+    {
+      "name": "Eugene Chechuryn",
+      "email": "eugene.chechuryn@grammarly.com"
+    },
+    {
+      "name": "Yaroslav Voloshchuk",
+      "email": "yaroslav.voloshchuk@grammarly.com"
+    },
+    {
+      "name": "Sergey Rudenko",
+      "email": "sergey.rudenko@grammarly.com"
+    },
+    {
+      "name": "Gregory Shehet",
+      "email": "gregory.shehet@grammarly.com"
+    },
+    {
+      "name": "Anton Verinov",
+      "email": "anton@verinov.com"
+    },
+    {
+      "name": "Oleksii Levzhynskyi",
+      "email": "oleksii.levzhynskyi@grammarly.com"
+    },
+    {
+      "name": "Vladyslav Bozhko",
+      "email": "vladyslav.bozhko@grammarly.com"
+    }
+  ],
   "keywords": [
     "frp",
     "rx",

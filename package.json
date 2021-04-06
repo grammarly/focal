@@ -15,9 +15,8 @@
     "lint:test": "yarn workspace focal-manual-tests lint",
     "lint:todomvc": "yarn workspace focal-todomvc lint",
     "lint:examples": "yarn workspace focal-examples lint",
-    "package": "sh ./scripts/pack.sh",
-    "release": "echo Publishing v${VER:?\"Usage: VER=1.2.3 npm run release\"}... && sh ./scripts/release.sh",
     "test": "yarn workspace @grammarly/focal-atom test && yarn workspace @grammarly/focal test && yarn workspace focal-todomvc build && yarn workspace focal-examples build && yarn workspace focal-manual-tests build",
+    "package": "yarn workspace @grammarly/focal-atom pack && yarn workspace @grammarly/focal pack",
     "bump-version": "sh ./scripts/bump-version.sh"
   },
   "devDependencies": {

@@ -5,7 +5,7 @@
  */
 import * as React from 'react'
 import { ObservableReactHTMLProps, ObservableReactChildren } from './observablePropTypes'
-import { LiftWrapperProps, LiftWrapper } from './react'
+import { LiftWrapperProps, LiftWrapperII } from './react'
 
 export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {
   mount?: React.Ref<E>
@@ -26,7 +26,7 @@ export function liftIntrinsic<
 ): LiftedIntrinsic<E> {
   return (props: LiftedIntrinsicComponentProps<E>) =>
     React.createElement<LiftWrapperProps<ObservableReactHTMLProps<E>>>(
-      LiftWrapper,
+      LiftWrapperII,
       { component: intrinsicClassName, props: props }
     )
 }
@@ -79,7 +79,7 @@ export function createLiftedIntrinsics(): LiftedIntrinsics {
   )
 
   r.Fragment = (props: LiftedFragmentAttributes) =>
-    React.createElement(LiftWrapper, { component: React.Fragment, props })
+    React.createElement(LiftWrapperII, { component: React.Fragment, props })
 
   return r as LiftedIntrinsics
 }

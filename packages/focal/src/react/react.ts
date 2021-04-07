@@ -33,41 +33,51 @@ export interface LiftWrapperState {
   subscription?: Subscription | null
 }
 
-/**
- * A wrapper component that allows to use observables for prop values of a
- * given component.
- */
-export class LiftWrapper<TProps>
-    extends React.Component<LiftWrapperProps<TProps>, LiftWrapperState> {
-  state = LiftWrapper._initState
+function useForceUpdate(): () => void {
+  return React.useReducer(() => ({}), {})[1] as () => void
+}
 
-  static _initState: LiftWrapperState = {
-    renderCache: null,
-    subscription: null
-  }
+export const LiftWrapperII = <TProps>(cProps: LiftWrapperProps<TProps>) => {
+  const subscription = React.useRef<LiftWrapperState['subscription']>(null)
+  const renderCache = React.useRef<LiftWrapperState['renderCache']>(null)
+  const forceUpdate = useForceUpdate()
 
-  static _endState: LiftWrapperState = {
-    subscription: null
-  }
-
-  render() {
-    return this.state.renderCache || null
-  }
-
-  private _subscribe(newProps: LiftWrapperProps<TProps>) {
+  const _subscribe = (newProps: LiftWrapperProps<TProps>) => {
     const { props, component } = newProps
 
     let n = 0
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     walkObservables(props, () => n += 1)
 
+    const state = { subscription: subscription.current, renderCache: renderCache.current }
+
+    let inSync = false
+
+    const setState = (s: (LiftWrapperState | ((s: LiftWrapperState) => LiftWrapperState))) => {
+      const newState = typeof s === 'function' ? s(state) : s
+
+      if ('subscription' in newState) {
+        subscription.current = newState.subscription
+      }
+
+      if ('renderCache' in newState) {
+        if (renderCache.current === newState.renderCache) {
+          return
+        }
+
+        renderCache.current = newState.renderCache
+
+        if (inSync) {
+          forceUpdate()
+        }
+      }
+    }
+
     switch (n) {
       case 0:
-        this.setState({
-          subscription: null,
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define
-          renderCache: render(component, props)
-        })
+        subscription.current = null
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        renderCache.current = render(component, props)
         break
 
       // @NOTE original Calmm code below
@@ -76,44 +86,37 @@ export class LiftWrapper<TProps>
       // Could this be replaced by a regular closure? Perhaps using
       // a class is an optimization?
       case 1:
-        new RenderOne(this, newProps) // eslint-disable-line
+        new RenderOne({ props: newProps, state, setState }, newProps) // eslint-disable-line
         break
       default:
-        new RenderMany(this, newProps, n) // eslint-disable-line
+        new RenderMany({ props: newProps, state, setState }, newProps, n) // eslint-disable-line
         break
+    }
+
+    inSync = true
+  }
+
+  const _unsubscribe = () => {
+    if (subscription.current) {
+      subscription.current.unsubscribe()
     }
   }
 
-  private _unsubscribe() {
-    const subscription = this.state ? this.state.subscription : null
-    if (subscription)
-      subscription.unsubscribe()
-  }
+  React.useEffect(() => _unsubscribe, [])
 
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(newProps: LiftWrapperProps<TProps>) {
-    this._unsubscribe()
-    this._subscribe(newProps)
-  }
+  _unsubscribe()
+  _subscribe(cProps)
 
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillMount() {
-    this._unsubscribe()
-    this._subscribe(this.props)
-  }
+  return renderCache.current || null
+}
 
-  componentWillUnmount() {
-    this._unsubscribe()
-    this.setState(LiftWrapper._initState)
-  }
+LiftWrapperII._initState = {
+  renderCache: null,
+  subscription: null
+}
 
-  shouldComponentUpdate(
-    _newProps: Readonly<LiftWrapperProps<TProps>>,
-    newState: Readonly<LiftWrapperState>,
-    _newContext: any
-  ) {
-    return newState.renderCache !== this.state.renderCache
-  }
+LiftWrapperII._endState = {
+  subscription: null
 }
 
 // here we only say TProps, but a lifted component
@@ -155,7 +158,7 @@ export function lift<TProps>(
 ) {
   return (props: LiftedComponentProps<TProps>) =>
     React.createElement<LiftWrapperProps<TProps>>(
-      LiftWrapper,
+      LiftWrapperII,
       { component: component, props: props }
     )
 }
@@ -349,13 +352,19 @@ function warnEmptyObservable(componentName: string | undefined) {
  *
  * @template P component props
  */
+interface LiftWrapperType<P> {
+  state: LiftWrapperState
+  props: LiftWrapperProps<P>
+  setState(state: (LiftWrapperState | ((state: LiftWrapperState) => LiftWrapperState))): void
+}
+
 class RenderOne<P> implements Subscription {
-  private _liftedComponent: LiftWrapper<P>
+  private _liftedComponent: LiftWrapperType<P>
   private _innerSubscription: RxSubscription | null = null
   private _receivedValue = false
 
   constructor(
-    liftedComponent: LiftWrapper<P>,
+    liftedComponent: LiftWrapperType<P>,
     newProps: LiftWrapperProps<P>
   ) {
     const state: LiftWrapperState = {
@@ -363,8 +372,7 @@ class RenderOne<P> implements Subscription {
       renderCache: liftedComponent.state && liftedComponent.state.renderCache
     }
 
-    this._liftedComponent =
-      new FakeComponent<P>(state, newProps) as LiftWrapper<P>
+    this._liftedComponent = new FakeComponent<P>(state, newProps)
 
     walkObservables(
       newProps.props,
@@ -406,7 +414,7 @@ class RenderOne<P> implements Subscription {
 
   private _handleCompleted() {
     this._innerSubscription = null
-    this._liftedComponent.setState(LiftWrapper._endState)
+    this._liftedComponent.setState(LiftWrapperII._endState)
   }
 }
 
@@ -416,12 +424,12 @@ class RenderOne<P> implements Subscription {
  * @template P component props
  */
 class RenderMany<P> implements Subscription {
-  private _liftedComponent: LiftWrapper<P>
+  private _liftedComponent: LiftWrapperType<P>
   private _values: any[]
   private _innerSubscriptions: (RxSubscription | null)[]
 
   constructor(
-    liftedComponent: LiftWrapper<P>,
+    liftedComponent: LiftWrapperType<P>,
     newProps: LiftWrapperProps<P>,
     N: number
   ) {
@@ -430,8 +438,7 @@ class RenderMany<P> implements Subscription {
       renderCache: liftedComponent.state && liftedComponent.state.renderCache
     }
 
-    this._liftedComponent =
-      new FakeComponent(state, newProps) as LiftWrapper<P>
+    this._liftedComponent = new FakeComponent(state, newProps)
 
     this._innerSubscriptions = []
     this._values = Array(N)
@@ -514,7 +521,7 @@ class RenderMany<P> implements Subscription {
       if (this._innerSubscriptions[i])
         return
 
-    this._liftedComponent.setState(LiftWrapper._endState)
+    this._liftedComponent.setState(LiftWrapperII._endState)
   }
 }
 

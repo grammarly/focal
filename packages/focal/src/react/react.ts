@@ -29,19 +29,18 @@ export namespace LiftWrapper {
     props: Lifted<TProps>
   }
 
-  type RenderCache = React.DOMElement<any, any> | null
-  type WrapperSubscription = Subscription | null
+  export type RenderCache = React.DOMElement<any, any> | null
+  export type WrapperSubscription = Subscription | null
 
   export interface State {
     renderCache?: RenderCache
     subscription?: WrapperSubscription
   }
 
-  export interface Type<P> {
-    state: State
-    props: Props<P>
-    setState(state: (State | ((state: State) => State))): void
+  export interface SetState {
+    (state: (State | ((state: State) => State))): void
   }
+
   function useForceUpdate(): () => void {
     return React.useReducer(() => ({}), {})[1] as () => void
   }
@@ -64,11 +63,12 @@ export namespace LiftWrapper {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     walkObservables(props, () => n += 1)
 
-    const state = { subscription: subscription.current, renderCache: renderCache.current }
-
+    // variable to track sync emit from observable in Render{One, Many}.
+    // prevent waste render during initial render & re-subscribe
     let inSync = false
 
-    const setState = (s: (State | ((s: State) => State))) => {
+    const setState: SetState = (s: (State | ((s: State) => State))) => {
+      const state = { subscription: subscription.current, renderCache: renderCache.current }
       const newState = typeof s === 'function' ? s(state) : s
 
       if (newState.subscription) {
@@ -101,35 +101,15 @@ export namespace LiftWrapper {
       // Could this be replaced by a regular closure? Perhaps using
       // a class is an optimization?
       case 1:
-        new RenderOne({ props: newProps, state, setState }, newProps) // eslint-disable-line
+        new RenderOne(renderCache, newProps, setState) // eslint-disable-line
         break
       default:
-        new RenderMany({ props: newProps, state, setState }, newProps, n) // eslint-disable-line
+        new RenderMany(renderCache, newProps, setState, n) // eslint-disable-line
         break
     }
 
     inSync = true
   }
-
-/**
- * A dummy React component mock that is used to preserve any state changes
- * pushed onto the component.
- */
-export class FakeRenderer<P> implements LiftWrapper.Type<P> {
-  constructor(
-    public state: LiftWrapper.State,
-    public props: LiftWrapper.Props<P>
-  ) {}
-
-  setState(state: (LiftWrapper.State | ((state: LiftWrapper.State) => LiftWrapper.State))) {
-    const newState = typeof state === 'function' ? state(this.state) : state
-
-    if ('subscription' in newState)
-      this.state.subscription = newState.subscription
-    if ('renderCache' in newState)
-      this.state.renderCache = newState.renderCache
-  }
-}
 
   export const initState = {
     renderCache: null,
@@ -369,28 +349,22 @@ function warnEmptyObservable(componentName: string | undefined) {
  * @template P component props
  */
 class RenderOne<P> implements Subscription {
-  private _liftedComponent: LiftWrapper.Type<P>
   private _innerSubscription: RxSubscription | null = null
   private _receivedValue = false
 
   constructor(
-    liftedComponent: LiftWrapper.Type<P>,
-    newProps: LiftWrapper.Props<P>
+    renderCache: React.MutableRefObject<LiftWrapper.RenderCache>,
+    private newProps: LiftWrapper.Props<P>,
+    private setState: LiftWrapper.SetState
   ) {
-    const state: LiftWrapper.State = {
-      subscription: this,
-      renderCache: liftedComponent.state && liftedComponent.state.renderCache
-    }
-
-    this._liftedComponent = new LiftWrapper.FakeRenderer<P>(state, newProps)
-
     walkObservables(
       newProps.props,
       observable => {
         this._innerSubscription = observable.subscribe(
-          (v: any) => this._handleValue(v),
+          this._handleValue,
           handleError,
-          () => this._handleCompleted())
+          this._handleCompleted
+        )
 
         // observable has completed and unsubscribed by itself
         if (this._innerSubscription && this._innerSubscription.closed)
@@ -398,10 +372,12 @@ class RenderOne<P> implements Subscription {
       })
 
     if (DEV_ENV && !this._receivedValue)
-      warnEmptyObservable(getReactComponentName(this._liftedComponent.props.component))
+      warnEmptyObservable(getReactComponentName(newProps.component))
 
-    this._liftedComponent = liftedComponent
-    liftedComponent.setState(state)
+    setState({
+      subscription: this,
+      renderCache: renderCache.current
+    })
   }
 
   unsubscribe() {
@@ -409,22 +385,21 @@ class RenderOne<P> implements Subscription {
       this._innerSubscription.unsubscribe()
   }
 
-  private _handleValue(value: any) {
+  private _handleValue = (value: any) => {
     // only required for empty observable check
     if (DEV_ENV) this._receivedValue = true
 
-    const liftedComponent = this._liftedComponent
-    const { component, props } = liftedComponent.props
+    const { component, props } = this.newProps
     const renderCache = render(component, props, [value])
 
-    liftedComponent.setState(state =>
+    this.setState(state =>
       !structEq(state.renderCache, renderCache) ? { renderCache } : {}
     )
   }
 
-  private _handleCompleted() {
+  private _handleCompleted = () => {
     this._innerSubscription = null
-    this._liftedComponent.setState(LiftWrapper.endState)
+    this.setState(LiftWrapper.endState)
   }
 }
 
@@ -434,22 +409,15 @@ class RenderOne<P> implements Subscription {
  * @template P component props
  */
 class RenderMany<P> implements Subscription {
-  private _liftedComponent: LiftWrapper.Type<P>
   private _values: any[]
   private _innerSubscriptions: (RxSubscription | null)[]
 
   constructor(
-    liftedComponent: LiftWrapper.Type<P>,
-    newProps: LiftWrapper.Props<P>,
+    renderCache: React.MutableRefObject<LiftWrapper.RenderCache>,
+    private newProps: LiftWrapper.Props<P>,
+    private setState: LiftWrapper.SetState,
     N: number
   ) {
-    const state: LiftWrapper.State = {
-      subscription: this,
-      renderCache: liftedComponent.state && liftedComponent.state.renderCache
-    }
-
-    this._liftedComponent = new LiftWrapper.FakeRenderer(state, newProps)
-
     this._innerSubscriptions = []
     this._values = Array(N)
 
@@ -483,17 +451,19 @@ class RenderMany<P> implements Subscription {
     if (DEV_ENV)
       for (let i = this._values.length - 1; 0 <= i; --i)
         if (this._values[i] === this) {
-          warnEmptyObservable(getReactComponentName(liftedComponent.props.component))
+          warnEmptyObservable(getReactComponentName(newProps.component))
           break
         }
 
-    this._liftedComponent = liftedComponent
-    liftedComponent.setState(state)
+    this.setState({
+      subscription: this,
+      renderCache: renderCache.current
+    })
   }
 
   unsubscribe() {
     let i = -1
-    walkObservables(this._liftedComponent.props.props, _ => {
+    walkObservables(this.newProps.props, _ => {
       const unsubscriber = this._innerSubscriptions[++i]
       if (unsubscriber)
         unsubscriber.unsubscribe()
@@ -509,11 +479,10 @@ class RenderMany<P> implements Subscription {
       if (this._values[i] === this)
         return
 
-    const liftedComponent = this._liftedComponent
-    const { component, props } = liftedComponent.props
+    const { component, props } = this.newProps
     const renderCache = render(component, props, this._values)
 
-    liftedComponent.setState(state =>
+    this.setState(state =>
       !structEq(state.renderCache, renderCache) ? { renderCache } : {}
     )
   }
@@ -531,7 +500,7 @@ class RenderMany<P> implements Subscription {
       if (this._innerSubscriptions[i])
         return
 
-    this._liftedComponent.setState(LiftWrapper.endState)
+    this.setState(LiftWrapper.endState)
   }
 }
 

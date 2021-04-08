@@ -20,7 +20,10 @@ class Comp extends React.Component<{ test: string }, {}> {
 }
 
 function testRender(actual: JSX.Element | null, expected: string, desc: string) {
-  it(desc, () => expect(actual && ReactDOM.renderToStaticMarkup(actual)).toEqual(expected))
+  it(desc, () => expect(
+      actual && ReactDOM.renderToStaticMarkup(<React.StrictMode>{actual}</React.StrictMode>)
+    ).toEqual(expected)
+  )
 }
 
 describe('react', () => {

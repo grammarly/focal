@@ -32,13 +32,12 @@ export namespace LiftWrapper {
   export type RenderCache = React.DOMElement<any, any> | null
   export type WrapperSubscription = Subscription | null
 
-  export interface State {
-    renderCache?: RenderCache
-    subscription?: WrapperSubscription
+  export interface SetRenderCache {
+    (cache: RenderCache): void
   }
 
-  export interface SetState {
-    (state: (State | ((state: State) => State))): void
+  export interface SetSubscription {
+    (sub: WrapperSubscription): void
   }
 
   function useForceUpdate(): () => void {
@@ -67,32 +66,25 @@ export namespace LiftWrapper {
     // prevent waste render during initial render & re-subscribe
     let inSync = false
 
-    const setState: SetState = (s: (State | ((s: State) => State))) => {
-      const state = { subscription: subscription.current, renderCache: renderCache.current }
-      const newState = typeof s === 'function' ? s(state) : s
-
-      if (newState.subscription) {
-        subscription.current = newState.subscription
+    const setCache: SetRenderCache = cache => {
+      if (renderCache.current === cache) {
+        return
       }
 
-      if (newState.renderCache) {
-        if (renderCache.current === newState.renderCache) {
-          return
-        }
+      renderCache.current = cache
 
-        renderCache.current = newState.renderCache
-
-        if (inSync) {
-          forceUpdate()
-        }
+      if (inSync) {
+        forceUpdate()
       }
     }
 
+    const setSubscription: SetSubscription = sub => subscription.current = sub
+
     switch (n) {
       case 0:
-        subscription.current = null
+        setSubscription(null)
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        renderCache.current = render(component, props)
+        setCache(render(component, props))
         break
 
       // @NOTE original Calmm code below
@@ -101,28 +93,29 @@ export namespace LiftWrapper {
       // Could this be replaced by a regular closure? Perhaps using
       // a class is an optimization?
       case 1:
-        new RenderOne(renderCache, newProps, setState) // eslint-disable-line
+        new RenderOne(renderCache, newProps, setCache, setSubscription) // eslint-disable-line
         break
       default:
-        new RenderMany(renderCache, newProps, setState, n) // eslint-disable-line
+        new RenderMany(renderCache, newProps, setCache, setSubscription, n) // eslint-disable-line
         break
     }
 
     inSync = true
   }
 
-  export const initState = {
-    renderCache: null,
-    subscription: null
-  }
-
-  export const endState = {
-    subscription: null
-  }
-
   export const Renderer = <TProps>(props: Props<TProps>) => {
-    const subscription = React.useRef<WrapperSubscription>(initState.subscription)
-    const renderCache = React.useRef<RenderCache>(initState.renderCache)
+    const _subscription = React.useRef<WrapperSubscription>(null)
+    const _renderCache = React.useRef<RenderCache>(null)
+
+    // concurrent mode support
+    // see https://codesandbox.io/s/x2p46v02z4?from-embed=&file=/src/BadCounter.jsx
+    const subscription = { current: _subscription.current }
+    const renderCache = { current: _renderCache.current }
+
+    React.useEffect(() => {
+      _subscription.current = subscription.current
+      _renderCache.current = renderCache.current
+    })
 
     React.useEffect(() => () => unsubscribe(subscription), [])
 
@@ -353,9 +346,10 @@ class RenderOne<P> implements Subscription {
   private _receivedValue = false
 
   constructor(
-    renderCache: React.MutableRefObject<LiftWrapper.RenderCache>,
+    private renderCache: React.MutableRefObject<LiftWrapper.RenderCache>,
     private newProps: LiftWrapper.Props<P>,
-    private setState: LiftWrapper.SetState
+    private setRenderCache: LiftWrapper.SetRenderCache,
+    private setSubscription: LiftWrapper.SetSubscription
   ) {
     walkObservables(
       newProps.props,
@@ -374,10 +368,7 @@ class RenderOne<P> implements Subscription {
     if (DEV_ENV && !this._receivedValue)
       warnEmptyObservable(getReactComponentName(newProps.component))
 
-    setState({
-      subscription: this,
-      renderCache: renderCache.current
-    })
+    this.setSubscription(this)
   }
 
   unsubscribe() {
@@ -392,14 +383,14 @@ class RenderOne<P> implements Subscription {
     const { component, props } = this.newProps
     const renderCache = render(component, props, [value])
 
-    this.setState(state =>
-      !structEq(state.renderCache, renderCache) ? { renderCache } : {}
-    )
+    if (!structEq(this.renderCache.current, renderCache)) {
+      this.setRenderCache(renderCache)
+    }
   }
 
   private _handleCompleted = () => {
     this._innerSubscription = null
-    this.setState(LiftWrapper.endState)
+    this.setSubscription(null)
   }
 }
 
@@ -413,9 +404,10 @@ class RenderMany<P> implements Subscription {
   private _innerSubscriptions: (RxSubscription | null)[]
 
   constructor(
-    renderCache: React.MutableRefObject<LiftWrapper.RenderCache>,
+    private renderCache: React.MutableRefObject<LiftWrapper.RenderCache>,
     private newProps: LiftWrapper.Props<P>,
-    private setState: LiftWrapper.SetState,
+    private setRenderCache: LiftWrapper.SetRenderCache,
+    private setSubscription: LiftWrapper.SetSubscription,
     N: number
   ) {
     this._innerSubscriptions = []
@@ -455,10 +447,7 @@ class RenderMany<P> implements Subscription {
           break
         }
 
-    this.setState({
-      subscription: this,
-      renderCache: renderCache.current
-    })
+    this.setSubscription(this)
   }
 
   unsubscribe() {
@@ -482,9 +471,9 @@ class RenderMany<P> implements Subscription {
     const { component, props } = this.newProps
     const renderCache = render(component, props, this._values)
 
-    this.setState(state =>
-      !structEq(state.renderCache, renderCache) ? { renderCache } : {}
-    )
+    if (!structEq(this.renderCache.current, renderCache)) {
+      this.setRenderCache(renderCache)
+    }
   }
 
   private _handleCompleted(idx: number) {
@@ -500,7 +489,7 @@ class RenderMany<P> implements Subscription {
       if (this._innerSubscriptions[i])
         return
 
-    this.setState(LiftWrapper.endState)
+    this.setSubscription(null)
   }
 }
 

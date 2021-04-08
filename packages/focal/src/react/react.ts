@@ -15,34 +15,49 @@ export interface Subscription {
   unsubscribe(): void
 }
 
-export type Lifted<T> = {
-  [K in keyof T]: T[K] | Observable<T[K]>
-}
+export namespace LiftWrapper {
+  export type Lifted<T> = {
+    [K in keyof T]: T[K] | Observable<T[K]>
+  }
 
-export interface LiftWrapperProps<TProps> {
-  component: React.Component<TProps, any>
-    | React.StatelessComponent<TProps>
+  export interface Props<TProps> {
+    component: React.Component<TProps, any>
+    | React.FunctionComponent<TProps>
     | React.ComponentClass<TProps>
     | React.ComponentType
     | keyof React.ReactHTML
-  props: Lifted<TProps>
-}
+    props: Lifted<TProps>
+  }
 
-export interface LiftWrapperState {
-  renderCache?: React.DOMElement<any, any> | null
-  subscription?: Subscription | null
-}
+  type RenderCache = React.DOMElement<any, any> | null
+  type WrapperSubscription = Subscription | null
 
-function useForceUpdate(): () => void {
-  return React.useReducer(() => ({}), {})[1] as () => void
-}
+  export interface State {
+    renderCache?: RenderCache
+    subscription?: WrapperSubscription
+  }
 
-export const LiftWrapperII = <TProps>(cProps: LiftWrapperProps<TProps>) => {
-  const subscription = React.useRef<LiftWrapperState['subscription']>(null)
-  const renderCache = React.useRef<LiftWrapperState['renderCache']>(null)
-  const forceUpdate = useForceUpdate()
+  export interface Type<P> {
+    state: State
+    props: Props<P>
+    setState(state: (State | ((state: State) => State))): void
+  }
+  function useForceUpdate(): () => void {
+    return React.useReducer(() => ({}), {})[1] as () => void
+  }
 
-  const _subscribe = (newProps: LiftWrapperProps<TProps>) => {
+  const unsubscribe = (subscription: React.MutableRefObject<WrapperSubscription>) => {
+    if (subscription.current) {
+      subscription.current.unsubscribe()
+    }
+  }
+
+  const useSubscribe = <T>(
+    newProps: Props<T>,
+    subscription: React.MutableRefObject<WrapperSubscription>,
+    renderCache: React.MutableRefObject<RenderCache>
+  ) => {
+    const forceUpdate = useForceUpdate()
     const { props, component } = newProps
 
     let n = 0
@@ -53,14 +68,14 @@ export const LiftWrapperII = <TProps>(cProps: LiftWrapperProps<TProps>) => {
 
     let inSync = false
 
-    const setState = (s: (LiftWrapperState | ((s: LiftWrapperState) => LiftWrapperState))) => {
+    const setState = (s: (State | ((s: State) => State))) => {
       const newState = typeof s === 'function' ? s(state) : s
 
-      if ('subscription' in newState) {
+      if (newState.subscription) {
         subscription.current = newState.subscription
       }
 
-      if ('renderCache' in newState) {
+      if (newState.renderCache) {
         if (renderCache.current === newState.renderCache) {
           return
         }
@@ -96,33 +111,54 @@ export const LiftWrapperII = <TProps>(cProps: LiftWrapperProps<TProps>) => {
     inSync = true
   }
 
-  const _unsubscribe = () => {
-    if (subscription.current) {
-      subscription.current.unsubscribe()
-    }
+/**
+ * A dummy React component mock that is used to preserve any state changes
+ * pushed onto the component.
+ */
+export class FakeRenderer<P> implements LiftWrapper.Type<P> {
+  constructor(
+    public state: LiftWrapper.State,
+    public props: LiftWrapper.Props<P>
+  ) {}
+
+  setState(state: (LiftWrapper.State | ((state: LiftWrapper.State) => LiftWrapper.State))) {
+    const newState = typeof state === 'function' ? state(this.state) : state
+
+    if ('subscription' in newState)
+      this.state.subscription = newState.subscription
+    if ('renderCache' in newState)
+      this.state.renderCache = newState.renderCache
+  }
+}
+
+  export const initState = {
+    renderCache: null,
+    subscription: null
   }
 
-  React.useEffect(() => _unsubscribe, [])
+  export const endState = {
+    subscription: null
+  }
 
-  _unsubscribe()
-  _subscribe(cProps)
+  export const Renderer = <TProps>(props: Props<TProps>) => {
+    const subscription = React.useRef<WrapperSubscription>(initState.subscription)
+    const renderCache = React.useRef<RenderCache>(initState.renderCache)
 
-  return renderCache.current || null
-}
+    React.useEffect(() => () => unsubscribe(subscription), [])
 
-LiftWrapperII._initState = {
-  renderCache: null,
-  subscription: null
-}
+    unsubscribe(subscription)
+    useSubscribe(props, subscription, renderCache)
 
-LiftWrapperII._endState = {
-  subscription: null
+    return renderCache.current || null
+  }
+
+  Renderer.displayName = 'LiftWrapper'
 }
 
 // here we only say TProps, but a lifted component
 // will also accept a value of Observable<T> for any prop of
 // type T.
-export type LiftedComponentProps<TProps> = Lifted<TProps> & {
+export type LiftedComponentProps<TProps> = LiftWrapper.Lifted<TProps> & {
   mount?: React.Ref<HTMLElement>
 }
 
@@ -157,8 +193,8 @@ export function lift<TProps>(
   component: React.ComponentClass<TProps> | React.StatelessComponent<TProps>
 ) {
   return (props: LiftedComponentProps<TProps>) =>
-    React.createElement<LiftWrapperProps<TProps>>(
-      LiftWrapperII,
+    React.createElement<LiftWrapper.Props<TProps>>(
+      LiftWrapper.Renderer,
       { component: component, props: props }
     )
 }
@@ -178,7 +214,7 @@ const PROP_REF = 'ref'
  * @param action action to run for each observable prop
  */
 function walkObservables<T>(
-  props: Lifted<T>,
+  props: LiftWrapper.Lifted<T>,
   action: (obs: Observable<any>) => void
 ) {
   for (const key in props) {
@@ -223,7 +259,7 @@ function render<P>(
     | React.ComponentClass<P>
     | React.ComponentType
     | keyof React.ReactHTML,
-  props: Lifted<P>,
+  props: LiftWrapper.Lifted<P>,
   observedValues: any[] = []
 ): React.DOMElement<any, any> {
   // @TODO can we do a better type here?
@@ -312,26 +348,6 @@ function render<P>(
   )
 }
 
-/**
- * A dummy React component mock that is used to preserve any state changes
- * pushed onto the component.
- */
-class FakeComponent<P> {
-  constructor(
-    public state: LiftWrapperState,
-    public props: LiftWrapperProps<P>
-  ) {}
-
-  setState(state: (LiftWrapperState | ((state: LiftWrapperState) => LiftWrapperState))) {
-    const newState = typeof state === 'function' ? state(this.state) : state
-
-    if ('subscription' in newState)
-      this.state.subscription = newState.subscription
-    if ('renderCache' in newState)
-      this.state.renderCache = newState.renderCache
-  }
-}
-
 // could make sense to make this configurable
 const handleError = (e: any) => {
   throw e
@@ -352,27 +368,21 @@ function warnEmptyObservable(componentName: string | undefined) {
  *
  * @template P component props
  */
-interface LiftWrapperType<P> {
-  state: LiftWrapperState
-  props: LiftWrapperProps<P>
-  setState(state: (LiftWrapperState | ((state: LiftWrapperState) => LiftWrapperState))): void
-}
-
 class RenderOne<P> implements Subscription {
-  private _liftedComponent: LiftWrapperType<P>
+  private _liftedComponent: LiftWrapper.Type<P>
   private _innerSubscription: RxSubscription | null = null
   private _receivedValue = false
 
   constructor(
-    liftedComponent: LiftWrapperType<P>,
-    newProps: LiftWrapperProps<P>
+    liftedComponent: LiftWrapper.Type<P>,
+    newProps: LiftWrapper.Props<P>
   ) {
-    const state: LiftWrapperState = {
+    const state: LiftWrapper.State = {
       subscription: this,
       renderCache: liftedComponent.state && liftedComponent.state.renderCache
     }
 
-    this._liftedComponent = new FakeComponent<P>(state, newProps)
+    this._liftedComponent = new LiftWrapper.FakeRenderer<P>(state, newProps)
 
     walkObservables(
       newProps.props,
@@ -414,7 +424,7 @@ class RenderOne<P> implements Subscription {
 
   private _handleCompleted() {
     this._innerSubscription = null
-    this._liftedComponent.setState(LiftWrapperII._endState)
+    this._liftedComponent.setState(LiftWrapper.endState)
   }
 }
 
@@ -424,21 +434,21 @@ class RenderOne<P> implements Subscription {
  * @template P component props
  */
 class RenderMany<P> implements Subscription {
-  private _liftedComponent: LiftWrapperType<P>
+  private _liftedComponent: LiftWrapper.Type<P>
   private _values: any[]
   private _innerSubscriptions: (RxSubscription | null)[]
 
   constructor(
-    liftedComponent: LiftWrapperType<P>,
-    newProps: LiftWrapperProps<P>,
+    liftedComponent: LiftWrapper.Type<P>,
+    newProps: LiftWrapper.Props<P>,
     N: number
   ) {
-    const state: LiftWrapperState = {
+    const state: LiftWrapper.State = {
       subscription: this,
       renderCache: liftedComponent.state && liftedComponent.state.renderCache
     }
 
-    this._liftedComponent = new FakeComponent(state, newProps)
+    this._liftedComponent = new LiftWrapper.FakeRenderer(state, newProps)
 
     this._innerSubscriptions = []
     this._values = Array(N)
@@ -521,7 +531,7 @@ class RenderMany<P> implements Subscription {
       if (this._innerSubscriptions[i])
         return
 
-    this._liftedComponent.setState(LiftWrapperII._endState)
+    this._liftedComponent.setState(LiftWrapper.endState)
   }
 }
 

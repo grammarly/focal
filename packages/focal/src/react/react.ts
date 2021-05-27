@@ -32,100 +32,90 @@ export namespace LiftWrapper {
   export type RenderCache = React.DOMElement<any, any> | null
   export type WrapperSubscription = Subscription | null
 
-  export interface SetRenderCache {
-    (cache: RenderCache): void
-  }
+  export class Renderer<TProps> extends React.PureComponent<Props<TProps>> {
+    static displayName = 'LiftWrapper'
 
-  export interface SetSubscription {
-    (sub: WrapperSubscription): void
-  }
-
-  function useForceUpdate(): () => void {
-    return React.useReducer(() => ({}), {})[1] as () => void
-  }
-
-  const unsubscribe = (subscription: React.MutableRefObject<WrapperSubscription>) => {
-    if (subscription.current) {
-      subscription.current.unsubscribe()
-    }
-  }
-
-  const useSubscribe = <T>(
-    newProps: Props<T>,
-    subscription: React.MutableRefObject<WrapperSubscription>,
-    renderCache: React.MutableRefObject<RenderCache>
-  ) => {
-    const forceUpdate = useForceUpdate()
-    const { props, component } = newProps
-
-    let n = 0
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    walkObservables(props, () => n += 1)
+    subscription: WrapperSubscription = null
+    renderCache: RenderCache = null
 
     // variable to track sync emit from observable in Render{One, Many}.
     // prevent waste render during initial render & re-subscribe
-    let inSync = false
+    isSubscribed = false
 
-    const setCache: SetRenderCache = cache => {
-      if (renderCache.current === cache) {
+    // eslint-disable-next-line camelcase
+    UNSAFE_componentWillMount() {
+      this._subscribe(this.props)
+    }
+
+    // eslint-disable-next-line camelcase
+    UNSAFE_componentWillReceiveProps(nextProps: Props<TProps>) {
+      this._unsubscribe()
+      this._subscribe(nextProps)
+    }
+
+    componentWillUnmount() {
+      this._unsubscribe()
+      this.setSubscription(null)
+    }
+
+    setRenderCache(cache: RenderCache): void {
+      if (this.renderCache === cache) {
         return
       }
 
-      renderCache.current = cache
+      this.renderCache = cache
 
-      if (inSync) {
-        forceUpdate()
+      if (this.isSubscribed) {
+        this.forceUpdate()
       }
     }
 
-    const setSubscription: SetSubscription = sub => subscription.current = sub
-
-    switch (n) {
-      case 0:
-        setSubscription(null)
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        setCache(render(component, props))
-        break
-
-      // @NOTE original Calmm code below
-      // The created object is never used and it looks like that
-      // the useful work is done in the constructor.
-      // Could this be replaced by a regular closure? Perhaps using
-      // a class is an optimization?
-      case 1:
-        new RenderOne(renderCache, newProps, setCache, setSubscription) // eslint-disable-line
-        break
-      default:
-        new RenderMany(renderCache, newProps, setCache, setSubscription, n) // eslint-disable-line
-        break
+    setSubscription(sub: WrapperSubscription): void {
+      this.subscription = sub
     }
 
-    inSync = true
+    render() {
+      return this.renderCache || null
+    }
+
+    private _unsubscribe() {
+      if (this.subscription) {
+        this.subscription.unsubscribe()
+      }
+    }
+
+    private _subscribe(newProps: Props<TProps>) {
+      const { props, component } = newProps
+
+      let n = 0
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      walkObservables(props, () => n += 1)
+
+      this.isSubscribed = false
+
+      switch (n) {
+        case 0:
+          this.setSubscription(null)
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          this.setRenderCache(render(component, props))
+          break
+
+        // @NOTE original Calmm code below
+        // The created object is never used and it looks like that
+        // the useful work is done in the constructor.
+        // Could this be replaced by a regular closure? Perhaps using
+        // a class is an optimization?
+        case 1:
+          new RenderOne(this, newProps) // eslint-disable-line
+          break
+        default:
+          new RenderMany(this, newProps, n) // eslint-disable-line
+          break
+      }
+
+      this.isSubscribed = true
+    }
   }
-
-  export const Renderer = <TProps>(props: Props<TProps>) => {
-    const _subscription = React.useRef<WrapperSubscription>(null)
-    const _renderCache = React.useRef<RenderCache>(null)
-
-    // concurrent mode support
-    // see https://codesandbox.io/s/x2p46v02z4?from-embed=&file=/src/BadCounter.jsx
-    const subscription = { current: _subscription.current }
-    const renderCache = { current: _renderCache.current }
-
-    React.useEffect(() => {
-      _subscription.current = subscription.current
-      _renderCache.current = renderCache.current
-    })
-
-    React.useEffect(() => () => unsubscribe(subscription), [])
-
-    unsubscribe(subscription)
-    useSubscribe(props, subscription, renderCache)
-
-    return renderCache.current || null
-  }
-
-  Renderer.displayName = 'LiftWrapper'
 }
 
 // here we only say TProps, but a lifted component
@@ -346,10 +336,8 @@ class RenderOne<P> implements Subscription {
   private _receivedValue = false
 
   constructor(
-    private renderCache: React.MutableRefObject<LiftWrapper.RenderCache>,
-    private newProps: LiftWrapper.Props<P>,
-    private setRenderCache: LiftWrapper.SetRenderCache,
-    private setSubscription: LiftWrapper.SetSubscription
+    private renderer: LiftWrapper.Renderer<P>,
+    private newProps: LiftWrapper.Props<P>
   ) {
     walkObservables(
       newProps.props,
@@ -368,7 +356,7 @@ class RenderOne<P> implements Subscription {
     if (DEV_ENV && !this._receivedValue)
       warnEmptyObservable(getReactComponentName(newProps.component))
 
-    this.setSubscription(this)
+    this.renderer.setSubscription(this)
   }
 
   unsubscribe() {
@@ -383,14 +371,14 @@ class RenderOne<P> implements Subscription {
     const { component, props } = this.newProps
     const renderCache = render(component, props, [value])
 
-    if (!structEq(this.renderCache.current, renderCache)) {
-      this.setRenderCache(renderCache)
+    if (!structEq(this.renderer.renderCache, renderCache)) {
+      this.renderer.setRenderCache(renderCache)
     }
   }
 
   private _handleCompleted = () => {
     this._innerSubscription = null
-    this.setSubscription(null)
+    this.renderer.setSubscription(null)
   }
 }
 
@@ -404,10 +392,8 @@ class RenderMany<P> implements Subscription {
   private _innerSubscriptions: (RxSubscription | null)[]
 
   constructor(
-    private renderCache: React.MutableRefObject<LiftWrapper.RenderCache>,
+    private renderer: LiftWrapper.Renderer<P>,
     private newProps: LiftWrapper.Props<P>,
-    private setRenderCache: LiftWrapper.SetRenderCache,
-    private setSubscription: LiftWrapper.SetSubscription,
     N: number
   ) {
     this._innerSubscriptions = []
@@ -447,7 +433,7 @@ class RenderMany<P> implements Subscription {
           break
         }
 
-    this.setSubscription(this)
+    this.renderer.setSubscription(this)
   }
 
   unsubscribe() {
@@ -471,8 +457,8 @@ class RenderMany<P> implements Subscription {
     const { component, props } = this.newProps
     const renderCache = render(component, props, this._values)
 
-    if (!structEq(this.renderCache.current, renderCache)) {
-      this.setRenderCache(renderCache)
+    if (!structEq(this.renderer.renderCache, renderCache)) {
+      this.renderer.setRenderCache(renderCache)
     }
   }
 
@@ -489,7 +475,7 @@ class RenderMany<P> implements Subscription {
       if (this._innerSubscriptions[i])
         return
 
-    this.setSubscription(null)
+    this.renderer.setSubscription(null)
   }
 }
 

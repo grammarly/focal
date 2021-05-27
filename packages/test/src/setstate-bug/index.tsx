@@ -5,7 +5,8 @@ import { Observable, Subject } from 'rxjs'
 class Test extends React.Component<{ trigger: Observable<void> }> {
   list = Atom.create(['a', 'b', 'c'])
 
-  componentWillMount() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
     this.props.trigger.subscribe(_ => {
       this.list.set(['a', 'b'])
       this.list.set(['a', 'b', 'c'])
@@ -13,7 +14,7 @@ class Test extends React.Component<{ trigger: Observable<void> }> {
   }
 
   render() {
-    return (
+  return (
       <>
         <h4>Focal</h4>
         <F.ul>

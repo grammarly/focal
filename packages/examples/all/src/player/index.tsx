@@ -52,7 +52,8 @@ const TimeLine = ({
 class App extends React.Component<{ state: Atom<AppState> }, {}> {
   audioModel: AudioModel
 
-  componentWillMount() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
     this.audioModel = new AudioModel(this.props.state, audioSrc)
   }
 

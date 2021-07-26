@@ -5,7 +5,7 @@
  */
 import * as React from 'react'
 import { ObservableReactHTMLProps, ObservableReactChildren } from './observablePropTypes'
-import { LiftWrapperProps, LiftWrapper } from './react'
+import { LiftWrapper } from './react'
 
 export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {
   mount?: React.Ref<E>
@@ -15,7 +15,7 @@ export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLPro
 export interface LiftedIntrinsic<
   E extends Element, A extends React.HTMLAttributes<E> = React.AllHTMLAttributes<E>> {
   (props: LiftedIntrinsicComponentProps<E>):
-    React.ReactElement<LiftWrapperProps<ObservableReactHTMLProps<E, A>>>
+    React.ReactElement<LiftWrapper.Props<ObservableReactHTMLProps<E, A>>>
 }
 
 export function liftIntrinsic<
@@ -25,8 +25,8 @@ export function liftIntrinsic<
   intrinsicClassName: K
 ): LiftedIntrinsic<E> {
   return (props: LiftedIntrinsicComponentProps<E>) =>
-    React.createElement<LiftWrapperProps<ObservableReactHTMLProps<E>>>(
-      LiftWrapper,
+    React.createElement<LiftWrapper.Props<ObservableReactHTMLProps<E>>>(
+      LiftWrapper.Renderer,
       { component: intrinsicClassName, props: props }
     )
 }
@@ -45,7 +45,7 @@ export interface LiftedFragmentAttributes extends ObservableReactChildren, React
 export interface LiftedFragment {
   (props: LiftedFragmentAttributes):
     // @TODO this probably isn't a correct type for it
-    React.ReactElement<LiftWrapperProps<ObservableReactHTMLProps<{}>>>
+    React.ReactElement<LiftWrapper.Props<ObservableReactHTMLProps<{}>>>
 }
 
 interface ExtraLiftedIntrinsics {
@@ -79,7 +79,7 @@ export function createLiftedIntrinsics(): LiftedIntrinsics {
   )
 
   r.Fragment = (props: LiftedFragmentAttributes) =>
-    React.createElement(LiftWrapper, { component: React.Fragment, props })
+    React.createElement(LiftWrapper.Renderer, { component: React.Fragment, props })
 
   return r as LiftedIntrinsics
 }

@@ -209,7 +209,7 @@ export class App {
 
   start() {
     ReactDOM.render(
-      <AppComponent model={this._model}/>,
+      <React.StrictMode><AppComponent model={this._model}/></React.StrictMode>,
       this._targetElement
     )
   }

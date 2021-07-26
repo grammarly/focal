@@ -23,7 +23,7 @@ function startApp(C: typeof App.AppComponent) {
   if (targetEl == null)
     throw new Error('React app target element not found. Wrong HTML file?')
 
-  ReactDOM.render(<C state={appState} />, targetEl)
+  ReactDOM.render(<React.StrictMode><C state={appState} /></React.StrictMode>, targetEl)
 }
 
 if (module.hot) {

@@ -4,12 +4,13 @@
  * @module
  */
 import * as React from 'react'
-import { ObservableReactHTMLProps, ObservableReactChildren } from './observablePropTypes'
-import { LiftWrapperProps, LiftWrapper } from './react'
+import { ObservableReactChildren, ObservableReactHTMLProps } from './observablePropTypes'
+import { LiftWrapper, LiftWrapperProps, ObservableLike } from './react'
 
 export interface LiftedIntrinsicComponentProps<E> extends ObservableReactHTMLProps<E> {
   mount?: React.Ref<E>
   forwardRef?: React.Ref<E>
+  children?: React.ReactNode | ObservableLike<React.ReactNode>
 }
 
 export interface LiftedIntrinsic<

@@ -13,7 +13,7 @@ export type ObservableReactCSSProperties =
   ObservableLike<React.CSSProperties> | ObservableLikeRecord<React.CSSProperties>
 
 export interface ObservableReactChildren {
-  children?: ObservableLike<React.ReactNode>
+  children?: ObservableLike<React.ReactNode> | ObservableLike<React.ReactNode>[]
 }
 
 export type ObservableReactHTMLAttributes<

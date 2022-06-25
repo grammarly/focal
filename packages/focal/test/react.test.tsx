@@ -1,17 +1,12 @@
-import { of, EMPTY, NEVER } from 'rxjs'
-import { map, throttleTime } from 'rxjs/operators'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/server'
-
+import { EMPTY, NEVER, of } from 'rxjs'
+import { map, throttleTime } from 'rxjs/operators'
 import {
-  F,
-  lift,
-  bind,
-  Atom,
-  reactiveList,
-  classes,
-  bindElementProps
+  Atom, bind, bindElementProps, classes, F,
+  lift, reactiveList
 } from '../src'
+import './mock'
 
 class Comp extends React.Component<{ test: string }, {}> {
   render() {
@@ -247,7 +242,7 @@ describe('react', () => {
   )
 
   testRender(
-    <F.Fragment>{Atom.create(null)}</F.Fragment>,
+    <F.Fragment></F.Fragment>,
     '',
     'fragment with null content'
   )

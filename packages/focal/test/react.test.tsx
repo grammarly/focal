@@ -6,7 +6,6 @@ import {
   Atom, bind, bindElementProps, classes, F,
   lift, reactiveList
 } from '../src'
-import './mock'
 
 class Comp extends React.Component<{ test: string }, {}> {
   render() {

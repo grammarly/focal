@@ -1,6 +1,6 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
 import { Atom } from '@grammarly/focal'
+import * as React from 'react'
+import { createRoot } from 'react-dom/client'
 import * as App from './app'
 
 // hot reload support
@@ -23,7 +23,8 @@ function startApp(C: typeof App.AppComponent) {
   if (targetEl == null)
     throw new Error('React app target element not found. Wrong HTML file?')
 
-  ReactDOM.render(<C state={appState} />, targetEl)
+  const root = createRoot(targetEl)
+  root.render(<C state={appState} />)
 }
 
 if (module.hot) {

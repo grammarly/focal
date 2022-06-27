@@ -1,9 +1,9 @@
+import { Atom, bind, classes, F, Lens, reactiveList } from '@grammarly/focal'
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { fromEvent, defer } from 'rxjs'
+import { createRoot } from 'react-dom/client'
+import { defer, fromEvent } from 'rxjs'
 import { combineLatest, map, startWith } from 'rxjs/operators'
-import { F, Atom, Lens, bind, reactiveList, classes } from '@grammarly/focal'
-import { TodoItem, AppModel } from './model'
+import { AppModel, TodoItem } from './model'
 
 const locationHash = defer(() =>
   fromEvent(window, 'hashchange').pipe(
@@ -208,9 +208,9 @@ export class App {
   ) {}
 
   start() {
-    ReactDOM.render(
-      <AppComponent model={this._model}/>,
-      this._targetElement
+    const root = createRoot(this._targetElement)
+    root.render(
+      <AppComponent model={this._model}/>
     )
   }
 }

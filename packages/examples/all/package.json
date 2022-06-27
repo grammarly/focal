@@ -22,7 +22,6 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@grammarly/focal": "0.8.5",
-    "@grammarly/tslint-config": "0.5.1",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.0",
     "css-loader": "^3.2.0",
@@ -37,7 +36,7 @@
     "rxjs": "6.3.3",
     "style-loader": "^1.0.0",
     "todomvc-app-css": "^2.0.6",
-    "ts-loader": "^6.2.1",
+    "ts-loader": "8.2.0",
     "tslint": "5.20.0",
     "typescript": "^4.7.4",
     "webpack": "^4.41.2",

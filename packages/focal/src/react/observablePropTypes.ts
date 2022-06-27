@@ -18,10 +18,11 @@ export interface ObservableReactChildren {
 
 export type ObservableReactHTMLAttributes<
   E, A extends React.HTMLAttributes<E> = React.AllHTMLAttributes<E>
-> = ObservableLikeRecord<Pick<A, Exclude<keyof A, 'style'>>> & {
+> = ObservableLikeRecord<Omit<A, 'style' | 'children'>> & {
   style?: ObservableReactCSSProperties
+  children?: ObservableLike<React.ReactNode> | ObservableLike<React.ReactNode>[]
 }
 
 export type ObservableReactHTMLProps<
-  E, A extends React.HTMLAttributes<E> = React.AllHTMLAttributes<E>
-> = ObservableReactHTMLAttributes<E, A> & React.ClassAttributes<E>
+  E, A extends React.HTMLAttributes<E> = React.AllHTMLAttributes<E>,
+  > = ObservableReactHTMLAttributes<E, A> & React.ClassAttributes<E>

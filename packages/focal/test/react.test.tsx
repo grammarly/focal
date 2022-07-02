@@ -21,7 +21,7 @@ describe('react', () => {
   testRender(
     <F.span>test</F.span>,
     '<span>test</span>',
-    'Render F element'
+    'Rende{Atom.create(null)}r F element'
   )
 
   testRender(
@@ -241,7 +241,7 @@ describe('react', () => {
   )
 
   testRender(
-    <F.Fragment></F.Fragment>,
+    <F.Fragment>{Atom.create(null)}</F.Fragment>,
     '',
     'fragment with null content'
   )

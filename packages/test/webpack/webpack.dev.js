@@ -27,13 +27,7 @@ module.exports = {
     new ESLintPlugin({
       extensions: ["tsx", "ts"],
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      openAnalyzer: false,
-      defaultSizes: 'parsed',
-      generateStatsFile: true
-    })
+    new webpack.HotModuleReplacementPlugin()
   ],
   resolve: {
     modules: [

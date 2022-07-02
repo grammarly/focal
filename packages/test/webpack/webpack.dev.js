@@ -1,6 +1,5 @@
 var webpack = require('webpack')
 var path = require('path')
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {

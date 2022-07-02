@@ -21,7 +21,7 @@ describe('react', () => {
   testRender(
     <F.span>test</F.span>,
     '<span>test</span>',
-    'Rende{Atom.create(null)}r F element'
+    'Render F element'
   )
 
   testRender(

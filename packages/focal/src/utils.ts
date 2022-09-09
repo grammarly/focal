@@ -57,14 +57,14 @@ export function warning(message: string) {
 export function getReactComponentName(
   component: string
     | React.ComponentClass<any>
-    | React.StatelessComponent<any>
+    | React.FunctionComponent<any>
     | React.Component<any, any>
 ) {
   return typeof component === 'string' ? component
     : (component as React.ComponentClass<any>).displayName !== undefined
       ? (component as React.ComponentClass<any>).displayName
-    : (component as React.StatelessComponent<any>).name !== undefined
-      ? (component as React.StatelessComponent<any>).name
+    : (component as React.FunctionComponent<any>).name !== undefined
+      ? (component as React.FunctionComponent<any>).name
     : component.constructor && component.constructor.name !== undefined
       ? component.constructor.name
     : undefined

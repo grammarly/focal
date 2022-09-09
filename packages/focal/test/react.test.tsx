@@ -1,16 +1,10 @@
-import { of, EMPTY, NEVER } from 'rxjs'
-import { map, throttleTime } from 'rxjs/operators'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/server'
-
+import { EMPTY, NEVER, of } from 'rxjs'
+import { map, throttleTime } from 'rxjs/operators'
 import {
-  F,
-  lift,
-  bind,
-  Atom,
-  reactiveList,
-  classes,
-  bindElementProps
+  Atom, bind, bindElementProps, classes, F,
+  lift, reactiveList
 } from '../src'
 
 class Comp extends React.Component<{ test: string }, {}> {

@@ -1,8 +1,8 @@
-import * as React from 'react'
 import { Atom, Lens } from '@grammarly/focal'
+import * as React from 'react'
 
 interface ExampleComponent<S> {
-  Component: React.StatelessComponent<{ state: Atom<S> }>
+  Component: React.FunctionComponent<{ state: Atom<S> }>
   defaultState: S
 }
 

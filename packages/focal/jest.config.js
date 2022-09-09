@@ -5,6 +5,7 @@ module.exports = {
     'ts',
     'tsx',
   ],
+  setupFiles: [`<rootDir>/jest-shim.js`],
   testEnvironment: 'jest-environment-jsdom',
   testMatch: [
     '**/*.test.ts?(x)',

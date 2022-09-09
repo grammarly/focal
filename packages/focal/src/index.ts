@@ -1,12 +1,7 @@
-export { Lens, Prism, Optic } from './lens/index'
 export { Atom, ReadOnlyAtom } from './atom/index'
-export { Option } from './utils'
-
+export { Lens, Optic, Prism } from './lens/index'
 export {
-  bind,
-  lift,
-  reactiveList,
-  classes,
-  bindElementProps,
-  F
+  bind, bindElementProps, classes, F, lift,
+  reactiveList
 } from './react'
+export { Option } from './utils'

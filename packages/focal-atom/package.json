@@ -1,6 +1,6 @@
 {
   "name": "@grammarly/focal-atom",
-  "version": "0.8.5",
+  "version": "0.9.0",
   "description": "FRP Atom: observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm5/src/index.js",
@@ -94,12 +94,12 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "^24.0.0",
-    "@types/node": "^6.0.34",
-    "jest": "^24.1.0",
+    "@types/jest": "^24.0.20",
+    "@types/node": "^18.0.0",
+    "jest": "^28.1.1",
     "rxjs": "6.3.3",
-    "ts-jest": "^23.10.5",
-    "typescript": "3.3.3"
+    "ts-jest": "^28.0.5",
+    "typescript": "^4.7.4"
   },
   "peerDependencies": {
     "rxjs": ">= 6.3.3 < 7.0.0-0"

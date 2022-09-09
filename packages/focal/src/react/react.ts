@@ -6,9 +6,6 @@ import {
   ObservableInput, of, Subscription as RxSubscription
 } from 'rxjs'
 import { map, scan } from 'rxjs/operators'
-import { Atom } from './../atom'
-import { DEV_ENV, getReactComponentName, structEq, warning } from './../utils'
-
 export interface Subscription {
   unsubscribe(): void
 }
@@ -37,8 +34,6 @@ export interface LiftWrapperState {
  */
 export class LiftWrapper<TProps>
     extends React.Component<LiftWrapperProps<TProps>, LiftWrapperState> {
-  state = LiftWrapper._initState
-
   static _initState: LiftWrapperState = {
     renderCache: null,
     subscription: null
@@ -47,6 +42,8 @@ export class LiftWrapper<TProps>
   static _endState: LiftWrapperState = {
     subscription: null
   }
+
+  state = LiftWrapper._initState
 
   render() {
     return this.state.renderCache || null

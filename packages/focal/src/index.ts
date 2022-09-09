@@ -4,4 +4,3 @@ export {
   bind, bindElementProps, classes, F, lift,
   reactiveList
 } from './react'
-export { Option } from './utils'

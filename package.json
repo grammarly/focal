@@ -1,6 +1,13 @@
 {
   "private": true,
   "name": "focal",
+  "version": "0.0.0",
+  "workspaces": [
+    "packages/focal-atom",
+    "packages/focal",
+    "packages/test",
+    "packages/examples/*"
+  ],
   "nohoist": [
     "tslint-eslint-rules"
   ],
@@ -28,15 +35,8 @@
     "eslint-plugin-react": "^7.22.0",
     "typescript": "^4.7.4"
   },
-  "workspaces": [
-    "packages/focal-atom",
-    "packages/focal",
-    "packages/test",
-    "packages/examples/*"
-  ],
   "resolutions": {
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.0"
-  },
-  "version": "0.0.0"
+  }
 }

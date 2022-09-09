@@ -1,10 +1,7 @@
 export { Lens, Prism, Optic, Atom, ReadOnlyAtom, Option } from '@grammarly/focal-atom'
 
 export {
-  bind,
-  lift,
-  reactiveList,
-  classes,
-  bindElementProps,
-  F
+  bind, bindElementProps, classes, F, lift,
+  reactiveList
 } from './react'
+export { Option } from './utils'

@@ -1,9 +1,9 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
 import { Atom, Lens } from '@grammarly/focal'
+import * as React from 'react'
+import { createRoot } from 'react-dom/client'
 
 interface TestComponent<S> {
-  Component: React.StatelessComponent<{ state: Atom<S> }>
+  Component: React.FunctionComponent<{ state: Atom<S> }>
   defaultState: S
 }
 
@@ -53,9 +53,9 @@ export class App {
   }
 
   start() {
-    ReactDOM.render(
-      <AppComponent state={this.state}/>,
-      this.targetElement
+    const root = createRoot(this.targetElement)
+    root.render(
+      <AppComponent state={this.state}/>
     )
   }
 }

@@ -26,7 +26,7 @@
     "eslint": "^7.18.0",
     "eslint-plugin-jsdoc": "^31.0.8",
     "eslint-plugin-react": "^7.22.0",
-    "typescript": "3.6.4"
+    "typescript": "^4.7.4"
   },
   "workspaces": [
     "packages/focal-atom",
@@ -35,7 +35,8 @@
     "packages/examples/*"
   ],
   "resolutions": {
-    "@types/react": "16.9.11"
+    "@types/react": "^18.0.14",
+    "@types/react-dom": "^18.0.0"
   },
   "version": "0.0.0"
 }

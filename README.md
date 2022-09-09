@@ -69,10 +69,8 @@ state.subscribe(x => {
 })
 
 // render the app
-ReactDOM.render(
-  <App state={state} />,
-  document.getElementById('app')
-)
+const root = createRoot(document.getElementById('app'))
+root.render(<App state={state} />)
 ```
 
 You can play with this example online [on CodeSandbox](https://codesandbox.io/s/black-bash-u6l9x).
@@ -203,10 +201,8 @@ const Counter = (props: { count: Atom<number> }) =>
   </F.div>
 
 // mount the component onto DOM
-ReactDOM.render(
-  <Counter count={count} />,
-  document.getElementById('test')
-)
+const root = createRoot(document.getElementById('test'))
+root.render(<Counter count={count} />)
 
 // => <div>Count: 0</div>
 ```

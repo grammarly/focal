@@ -2,13 +2,12 @@ import * as React from 'react'
 import { Atom, structEq } from '@grammarly/focal-atom'
 import { warning, getReactComponentName, DEV_ENV } from './../utils'
 import {
-  Observable,
-  ObservableInput,
-  Subscription as RxSubscription,
-  combineLatest,
-  of
+  combineLatest, Observable,
+  ObservableInput, of, Subscription as RxSubscription
 } from 'rxjs'
-import { scan, map } from 'rxjs/operators'
+import { map, scan } from 'rxjs/operators'
+import { Atom } from './../atom'
+import { DEV_ENV, getReactComponentName, structEq, warning } from './../utils'
 
 export interface Subscription {
   unsubscribe(): void
@@ -20,7 +19,7 @@ export type Lifted<T> = {
 
 export interface LiftWrapperProps<TProps> {
   component: React.Component<TProps, any>
-    | React.StatelessComponent<TProps>
+    | React.FunctionComponent<TProps>
     | React.ComponentClass<TProps>
     | React.ComponentType
     | keyof React.ReactHTML
@@ -150,7 +149,7 @@ export type LiftedComponentProps<TProps> = Lifted<TProps> & {
  * <LiftedHelloComponent name={observableValue as any} />
  */
 export function lift<TProps>(
-  component: React.ComponentClass<TProps> | React.StatelessComponent<TProps>
+  component: React.ComponentClass<TProps> | React.FunctionComponent<TProps>
 ) {
   return (props: LiftedComponentProps<TProps>) =>
     React.createElement<LiftWrapperProps<TProps>>(
@@ -215,7 +214,7 @@ function walkObservables<T>(
  */
 function render<P>(
   class_: React.Component<P, any>
-    | React.StatelessComponent<P>
+    | React.FunctionComponent<P>
     | React.ComponentClass<P>
     | React.ComponentType
     | keyof React.ReactHTML,

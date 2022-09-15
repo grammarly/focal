@@ -24,10 +24,24 @@ export namespace Atom {
    * @export
    * @template T type of atom values
    * @param initialValue initial value for this atom
+   * @param eq - optional custom equality check function,
+   * used to compare prev and next atom values to emit value only when it has changed.
+   *
+   * !!!BEWARE!!!: make sure that your custom equality check function is optimal
+   * (e.g. checks for value reference equality first),
+   * as it will be called EVERY time an atom value is changed
+   *
+   * (when setting(modifying) an atom value, a new value is only emitted by atom if it has changed,
+   * i.e. it does not equal to the previous value)
+   *
+   * If not specified, a default private implementation of structure equality is used.
+   *
+   * As an alternative, a value may have an 'equals' method that will be recognized
+   * by default structure equality implementation
    * @returns fresh atom
    */
-  export function create<T>(initialValue: T): Atom<T> {
-    return new JsonAtom(initialValue)
+  export function create<T>(initialValue: T, eq?: (x: T, y: T) => boolean): Atom<T> {
+    return new JsonAtom(initialValue, eq)
   }
 
   export function log<T>(

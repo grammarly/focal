@@ -33,11 +33,11 @@
     "prepack": "cp ../../README.md ./ && cp ../../LICENSE ./",
     "postpack": "rm README.md && rm LICENSE"
   },
-  "author": "Sergey Yavnyi <sergey.yavnyi@grammarly.com>",
+  "author": "Serhii Yavnyi <serhii.yavnyi@grammarly.com>",
   "contributors": [
     {
-      "name": "Sergey Yavnyi",
-      "email": "sergey.yavnyi@grammarly.com"
+      "name": "Serhii Yavnyi",
+      "email": "serhii.yavnyi@grammarly.com"
     },
     {
       "name": "Valentyn Gaidylo",
@@ -60,8 +60,8 @@
       "email": "yaroslav.voloshchuk@grammarly.com"
     },
     {
-      "name": "Sergey Rudenko",
-      "email": "sergey.rudenko@grammarly.com"
+      "name": "Sergii Rudenko",
+      "email": "rudenko.sergey92@gmail.com"
     },
     {
       "name": "Gregory Shehet",

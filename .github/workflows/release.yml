@@ -8,6 +8,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+
     steps:
       - name: Branch name
         id: branch_name
@@ -15,8 +16,10 @@ jobs:
           echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
           echo ::set-output name=TARBALL_FOCAL::grammarly-focal-${GITHUB_REF#refs/tags/}.tgz
           echo ::set-output name=TARBALL_FOCAL_ATOM::grammarly-focal-atom-${GITHUB_REF#refs/tags/}.tgz
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - run: yarn install
       - run: yarn build
       - run: yarn test

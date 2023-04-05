@@ -1,10 +1,15 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/server'
+import { Atom } from '@grammarly/focal-atom'
 import { EMPTY, NEVER, of } from 'rxjs'
 import { map, throttleTime } from 'rxjs/operators'
 import {
-  Atom, bind, bindElementProps, classes, F,
-  lift, reactiveList
+  F,
+  lift,
+  bind,
+  reactiveList,
+  classes,
+  bindElementProps
 } from '../src'
 
 class Comp extends React.Component<{ test: string }, {}> {

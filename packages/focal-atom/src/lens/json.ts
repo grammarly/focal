@@ -5,7 +5,6 @@
  */
 
 import {
-  structEq,
   setKey,
   conservatively,
   findIndex,
@@ -13,6 +12,10 @@ import {
   DEV_ENV,
   warning
 } from './../utils'
+
+import {
+  structEq
+} from './../equals'
 
 import { Lens, Prism } from './base'
 

@@ -10,6 +10,11 @@ Type safe, expressive and composable state management for [React](https://facebo
 - Use [lenses](https://en.wikibooks.org/wiki/Haskell/Lenses_and_functional_references) to decompose the application state into smaller parts, so you can isolate UI components in a clean way and manipulate application state effortlessly.
 - Write less code that is easier to understand.
 
+# Packages
+
+`@grammarly/focal` - Type safe, expressive and composable state management for [React](https://facebook.github.io/react/) applications.
+`@grammarly/focal-atom` - Type safe, expressive and composable state management for any application.
+
 # Example
 
 Here's a typical example of a 'counter' UI component and how it fits within the whole application:
@@ -75,13 +80,18 @@ There's also a more elaborate version of [this example](packages/examples/all/sr
 # Installation
 
 ```bash
-yarn add @grammarly/focal
+yarn add @grammarly/focal-atom @grammarly/focal
+# or
+yarn add @grammarly/focal-atom
+
 ```
 
 or
 
 ```bash
-npm install --save @grammarly/focal
+npm install --save @grammarly/focal-atom @grammarly/focal
+# or
+npm install --save @grammarly/focal-atom
 ```
 
 It is important to satisfy the RxJS peer dependency (required for `instanceof Observable` tests to work correctly).
@@ -100,7 +110,7 @@ The example above might be a bit too overwhelming. Let's go over the main concep
 In Focal, state is stored in `Atom<T>`s. `Atom<T>` is a data cell that holds a single immutable value, which you can read and write to:
 
 ```typescript
-import { Atom } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal-atom'
 
 // create an Atom<number> with initial value of 0
 const count = Atom.create(0)
@@ -125,7 +135,7 @@ console.log(count.get())
 You can also track (get notified of) changes that happen to an `Atom<T>`'s value. In this sense, an `Atom<T>` can be thought of as a _reactive variable_:
 
 ```typescript
-import { Atom } from '@grammarly/focal'
+import { Atom } from '@grammarly/focal-atom'
 
 const count = Atom.create(0)
 
@@ -287,7 +297,7 @@ interface Lens<TSource, T> {
 And an example usage:
 
 ```typescript
-import { Lens } from '@grammarly/focal'
+import { Lens } from '@grammarly/focal-atom'
 
 // an object that we want to operate on
 const obj = {
@@ -400,7 +410,7 @@ We can accomplish this by combining atoms with lenses, making _lensed atoms_.
 A lensed atom is just an `Atom<T>`, in sense that on the outside it looks and behaves just like another atom. The difference is in how it is created: a lensed atom operates on a part of some other atom's state. This means that if you `.set` or `.modify` a lensed atom's value, the part of the source atom's value at which this lensed atom's lens is focused will also change. For example:
 
 ```typescript
-import { Atom, Lens } from '@grammarly/focal'
+import { Atom, Lens } from '@grammarly/focal-atom'
 
 // create an atom to hold our object
 const obj = Atom.create({

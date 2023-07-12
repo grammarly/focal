@@ -142,7 +142,7 @@ export function keyImpl<TValue = any>(k: string): Prism<{ [k: string]: TValue },
 // Pretty cool!
 export function keyImpl<TObject = any>(): KeyImplFor<TObject>
 
-export function keyImpl<TObject>(k?: string) {
+export function keyImpl<TObject extends object>(k?: string) {
   return k === undefined
     // type-safe key
     ? <K extends keyof TObject>(k: K): Lens<TObject, TObject[K]> =>

@@ -2,7 +2,7 @@ import { structEq } from './equals'
 
 export const DEV_ENV = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
 
-export function setKey<T, K extends keyof T>(k: K, v: T[K], o: T): T {
+export function setKey<T extends object, K extends keyof T>(k: K, v: T[K], o: T): T {
   if (k in o && structEq(v, o[k])) {
     return o
   } else {

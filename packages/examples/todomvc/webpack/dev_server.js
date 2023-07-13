@@ -8,7 +8,6 @@ var compiler = webpack(config);
 var port = process.env.PORT || 1337;
 
 app.use(require('webpack-dev-middleware')(compiler, {
-  noInfo: true,
   publicPath: config.output.publicPath
 }));
 

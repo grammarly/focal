@@ -35,7 +35,7 @@ function arrayFromIterator<T>(iter: Iterator<T>) {
   return result
 }
 
-function isPromise(a: unknown) {
+function isPromise(value: unknown) {
   // The function checks that is a 'thenable'
   return Boolean(value && typeof (value as Promise<unknown>).then === 'function')
 }

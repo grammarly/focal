@@ -35,10 +35,9 @@ function arrayFromIterator<T>(iter: Iterator<T>) {
   return result
 }
 
-function functionName(f: Function) {
-  // String(x => x) evaluates to "x => x", so the pattern may not match.
-  const match = String(f).match(/^function (\w*)/)
-  return match == null ? '' : match[1]
+function isPromise(value: unknown): value is PromiseLike<unknown> {
+  // The function checks that is a 'thenable'
+  return value !== null && value !== undefined && typeof (value as PromiseLike<unknown>).then === 'function'
 }
 
 function has(prop: string, obj: any) {
@@ -207,8 +206,7 @@ export function structEq(a: any, b: any, stackA: any[] = [], stackB: any[] = [])
     case 'Arguments':
     case 'Array':
     case 'Object':
-      if (typeof a.constructor === 'function' &&
-        functionName(a.constructor) === 'Promise') {
+      if (isPromise(a)) {
         return a === b
       }
       break

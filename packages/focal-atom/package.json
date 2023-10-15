@@ -3,17 +3,14 @@
   "version": "0.10.1",
   "description": "FRP Atom: observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
-  "module": "dist/_esm5/src/index.js",
-  "es2015": "dist/_esm2015/src/index.js",
+  "module": "dist/_esm2015/src/index.js",
   "types": "dist/_cjs/src/index.d.ts",
   "sideEffects": [
     "./dist/_cjs/src/lens/json.js",
-    "./dist/_esm5/src/lens/json.js",
     "./dist/_esm2015/src/lens/json.js"
   ],
   "files": [
     "dist/_cjs/src/",
-    "dist/_esm5/src/",
     "dist/_esm2015/src/"
   ],
   "scripts": {
@@ -21,9 +18,8 @@
     "clean": "rm -rf ./dist",
     "dev": "tsc -b -w tsconfig.build.cjs.json",
     "build:cjs": "tsc -b tsconfig.build.cjs.json",
-    "build:es5": "tsc -b tsconfig.build.es5.json",
     "build:es2015": "tsc -b tsconfig.build.es2015.json",
-    "build": "npm run clean && yarn build:cjs && yarn build:es5 && yarn build:es2015 && npm run lint",
+    "build": "npm run clean && yarn build:cjs && yarn build:es2015 && npm run lint",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint './src/**/*.ts*' 'test/**/*.ts*' && tsc --noemit",

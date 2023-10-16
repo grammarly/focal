@@ -1,6 +1,6 @@
 {
   "name": "@grammarly/focal-atom",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "FRP Atom: observables, immutable data and lenses",
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm2015/src/index.js",

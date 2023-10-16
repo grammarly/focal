@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["**/*.spec.ts*"],
+  "exclude": ["**/*.test.ts*"],
   "compilerOptions": {
     "outDir": "dist/_esm2015",
     "module": "es2015",

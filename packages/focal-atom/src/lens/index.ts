@@ -9,27 +9,17 @@
  *
  * @module
  */
-import {
-  Lens, Prism, Optic
-} from './base'
 
-// This import adds JSON-specific lens functions to the Lens
-// namespace, in style of RxJS.
-//
-// It's probably not the best way (these magic imports in general),
-// but so far I haven't found a better way to:
-// 1) have everything in a single namespace (for convenient usage)
-//   and
-// 2) have base Lens definitions and JSON Lens definitions in separate
-//   modules.
-//
-// But maybe there is a way to avoid this?
-import './json'
+import type { Lens as LensType, Prism as PrismType, Optic as OpticType } from './base'
+
+export type Lens<TSource, T> = LensType<TSource, T>
+export type Prism<TSource, T> = PrismType<TSource, T>
+export type Optic<TSource, T, U> = OpticType<TSource, T, U>
+
+export * as Optic from './optic'
+export * as Prism from './prism'
+export * as Lens from './lens'
 
 export {
   PropExpr
 } from './json'
-
-export {
-  Lens, Prism, Optic
-}

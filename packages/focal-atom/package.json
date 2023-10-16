@@ -5,10 +5,6 @@
   "main": "dist/_cjs/src/index.js",
   "module": "dist/_esm2015/src/index.js",
   "types": "dist/_cjs/src/index.d.ts",
-  "sideEffects": [
-    "./dist/_cjs/src/lens/json.js",
-    "./dist/_esm2015/src/lens/json.js"
-  ],
   "files": [
     "dist/_cjs/src/",
     "dist/_esm2015/src/"

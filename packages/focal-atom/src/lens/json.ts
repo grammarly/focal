@@ -17,7 +17,8 @@ import {
   structEq
 } from './../equals'
 
-import { Lens, Prism } from './base'
+import { Lens, Prism } from './'
+import { create as createPrism } from './prism'
 
 export type PropExpr<O, P> = (x: O) => P
 
@@ -33,9 +34,9 @@ const PROP_EXPR_RE = new RegExp([
 const WALLABY_PROP_EXPR_RE = new RegExp([
   '^', 'function', '\\(', '[^), ]+', '\\)', '\\{',
     '("use strict";)?',
-    '(\\$_\\$wf\\(\\d+\\);)?',  // wallaby.js code coverage compatability (#36)
+    '(\\$_\\$wf\\(\\d+\\);)?',  // wallaby.js code coverage compatibility (#36)
     'return\\s',
-      '(\\$_\\$w\\(\\d+, \\d+\\),\\s)?',  // wallaby.js code coverage compatability (#36)
+      '(\\$_\\$w\\(\\d+, \\d+\\),\\s)?',  // wallaby.js code coverage compatibility (#36)
       '[^\\.]+\\.(\\S+?);?',
   '\\}', '$'
 ].join('\\s*'))
@@ -104,7 +105,7 @@ export interface KeyImplFor<TObject> {
  *
  * @param k the key to focus on
  */
-export function keyImpl<TValue = any>(k: string): Prism<{ [k: string]: TValue }, TValue>
+export function key<TValue = any>(k: string): Prism<{ [k: string]: TValue }, TValue>
 
 /**
  * Create a lens focusing on a key of an object.
@@ -140,9 +141,9 @@ export function keyImpl<TValue = any>(k: string): Prism<{ [k: string]: TValue },
 //   keyImpl<SomeObject>()('someKey')
 //
 // Pretty cool!
-export function keyImpl<TObject = any>(): KeyImplFor<TObject>
+export function key<TObject = any>(): KeyImplFor<TObject>
 
-export function keyImpl<TObject extends object>(k?: string) {
+export function key<TObject extends object>(k?: string) {
   return k === undefined
     // type-safe key
     ? <K extends keyof TObject>(k: K): Lens<TObject, TObject[K]> =>
@@ -178,21 +179,50 @@ function warnPropExprDeprecated(path: string[]) {
   }
 }
 
-export function propImpl<TObject, TProperty>(
+/**
+ * DEPRECATED: please use Lens.key instead!
+ *
+ * Create a lens to an object's property. The argument is a property expression, which
+ * is a limited form of a getter, with following restrictions:
+ * - should be a pure function
+ * - should be a single-expression function (i.e. return immediately)
+ * - should only access object properties (nested access is OK)
+ *
+ * @example
+ * const obj = { a: { b: 5 } }
+ *
+ * const l = Lens.prop((x: typeof obj) => x.a.b)
+ *
+ * l.modify(x => x + 1, obj)
+ * // => { a: { b: 6 } }
+ * @template TObject type of the object
+ * @template TProperty type of the property
+ * @param propExpr property get expression
+ * @returns a lens to an object's property
+ */
+export function prop<TObject, TProperty>(
   getter: PropExpr<TObject, TProperty>
 ): Lens<TObject, TProperty> {
   const path = extractPropertyPath(getter as PropExpr<TObject, TProperty>)
   if (DEV_ENV) warnPropExprDeprecated(path)
 
   // @TODO can we optimize this?
-  return Lens.compose<TObject, TProperty>(...path.map(keyImpl()))
+  return Lens.compose<TObject, TProperty>(...path.map(key()))
 }
 
-export function indexImpl<TItem>(i: number): Prism<TItem[], TItem> {
+/**
+ * Create a lens that looks at an element at particular index position
+ * in an array.
+ *
+ * @template TItem type of array elements
+ * @param i the index
+ * @returns a lens to an element at particular position in an array
+ */
+export function index<TItem>(i: number): Prism<TItem[], TItem> {
   if (i < 0)
     throw new TypeError(`${i} is not a valid array index, expected >= 0`)
 
-  return Prism.create(
+  return createPrism(
     (xs: TItem[]) => xs[i] as Option<TItem>,
     (v: TItem, xs: TItem[]) => {
       if (xs.length <= i) {
@@ -206,7 +236,13 @@ export function indexImpl<TItem>(i: number): Prism<TItem[], TItem> {
   )
 }
 
-export function withDefaultImpl<T>(defaultValue: T): Lens<Option<T>, T> {
+/**
+ * Create a lens that will show a given default value if the actual
+ * value is absent (is undefined).
+ *
+ * @param defaultValue default value to return
+ */
+export function withDefault<T>(defaultValue: T): Lens<Option<T>, T> {
   // @TODO is this cast safe?
   return Lens.replace(undefined, defaultValue) as Lens<Option<T>, T>
 }
@@ -218,14 +254,21 @@ function choose<T, U>(getLens: (state: T) => Lens<T, U>): Lens<T, U> {
   )
 }
 
-export function replaceImpl<T>(originalValue: T, newValue: T): Lens<T, T> {
+/**
+ * Create a lens that replaces a given value with a new one.
+ */
+export function replace<T>(originalValue: T, newValue: T): Lens<T, T> {
   return Lens.create<T, T>(
     x => structEq(x, originalValue) ? newValue : x,
     conservatively((y: T) => structEq(y, newValue) ? originalValue : y)
   )
 }
 
-export function findImpl<T>(predicate: (x: T) => boolean): Prism<T[], T> {
+/**
+ * Create a prism that focuses on an array's element that
+ * satisfies a given predicate.
+ */
+export function find<T>(predicate: (x: T) => boolean): Prism<T[], T> {
   return choose((xs: T[]) => {
     const i = findIndex(xs, predicate)
 
@@ -234,72 +277,3 @@ export function findImpl<T>(predicate: (x: T) => boolean): Prism<T[], T> {
       : Lens.index<T>(i)
   })
 }
-
-// augment the base lens module with JSON-specific lens functions.
-// @TODO this doesn't look like the best way to do it. we only do it
-// for a nice consumer API with all lens function under the same namespace,
-// together with the lens type.
-declare module './base' {
-  export namespace Lens {
-    export let key: typeof keyImpl
-
-    /**
-     * DEPRECATED: please use Lens.key instead!
-     *
-     * Create a lens to an object's property. The argument is a property expression, which
-     * is a limited form of a getter, with following restrictions:
-     * - should be a pure function
-     * - should be a single-expression function (i.e. return immediately)
-     * - should only access object properties (nested access is OK)
-     *
-     * @example
-     * const obj = { a: { b: 5 } }
-     *
-     * const l = Lens.prop((x: typeof obj) => x.a.b)
-     *
-     * l.modify(x => x + 1, obj)
-     * // => { a: { b: 6 } }
-     * @template TObject type of the object
-     * @template TProperty type of the property
-     * @param propExpr property get expression
-     * @returns a lens to an object's property
-     */
-    export let prop: typeof propImpl
-
-    /**
-     * Create a lens that looks at an element at particular index position
-     * in an array.
-     *
-     * @template TItem type of array elements
-     * @param i the index
-     * @returns a lens to an element at particular position in an array
-     */
-    export let index: typeof indexImpl
-
-    /**
-     * Create a lens that will show a given default value if the actual
-     * value is absent (is undefined).
-     *
-     * @param defaultValue default value to return
-     */
-    export let withDefault: typeof withDefaultImpl
-
-    /**
-     * Create a lens that replaces a given value with a new one.
-     */
-    export let replace: typeof replaceImpl
-
-    /**
-     * Create a prism that focuses on an array's element that
-     * satisfies a given predicate.
-     */
-    export let find: typeof findImpl
-  }
-}
-
-Lens.key = keyImpl
-Lens.prop = propImpl
-Lens.index = indexImpl
-Lens.withDefault = withDefaultImpl
-Lens.replace = replaceImpl
-Lens.find = findImpl

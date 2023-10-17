@@ -517,6 +517,18 @@ From the start, we focused more on immediate developer productivity and type saf
 - Calmm was also originally using Ramda's representation of lens, which is the [van Laarhoven representation](http://www.twanvl.nl/blog/haskell/cps-functional-references). Instead, we opted for a naїve approach of representing lens with a getter/setter pair. This has worked fine for us so far, since we haven't needed to do any traversals or polymorphic updates yet. Perhaps we should reconsider this once again some time.
 - The main Calmm implementation ([kefir.atom](https://github.com/calmm-js/kefir.atom) and [kefir.react.html](https://github.com/calmm-js/kefir.react.html)) was based on [Kefir](http://rpominov.github.io/kefir/) observables. We started with Kefir as well, but soon enough migrated to [RxJS 5.x](https://github.com/ReactiveX/rxjs). The main reason was that RxJS was more fully featured and supported some operations on observables that Kefir didn't.
 
+# Contribution
+
+This repository uses `changesets` to automate versioning of the packages.
+
+When you contribute a change to the library that should be mentioned in the changelog, please use the following command:
+
+```sh
+yarn changeset
+```
+
+Then following the prompt describe packages that are affected and the description of the change. Created markdown files should be included to the pull request.
+
 # License
 
 Copyright 2019 Grammarly, Inc.

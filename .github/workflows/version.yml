@@ -24,3 +24,5 @@ jobs:
           publish: yarn changeset tag
           commit: Version packages
           title: Release packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -9,6 +9,7 @@
     "dist/_cjs/src/",
     "dist/_esm2015/src/"
   ],
+  "sideEffects": false,
   "scripts": {
     "docs": "rm -rf ./docs && typedoc --out docs --theme minimal --ignoreCompilerErrors --tsconfig tsconfig.json",
     "clean": "rm -rf ./dist",

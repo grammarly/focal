@@ -22,6 +22,13 @@ jobs:
           input: ${{ env.TEST }}
           script: 'map({ key: .name, value: .version }) | from_entries | { focal: .["@grammarly/focal"], focalAtom: .["@grammarly/focal-atom"] }'
       - run: 'echo "${{ steps.jq.outputs.output }}"'
+      - if: ${{ env.published == 'true' }}
+        uses: sergeysova/jq-action@v2
+        id: jq2
+        with:
+          cmd: |
+            echo '${{ env.TEST }}' | jq 'map({ key: .name, value: .version }) | from_entries | { focal: .["@grammarly/focal"], focalAtom: .["@grammarly/focal-atom"] }'
+      - run: echo ${{ steps.jq2.outputs.value }}
       - if: ${{ env.published == 'true' && fromJson(steps.jq.outputs.output).focal }}
         run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.output).focal }}"
       - if: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output)['focalAtom'] }}

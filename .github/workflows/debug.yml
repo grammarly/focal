@@ -16,7 +16,7 @@ jobs:
         with:
           input: ${{ env.TEST }}
           script: 'map({ key: .name, value: .version }) | from_entries | { focal: .["@grammarly/focal"], focalAtom: .["@grammarly/focal-atom"] }'
-      - run: echo ${{ steps.jq.outputs.output }}
+      - run: 'echo "${{ steps.jq.outputs.output }}"'
       - if: ${{ fromJson(steps.jq.outputs.output).focal }}
         run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.output).focal }}"
       - if: ${{ fromJson(steps.jq.outputs.output)['focalAtom'] }}

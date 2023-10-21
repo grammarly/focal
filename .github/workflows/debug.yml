@@ -6,10 +6,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      focalVersion: ${{ (steps.jq.outputs.output).focal }}
-      focalAtomVersion: ${{ (steps.jq.outputs.output).focalAtom }}
+      focalVersion: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output).focal }}
+      focalAtomVersion: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output).focalAtom }}
     env:
-      published: false
+      published: true
       TEST: '[{"name": "@grammarly/focal", "version": "1.2.0"}, {"name": "@grammarly/focal-atom", "version": "0.8.9"}]'
     steps:
       # - uses: hmarr/debug-action@v2
@@ -22,9 +22,9 @@ jobs:
           input: ${{ env.TEST }}
           script: 'map({ key: .name, value: .version }) | from_entries | { focal: .["@grammarly/focal"], focalAtom: .["@grammarly/focal-atom"] }'
       - run: 'echo "${{ steps.jq.outputs.output }}"'
-      - if: ${{ fromJson(steps.jq.outputs.output).focal }}
+      - if: ${{ env.published == 'true' && fromJson(steps.jq.outputs.output).focal }}
         run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.output).focal }}"
-      - if: ${{ fromJson(steps.jq.outputs.output)['focalAtom'] }}
+      - if: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output)['focalAtom'] }}
         run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.output)['focalAtom'] }}"
   publish:
     needs: build

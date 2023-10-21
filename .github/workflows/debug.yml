@@ -15,9 +15,9 @@ jobs:
         id: jq
         with:
           input: ${{ env.TEST }}
-          script: 'map({ key: .name, value: .version }) | from_entries'
+          script: 'map({ key: .name, value: .version }) | from_entries | { focal: .["@grammarly/focal"], focalAtom: .["@grammarly/focal-atom"] }'
       - run: echo ${{ steps.jq.outputs.result }}
-      - if: ${{ fromJson(steps.jq.outputs.result)['@grammarly/focal'] }}
-        run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.result)['@grammarly/focal'] }}"
-      - if: ${{ fromJson(steps.jq.outputs.result)['@grammarly/focal-atom'] }}
-        run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.result)['@grammarly/focal-atom'] }}"
+      - if: ${{ fromJson(steps.jq.outputs.result).focal }}
+        run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.result).focal }}"
+      - if: ${{ fromJson(steps.jq.outputs.result).focalAtom }}
+        run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.result).focalAtom }}"

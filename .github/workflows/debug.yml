@@ -9,7 +9,7 @@ jobs:
       focalVersion: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output).focal }}
       focalAtomVersion: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output).focalAtom }}
     env:
-      published: true
+      published: false
       TEST: '[{"name": "@grammarly/focal", "version": "1.2.0"}, {"name": "@grammarly/focal-atom", "version": "0.8.9"}]'
     steps:
       # - uses: hmarr/debug-action@v2

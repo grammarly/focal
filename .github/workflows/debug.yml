@@ -5,13 +5,18 @@ on: [pull_request, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TEST: '[{"name": "@grammarly/focal", "version": "1.2.0"}, {"name": "@grammarly/focal-atom", "version": "0.8.9"}]'
     steps:
       - uses: hmarr/debug-action@v2
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
+      - run: echo ${{ fromJson($TEST) }}
+      - uses: edwardgeorge/jq-action@v1
+        id: jq
         with:
-          node-version-file: '.nvmrc'
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
-      - run: yarn test
-      - run: yarn package
+          input: $TEST
+          script: 'map({ key: .name, value: .version }) | from_entries'
+      - run: echo ${{ steps.jq.outputs.result }}
+      - if: ${{ fromJson(steps.jq.outputs.result)['@grammarly/focal'] }}
+        run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.result)['@grammarly/focal'] }}"
+      - if: ${{ fromJson(steps.jq.outputs.result)['@grammarly/focal-atom'] }}
+        run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.result)['@grammarly/focal-atom'] }}"

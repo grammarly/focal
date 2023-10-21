@@ -5,13 +5,18 @@ on: [pull_request, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      focalVersion: ${{ (steps.jq.outputs.output).focal }}
+      focalAtomVersion: ${{ (steps.jq.outputs.output).focalAtom }}
     env:
+      published: true
       TEST: '[{"name": "@grammarly/focal", "version": "1.2.0"}, {"name": "@grammarly/focal-atom", "version": "0.8.9"}]'
     steps:
       # - uses: hmarr/debug-action@v2
       - run: 'echo "json: $TEST"'
       # - run: echo ${{ fromJson(env.TEST) }}
       - uses: edwardgeorge/jq-action@v1
+        if: ${{ env.published }}
         id: jq
         with:
           input: ${{ env.TEST }}
@@ -21,3 +26,9 @@ jobs:
         run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.output).focal }}"
       - if: ${{ fromJson(steps.jq.outputs.output)['focalAtom'] }}
         run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.output)['focalAtom'] }}"
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: "echo focal: ${{ needs.build.outputs.focalVersion }}"
+      - run: "echo focal: ${{ needs.build.outputs.focalAtomVersion }}"

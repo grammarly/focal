@@ -9,7 +9,8 @@ jobs:
       TEST: '[{"name": "@grammarly/focal", "version": "1.2.0"}, {"name": "@grammarly/focal-atom", "version": "0.8.9"}]'
     steps:
       - uses: hmarr/debug-action@v2
-      - run: echo ${{ fromJson($TEST) }}
+      - run: echo "json: $TEST"
+      - run: echo ${{ fromJson(env.TEST) }}
       - uses: edwardgeorge/jq-action@v1
         id: jq
         with:

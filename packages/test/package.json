@@ -17,7 +17,7 @@
   "author": "Grammarly, Inc.",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grammarly/focal": "0.10.2",
+    "@grammarly/focal": "0.11.0",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.0",
     "eslint": "^7.18.0",

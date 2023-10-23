@@ -2,7 +2,16 @@ import { Lens, Prism, PropExpr } from './../lens'
 import { Option } from './../utils'
 import { structEq } from './../equals'
 
-import { Observable, Subscriber, Subscription, BehaviorSubject, combineLatest } from 'rxjs'
+import { Observable, Subscription, BehaviorSubject, combineLatest, Observer } from 'rxjs'
+
+/** Parameters of the implementation of the overloaded `Subscribable.subscribe` method. */
+type SubscribeParameters<T> = readonly [
+  observerOrNext?: Partial<Observer<T>> | ((value: T) => void),
+] | readonly [
+  next?: ((value: T) => void) | null,
+  error?: ((error: any) => void) | null,
+  complete?: (() => void) | null
+]
 
 /**
  * Read-only atom.
@@ -371,7 +380,13 @@ class LensedAtom<TSource, TDest> extends AbstractAtom<TDest> {
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TDest>) {
+  subscribe(observerOrNext?: Partial<Observer<TDest>> | ((value: TDest) => void)): Subscription
+  subscribe(
+    next?: ((value: TDest) => void) | null,
+    error?: ((error: any) => void) | null,
+    complete?: (() => void) | null
+  ): Subscription
+  subscribe(...args: SubscribeParameters<TDest>) {
     if (!this._subscription) {
       this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
@@ -383,7 +398,7 @@ class LensedAtom<TSource, TDest> extends AbstractAtom<TDest> {
         this._subscription = null
       }
     })
-    sub.add(super._subscribe(subscriber))
+    sub.add(super.subscribe(...(args as [Partial<Observer<TDest>>])))
 
     return sub
   }
@@ -440,7 +455,13 @@ class AtomViewImpl<TSource, TDest> extends AbstractReadOnlyAtom<TDest> {
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TDest>) {
+  subscribe(observerOrNext?: Partial<Observer<TDest>> | ((value: TDest) => void)): Subscription
+  subscribe(
+    next?: ((value: TDest) => void) | null,
+    error?: ((error: any) => void) | null,
+    complete?: (() => void) | null
+  ): Subscription
+  subscribe(...args: SubscribeParameters<TDest>) {
     if (!this._subscription) {
       this._subscription = this._source.subscribe(x => this._onSourceValue(x))
     }
@@ -452,7 +473,7 @@ class AtomViewImpl<TSource, TDest> extends AbstractReadOnlyAtom<TDest> {
         this._subscription = null
       }
     })
-    sub.add(super._subscribe(subscriber))
+    sub.add(super.subscribe(...(args as [Partial<Observer<TDest>>])))
 
     return sub
   }
@@ -510,7 +531,13 @@ export class CombinedAtomViewImpl<TResult> extends AbstractReadOnlyAtom<TResult>
   private _refCount = 0
 
   // Rx method overrides
-  _subscribe(subscriber: Subscriber<TResult>) {
+  subscribe(observerOrNext?: Partial<Observer<TResult>> | ((value: TResult) => void)): Subscription
+  subscribe(
+    next?: ((value: TResult) => void) | null,
+    error?: ((error: any) => void) | null,
+    complete?: (() => void) | null
+  ): Subscription
+  subscribe(...args: SubscribeParameters<TResult>) {
     if (!this._subscription) {
       this._subscription = combineLatest(this._sources)
         .subscribe(xs => this._onSourceValues(xs))
@@ -523,7 +550,7 @@ export class CombinedAtomViewImpl<TResult> extends AbstractReadOnlyAtom<TResult>
         this._subscription = null
       }
     })
-    sub.add(super._subscribe(subscriber))
+    sub.add(super.subscribe(...(args as [Partial<Observer<TResult>>])))
 
     return sub
   }

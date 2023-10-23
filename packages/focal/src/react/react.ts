@@ -606,9 +606,12 @@ export function classes(
         filterClassNames(cs || []).map(x =>
           // @TODO optimize: unnecessary Observable.of
           // can we actually already just remove this?
-          !(x instanceof Observable) ? of(x) : x
+
+          // we check if x is a string because after `filterClassNames`
+          // it can be only a string as non-observable value; otherwise it is an `ObservableInput`
+          typeof x === 'string' ? of(x) : x
         ),
-        (...cs: ClassNameLike[]) => {
+        (...cs) => {
           const filtered = filterClassNames(cs || [])
 
           return filtered.length > 0

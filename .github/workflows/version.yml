@@ -4,12 +4,17 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch: {}
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  changesets:
+  version:
     runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.version.outputs.published }}
+      focalVersion: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output).focal }}
+      focalAtomVersion: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output).focalAtom }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -18,6 +23,7 @@ jobs:
       - name: Install packages
         run: yarn install --frozen-lockfile
       - name: Create Release Pull Request or Version
+        id: version
         uses: changesets/action@v1
         with:
           version: yarn changeset version
@@ -27,3 +33,49 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - if: ${{ steps.version.outputs.published == 'true' }}
+        uses: edwardgeorge/jq-action@v1
+        id: jq
+        with:
+          input: ${{ steps.version.outputs.publishedPackages }}
+          script: |
+            map({ key: .name, value: .version }) |
+            from_entries |
+            {
+              focal: .["@grammarly/focal"],
+              focalAtom: .["@grammarly/focal-atom"]
+            }
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: version
+    if: ${{ needs.version.outputs.published == 'true' }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+      - name: Build
+        run: yarn build
+      - name: Test
+        run: yarn test
+      - name: Package
+        run: yarn package
+      - name: Upload @grammarly/focal binaries to release
+        if: ${{ needs.version.outputs.focalVersion }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./packages/focal/grammarly-focal-v${{ needs.version.outputs.focalVersion }}.tgz
+          asset_name: grammarly-focal-v${{ needs.version.outputs.focalVersion }}.tgz
+          tag: '@grammarly/focal@${{ needs.version.outputs.focalVersion }}'
+      - name: Upload @grammarly/focal-atom binaries to release
+        if: ${{ needs.version.outputs.focalAtomVersion }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./packages/focal-atom/grammarly-focal-atom-v${{ needs.version.outputs.focalAtomVersion }}.tgz
+          asset_name: grammarly-focal-atom-v${{ needs.version.outputs.focalAtomVersion }}.tgz
+          tag: '@grammarly/focal-atom@${{ needs.version.outputs.focalAtomVersion }}'

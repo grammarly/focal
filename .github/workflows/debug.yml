@@ -19,7 +19,13 @@ jobs:
         id: jq
         with:
           input: ${{ env.TEST }}
-          script: 'map({ key: .name, value: .version }) | from_entries | { focal: .["@grammarly/focal"], focalAtom: .["@grammarly/focal-atom"] }'
+          script: |
+            map({ key: .name, value: .version }) |
+            from_entries |
+            {
+              focal: .["@grammarly/focal"],
+              focalAtom: .["@grammarly/focal-atom"]
+            }
       - run: 'echo "${{ steps.jq.outputs.output }}"'
       - if: ${{ env.published == 'true' && fromJson(steps.jq.outputs.output).focal }}
         run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.output).focal }}"
@@ -53,4 +59,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: focal-atom
-          path: ./packages/focal/grammarly-focal-atom-v${{ needs.version.outputs.focalAtomVersion }}.tgz
+          path: ./packages/focal-atom/grammarly-focal-atom-v${{ needs.version.outputs.focalAtomVersion }}.tgz

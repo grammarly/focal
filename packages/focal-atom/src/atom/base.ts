@@ -398,7 +398,7 @@ class LensedAtom<TSource, TDest> extends AbstractAtom<TDest> {
         this._subscription = null
       }
     })
-    sub.add(super.subscribe(...(args as [Partial<Observer<TDest>>])))
+    sub.add(super.subscribe(...(args as [Observer<TDest>])))
 
     return sub
   }
@@ -473,7 +473,7 @@ class AtomViewImpl<TSource, TDest> extends AbstractReadOnlyAtom<TDest> {
         this._subscription = null
       }
     })
-    sub.add(super.subscribe(...(args as [Partial<Observer<TDest>>])))
+    sub.add(super.subscribe(...(args as [Observer<TDest>])))
 
     return sub
   }
@@ -550,7 +550,7 @@ export class CombinedAtomViewImpl<TResult> extends AbstractReadOnlyAtom<TResult>
         this._subscription = null
       }
     })
-    sub.add(super.subscribe(...(args as [Partial<Observer<TResult>>])))
+    sub.add(super.subscribe(...(args as [Observer<TResult>])))
 
     return sub
   }

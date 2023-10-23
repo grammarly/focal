@@ -744,7 +744,7 @@ describe('atom', () => {
   describe('fromObservable', () => {
     test('emits atom', async () => {
       const a = await Atom.fromObservable(from([1])).pipe(take(1)).toPromise()
-      expect(a.get()).toEqual(1)
+      expect(a?.get()).toEqual(1)
     })
 
     test('emits atom once', async () => {
@@ -755,7 +755,7 @@ describe('atom', () => {
         from(['hello'])
       ).pipe(take(2), toArray()).toPromise()
 
-      expect(a[1]).toEqual('hello')
+      expect(a?.[1]).toEqual('hello')
     })
 
     test('does not subscribe to source immediately', () => {

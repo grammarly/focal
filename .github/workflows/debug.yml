@@ -3,18 +3,17 @@ name: Debug
 on: [pull_request, workflow_dispatch]
 
 jobs:
-  build:
+  version:
     runs-on: ubuntu-latest
     outputs:
       focalVersion: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output).focal }}
       focalAtomVersion: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output).focalAtom }}
     env:
       published: true
-      TEST: '[{"name": "@grammarly/focal", "version": "1.2.0"}, {"name": "@grammarly/focal-atom", "version": "0.8.9"}]'
+      TEST: '[{"name": "@grammarly/focal", "version": "0.10.2"}, {"name": "@grammarly/focal-atom", "version": "0.10.2"}]'
     steps:
-      # - uses: hmarr/debug-action@v2
+      - uses: hmarr/debug-action@v2
       - run: 'echo "json: $TEST"'
-      # - run: echo ${{ fromJson(env.TEST) }}
       - uses: edwardgeorge/jq-action@v1
         if: ${{ env.published == 'true' }}
         id: jq
@@ -22,20 +21,36 @@ jobs:
           input: ${{ env.TEST }}
           script: 'map({ key: .name, value: .version }) | from_entries | { focal: .["@grammarly/focal"], focalAtom: .["@grammarly/focal-atom"] }'
       - run: 'echo "${{ steps.jq.outputs.output }}"'
-      - if: ${{ env.published == 'true' }}
-        uses: sergeysova/jq-action@v2
-        id: jq2
-        with:
-          cmd: |
-            echo '${{ env.TEST }}' | jq 'map({ key: .name, value: .version }) | from_entries | { focal: .["@grammarly/focal"], focalAtom: .["@grammarly/focal-atom"] }'
-      - run: echo ${{ steps.jq2.outputs.value }}
       - if: ${{ env.published == 'true' && fromJson(steps.jq.outputs.output).focal }}
         run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.output).focal }}"
       - if: ${{ steps.jq.outputs.output && fromJson(steps.jq.outputs.output)['focalAtom'] }}
         run: echo "Found @grammarly/focal ${{ fromJson(steps.jq.outputs.output)['focalAtom'] }}"
   publish:
-    needs: build
+    needs: version
     runs-on: ubuntu-latest
     steps:
-      - run: 'echo "focal ${{ needs.build.outputs.focalVersion }}"'
-      - run: 'echo "focal-atom ${{ needs.build.outputs.focalAtomVersion }}"'
+      - uses: hmarr/debug-action@v2
+      - run: 'echo "focal ${{ needs.version.outputs.focalVersion }}"'
+      - run: 'echo "focal-atom ${{ needs.version.outputs.focalAtomVersion }}"'
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+      - name: Build
+        run: yarn build
+      - name: Test
+        run: yarn test
+      - name: Package
+        run: yarn package
+      - name: Upload @grammarly/focal binaries
+        uses: actions/upload-artifact@v2
+        with:
+          name: focal
+          path: ./packages/focal/grammarly-focal-v${{ needs.version.outputs.focalVersion }}.tgz
+      - name: Upload @grammarly/focal-atom binaries
+        uses: actions/upload-artifact@v2
+        with:
+          name: focal-atom
+          path: ./packages/focal/grammarly-focal-atom-v${{ needs.version.outputs.focalAtomVersion }}.tgz
